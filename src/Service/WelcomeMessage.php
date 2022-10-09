@@ -8,10 +8,10 @@ class WelcomeMessage
 {
     private $logger;
     private const MESSAGES_PREFIX = [
-            'Hello dear friend',
-            'Hi user',
-            'I glad to see you',
-        ];
+        'Hello dear friend',
+        'Hi user',
+        'I glad to see you',
+    ];
 
     public function __construct(LoggerInterface $logger)
     {
@@ -21,9 +21,10 @@ class WelcomeMessage
     public function welcomeMessage(string $name): string
     {
         $this->logger->debug('Welcome message start', ['name' => $name]);
+        $messagePrefix = self::MESSAGES_PREFIX[array_rand(self::MESSAGES_PREFIX)];
+        $message = sprintf('%s %s', $messagePrefix, $name);
+        $this->logger->debug('Welcome message complete', ['message' => $message]);
 
-        $index = array_rand(self::MESSAGES_PREFIX);
-
-        return sprintf('%s %s', self::MESSAGES_PREFIX[$index], $name);
+        return $message;
     }
 }
