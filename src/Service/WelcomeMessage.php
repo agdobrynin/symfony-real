@@ -6,12 +6,13 @@ use Psr\Log\LoggerInterface;
 
 class WelcomeMessage
 {
-    private $logger;
     private const MESSAGES_PREFIX = [
         'Hello dear friend',
         'Hi user',
         'I glad to see you',
     ];
+
+    private $logger;
 
     public function __construct(LoggerInterface $logger)
     {
