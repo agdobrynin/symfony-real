@@ -25,3 +25,8 @@ services:
     App\Service\WelcomeMessage:
         arguments:
             $machineName: "%env(string:APP_MACHINE_NAME)%"
+
+    App\Controller\WelcomeHtmlController:
+        autowire: true
+        autoconfigure: true
+        public: true

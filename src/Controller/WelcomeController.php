@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Service\WelcomeMessageInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -21,11 +20,14 @@ class WelcomeController extends AbstractController
     }
 
     /**
-     * @Route("/", methods={"get"}, name="controller_main")
+     * @Route(
+     *     "/json/{name}",
+     *     methods={"get"},
+     *     name="controller_main_json"
+     * )
      */
-    public function main(Request $request): JsonResponse
+    public function main(string $name = 'Ivan'): JsonResponse
     {
-        $name = $request->get('name', 'Ivan');
         $dto = $this->welcomeMessage->welcomeMessage($name);
 
         return $this->json($this->normalizer->normalize($dto));
