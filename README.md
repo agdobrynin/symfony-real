@@ -4,4 +4,19 @@
 ```bash
 cp .env-example .env
 ```
+Запустить composer для подтягивания зависмотей проекта
+```bash
+composer install
+```
+Запустить проект можно через встроенный web сервер в PHP
+```bash
+php -S 0.0.0.0:8080 -t public/
+```
+открыть в браузере адрес `http://localhost:8080/`
+ 
+Если установлена утилита `symfony` то можно запустить через
+```bash
+symfony serve
+```
+
 ok.
