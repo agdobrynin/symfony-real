@@ -4,6 +4,8 @@
 ```bash
 cp .env-example .env
 ```
+Для сборки зависимотей проекта понадоится composer версии 2.
+
 Запустить composer для подтягивания зависмотей проекта
 ```bash
 composer install

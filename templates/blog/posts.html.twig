@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Main page of blog{% endblock %}
+
+{% block body %}
+    {% if posts %}
+        {% for post in posts %}
+            <h3>{{ post.title }}</h3>
+            <h6>Date: {{ post.date|date }}</h6>
+            <p>
+                {{ post.content|slice(0, 300) }}
+                {% if post.content|length > 300 %}
+                    ...
+                {% endif %}
+            </p>
+            <div><a href="{{ path("blog_show", {uuid: post.uuid}) }}">read more...</a> </div>
+            {% if loop.index < loop.length %}
+                <hr>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <h4>Posts not found</h4>
+    {% endif %}
+{% endblock %}

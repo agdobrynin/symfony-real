@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}A post with title - &laquo;{{ post.title|slice(0, 10)  }}...&raquo;{% endblock %}
+
+{% block body %}
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.content }}</p>
+{% endblock %}
