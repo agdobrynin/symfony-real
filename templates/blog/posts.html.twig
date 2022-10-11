@@ -8,10 +8,7 @@
             <h3>{{ post.title }}</h3>
             <h6>Date: {{ post.date|date }}</h6>
             <p>
-                {{ post.content|slice(0, 300) }}
-                {% if post.content|length > 300 %}
-                    ...
-                {% endif %}
+                {{ post.content|text_by_percent(35) }}...
             </p>
             <div><a href="{{ path("blog_show", {uuid: post.uuid}) }}">read more...</a> </div>
             {% if loop.index < loop.length %}
