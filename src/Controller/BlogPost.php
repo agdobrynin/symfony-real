@@ -57,7 +57,7 @@ class BlogPost extends AbstractController
         for ($i = 0; $i < $count; $i++) {
             $dto = new SimplePostDto();
             $dto->title = $faker->realTextBetween(20, 39);
-            $dto->content = $faker->realTextBetween(300, 600);
+            $dto->content = $faker->realTextBetween(20, 600);
             $dto->date = $faker->dateTimeInInterval('-30 day', 'now');
             $this->posts->add($dto);
         }
