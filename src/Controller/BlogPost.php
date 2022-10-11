@@ -47,7 +47,7 @@ class BlogPost extends AbstractController
     }
 
     /**
-     * @Route("/gen/{count}", methods={"get"})
+     * @Route("/gen/{count}", methods={"get"}, name="blog_gen")
      */
     public function gen(int $count = 10): RedirectResponse
     {
@@ -61,6 +61,16 @@ class BlogPost extends AbstractController
             $dto->date = $faker->dateTimeInInterval('-30 day', 'now');
             $this->posts->add($dto);
         }
+
+        return $this->redirectToRoute("blog_list");
+    }
+
+    /**
+     * @Route("/destroy", methods={"get"}, name="blog_destroy")
+     */
+    public function destroy(): RedirectResponse
+    {
+        $this->posts->destroy();
 
         return $this->redirectToRoute("blog_list");
     }
