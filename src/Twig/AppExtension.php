@@ -19,7 +19,7 @@ class AppExtension extends AbstractExtension
     {
         if ($percent > 1 && $percent <= 100) {
             $lenSource = mb_strlen($text);
-            $lenPercent = (int)($lenSource * $percent / 100);
+            $lenPercent = (int)($lenSource * $percent / 100) ?: $lenSource;
 
             return mb_substr($text, 0, $lenPercent);
         }
