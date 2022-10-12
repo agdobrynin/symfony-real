@@ -11,9 +11,17 @@ cp .env-example .env
 composer install
 ```
 Для фронт-части проекта используется пакет **@symfony/webpack-encore** и для сборки фронт-части понадобится
-установелнный `npm`. Для инициализации фронт-части запустить
+установелнный пакетный менеджер `yarn`. Для инициализации фронт-части запустить
 ```shell
-npm install && npm run build
+yarn install && yarn encore production
+```
+для сборки фронт-части в dev режиме
+```shell
+yarn encore dev
+```
+в режиме наблюдения
+```shell
+yarn encore dev --watch
 ```
 
 Запустить проект можно через встроенный web сервер в PHP
