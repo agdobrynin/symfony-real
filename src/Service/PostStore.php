@@ -11,10 +11,12 @@ class PostStore implements PostStoreInterface
     private const KEY_POSTS = 'posts';
 
     private $session;
+    private $pageSize;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(SessionInterface $session, int $pageSize)
     {
         $this->session = $session;
+        $this->pageSize = $pageSize;
     }
 
     public function add(SimplePostDto $postDto): SimplePostDto
@@ -38,9 +40,23 @@ class PostStore implements PostStoreInterface
     /**
      * @return SimplePostDto[]
      */
-    public function list(): array
+    public function list(int $page): array
     {
-        return $this->session->get(self::KEY_POSTS, []);
+        $offset = ($page - 1) * $this->pageSize;
+
+        return array_slice($this->session->get(self::KEY_POSTS, []), $offset, $this->pageSize);
+    }
+
+    public function getPageCount(): int
+    {
+        $postCount = count($this->session->get(self::KEY_POSTS, []));
+
+        return (int)ceil($postCount / $this->pageSize);
+    }
+
+    public function setPageSize(int $pageSize): void
+    {
+        $this->pageSize = $pageSize;
     }
 
     public function destroy(): void

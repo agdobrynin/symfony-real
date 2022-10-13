@@ -13,7 +13,11 @@ interface PostStoreInterface
     /**
      * @return SimplePostDto[]
      */
-    public function list(): array;
+    public function list(int $page): array;
+
+    public function getPageCount(): int;
+
+    public function setPageSize(int $pageSize): void;
 
     public function destroy(): void;
 }

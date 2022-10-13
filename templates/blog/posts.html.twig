@@ -9,17 +9,25 @@
         <a href="{{ path("blog_destroy") }}">Delete all posts</a>
     </div>
     {% if posts %}
+        {% if pageCount > 1 %}
+            {{ include ("blog/paginator.html.twig", {"pageCount": pageCount}) }}
+            <hr>
+        {% endif %}
         {% for post in posts %}
-            <h3>{{ post.title }}</h3>
+            <h3>({{ loop.index }}) {{ post.title }}</h3>
             <h6>Date: {{ post.date|date }}</h6>
             <p>
                 {{ post.content|text_by_percent(35) }}...
             </p>
-            <div><a href="{{ path("blog_show", {uuid: post.uuid}) }}">read more...</a> </div>
+            <div><a href="{{ path("blog_show", {uuid: post.uuid}) }}">read more...</a></div>
             {% if loop.index < loop.length %}
                 <hr>
             {% endif %}
         {% endfor %}
+        {% if pageCount > 1 %}
+            <hr>
+            {{ include ("blog/paginator.html.twig", {"pageCount": pageCount}) }}
+        {% endif %}
     {% else %}
         <h4>Posts not found</h4>
     {% endif %}

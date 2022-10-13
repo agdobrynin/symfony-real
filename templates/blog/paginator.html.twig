@@ -1,0 +1,13 @@
+<div>
+    {% for i in 1..pageCount %}
+        <span>
+                        {% if app.request.attributes.get("page") != i %}
+                            <a href="{{ path("blog_list", {page: i}) }}">
+                        {% endif %}
+                                {{ i }}
+                                {% if app.request.attributes.get("page") != i %}
+                            </a>
+                        {% endif %}
+                    </span>
+    {% endfor %}
+</div>

@@ -25,11 +25,15 @@ class BlogPost extends AbstractController
     }
 
     /**
-     * @Route("/", methods={"get"}, name="blog_list")
+     * @Route("/{page}", methods={"get"}, name="blog_list", requirements={"page"="\d+"})
      */
-    public function list(): Response
+    public function list(int $page = 1): Response
     {
-        return $this->render('blog/posts.html.twig', ['posts' => $this->posts->list()]);
+        return $this->render('blog/posts.html.twig',
+            [
+                'posts' => $this->posts->list($page),
+                'pageCount' => $this->posts->getPageCount(),
+            ]);
     }
 
     /**
