@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <nav class="navbar navbar-expand-lg bg-primary">
+        <a class="navbar-brand" href="{{ path("blog_list") }}">Super blog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path("blog_gen") }}">Generate new 10 posts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path("blog_gen", {"count": 22}) }}">Generate new 22 posts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path("blog_destroy") }}">Delete all posts</a>
+                </li>
+            </ul>
+            <span class="navbar-text">Learn symfony with udemy.com</span>
+        </div>
+    </nav>
+    <main role="main" class="container">
+        {% block blogContent %}{% endblock %}
+    </main>
+{% endblock %}
