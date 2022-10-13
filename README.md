@@ -1,5 +1,6 @@
 # symfony-real
 
+## Бэк часть проекта
 Для настройки переменных окружения прокта необходимо скопировать файл из `.env-exmple` в `.env` и внести собственные настройки для проекта
 ```shell
 cp .env-example .env
@@ -10,8 +11,20 @@ cp .env-example .env
 ```shell
 composer install
 ```
+#### Выполнить миграции
+```shell
+php bin/console doctrine:migrations:migrate --no-interaction
+```
+#### Заполнить тестовыми данными таблицы
+(!) Затрёт все изменения в базе данных:
+```shell
+php bin/console doctrine:fixtures:load -q
+```
+## Фронт часть проекта
 Для фронт-части проекта используется пакет **@symfony/webpack-encore** и для сборки фронт-части понадобится
-установелнный пакетный менеджер `yarn`. Для инициализации фронт-части запустить
+установелнный пакетный менеджер `yarn`. 
+
+Инициализация фронт-части
 ```shell
 yarn install && yarn encore production
 ```
