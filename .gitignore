@@ -21,7 +21,7 @@
 ###< symfony/phpunit-bridge ###
 
 .idea/
-
+db/app.db
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/
