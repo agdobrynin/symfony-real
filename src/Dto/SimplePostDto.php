@@ -21,6 +21,11 @@ class SimplePostDto
     public $content;
 
     /**
+     * @var string|null
+     */
+    public $author;
+
+    /**
      * @var \DateTimeInterface
      */
     public $date;

@@ -2,9 +2,12 @@
 
 {% block title %}A post with title - &laquo;{{ post.title|slice(0, 10)  }}...&raquo;{% endblock %}
 
-{% block body %}
-    <h3>{{ post.title }}</h3>
-    <p>{{ post.content }}</p>
+{% block blogContent %}
+    <h1 class="display-1">{{ post.title }}</h1>
+    <p class="lead text-dark">{{ post.content }}</p>
+    <blockquote class="text-muted">
+        <p>Author: {{ post.author|default("anomymous") }}, at {{ post.date|date }}</p>
+    </blockquote>
     <hr>
     <a href="{{ url("blog_list") }}">Back to blog list</a>
 {% endblock %}

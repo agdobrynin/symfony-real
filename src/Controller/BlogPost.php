@@ -63,6 +63,7 @@ class BlogPost extends AbstractController
             $dto->title = $faker->realTextBetween(20, 39);
             $dto->content = $faker->realTextBetween(20, 600);
             $dto->date = $faker->dateTimeInInterval('-30 day', 'now');
+            $dto->author = $faker->name;
             $this->posts->add($dto);
         }
 

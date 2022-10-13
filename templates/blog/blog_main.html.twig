@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <nav class="navbar navbar-expand-lg bg-primary">
-        <a class="navbar-brand" href="{{ path("blog_list") }}">Super blog</a>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ path("blog_list") }}">Super blog home page</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -19,10 +19,10 @@
                     <a class="nav-link" href="{{ path("blog_destroy") }}">Delete all posts</a>
                 </li>
             </ul>
-            <span class="navbar-text">Learn symfony with udemy.com</span>
         </div>
     </nav>
-    <main role="main" class="container">
+    <main role="main" class="container mt-5">
         {% block blogContent %}{% endblock %}
     </main>
+    <footer></footer>
 {% endblock %}
