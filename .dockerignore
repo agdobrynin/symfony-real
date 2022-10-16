@@ -1,4 +1,5 @@
-node_modules/
+.i
+app/node_modules/
 docker-files/
 **/*.log
 **/*.md
@@ -11,12 +12,12 @@ docker-files/
 **/docker-compose.*.yml
 **/docker-compose.yaml
 **/docker-compose.yml
-public/bundles/
-tests/
-var/
-vendor/
+app/public/bundles/
+app/tests/
+app/var/
+app/vendor/
 .editorconfig
-.env.*.local
-.env.local
-.env.local.php
-.env.test
+**/.env.*.local
+**/.env.local
+**/.env.local.php
+**/.env.test
