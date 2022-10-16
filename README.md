@@ -1,51 +1,52 @@
 # symfony-real
+Для проекта нужен docker (docker desktop) а так же docker-compose
 
-## Бэк часть проекта
+## Сборка контейнеров и настройка проекта
+
 Для настройки переменных окружения прокта необходимо скопировать файл из `.env-exmple` в `.env` и внести собственные настройки для проекта
 ```shell
 cp .env-example .env
 ```
-Для сборки зависимотей проекта понадоится composer версии 2.
+собираем контенеры и стратуем docker
+```shell
+docker-compose build &&  docker-compose up -d
+```
+собираем фронт часть проекта
+```shell
+docker-compose run --rm front sh -c "yarn install && yarn encore production"
+```
+для настройки symfony проекта заходим в контецнер php и выполняем настройку
+```shell
+docker-compose exec php bash
+```
+в появившейся командной строке (мы находимся в контейнере)
+```shell
+composer install  
+```
+оставая в контецнере выполним миграции и заполним тестовыми данными базу
+```shell
+bin/console doctrine:migrations:migrate && bin/console doctrine:fixtures:load -q
+```
+посмотреть существующие роуты проекта можно в контейнере `php`
+```shell
+bin/console debug:route
+```
+открыть проект можно по адресу `localhost` в браузере
 
-Запустить composer для подтягивания зависмотей проекта
-```shell
-composer install
-```
-#### Выполнить миграции
-```shell
-php bin/console doctrine:migrations:migrate --no-interaction
-```
-#### Заполнить тестовыми данными таблицы
-(!) Затрёт все изменения в базе данных:
-```shell
-php bin/console doctrine:fixtures:load -q
-```
-## Фронт часть проекта
-Для фронт-части проекта используется пакет **@symfony/webpack-encore** и для сборки фронт-части понадобится
-установелнный пакетный менеджер `yarn`. 
+### Фронт часть проекта
+Фронт-часть проекта развернута в контейнере `front`
 
-Инициализация фронт-части
+Для сборки фронт части в продекшен режиме выполнить команду 
 ```shell
-yarn install && yarn encore production
+docker-compose run --rm front sh -c "yarn encore production"
 ```
 для сборки фронт-части в dev режиме
 ```shell
-yarn encore dev
+docker-compose run --rm front sh -c "yarn encore dev"
 ```
-в режиме наблюдения
+в режиме наблюдения (пересобирает на лету)
 ```shell
-yarn encore dev --watch
-```
-
-Запустить проект можно через встроенный web сервер в PHP
-```bash
-php -S 0.0.0.0:8080 -t public/
-```
-открыть в браузере адрес `http://localhost:8080/`
- 
-Если установлена утилита `symfony` то можно запустить через
-```bash
-symfony serve
+docker-compose run --rm front sh -c "yarn encore dev --watch"
 ```
 
 ok.
