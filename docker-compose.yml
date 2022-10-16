@@ -1,21 +1,63 @@
-version: '3'
+version: '3.8'
+
+networks:
+    symfony:
 
 services:
-###> doctrine/doctrine-bundle ###
-  database:
-    image: postgres:${POSTGRES_VERSION:-14}-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
-    volumes:
-      - db-data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+    # nginx
+    nginx:
+        build:
+            context: ./docker-files/nginx
+            dockerfile: Dockerfile
+        container_name: nginx
+        ports:
+            - "80:80"
+        networks:
+            - symfony
+        volumes:
+            - ./:/app
+            - ./docker-files/nginx/default.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - php
+            - mysql
+    # php
+    php:
+        build:
+            context: ./docker-files/php
+            args:
+                app_dir: /app
+            dockerfile: Dockerfile
+        container_name: php
+        user: 1000:1000
+        ports:
+            - "9000:9000"
+        networks:
+            - symfony
+        volumes:
+            - ./:/app
+        depends_on:
+            -   mysql
+    # mysql
+    mysql:
+        image: mysql:8
+        container_name: mysql
+        ports:
+            - "4306:3306"
+        networks:
+            - symfony
+        command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+        restart: always # always restart unless stopped manually
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-secret321}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD:-secret123}
 
-volumes:
-###> doctrine/doctrine-bundle ###
-  db-data:
-###< doctrine/doctrine-bundle ###
+    # node
+    front:
+        container_name: front
+        build:
+            context: ./docker-files/node
+            args:
+                app_dir: /app
+            dockerfile: Dockerfile
+        volumes:
+            - ./:/app
