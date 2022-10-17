@@ -35,7 +35,7 @@ services:
         networks:
             - my-symfony
         volumes:
-            - ./app:${APP_DIR_IN_CONTAINER:-/app}
+            - ./app:${APP_DIR_IN_CONTAINER:-/app}:rw,cached
         depends_on:
             - database
     # mysql
