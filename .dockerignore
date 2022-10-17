@@ -1,10 +1,7 @@
-.i
-app/node_modules/
 docker-files/
 **/*.log
 **/*.md
 **/.dockerignore
-**/.git/
 **/.gitattributes
 **/.gitignore
 **/.gitmodules

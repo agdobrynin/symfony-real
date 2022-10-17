@@ -1,0 +1,15 @@
+{% extends 'micro-post/index.html.twig' %}
+
+{% block title %}Micro post main page{% endblock %}
+
+{% block blogList %}
+    {% for post in posts %}
+        <div class="card mb-5">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Post from user @username at {{ post.getDate|date }}</h6>
+                <p class="card-text">{{ post.getContent }}</p>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="mb-5">&nbsp;</div>
+{% endblock %}
