@@ -4,12 +4,12 @@ ARG app_dir
 
 COPY php.ini /usr/local/etc/php/conf.d/docker-php-config.ini
 
-RUN apt-get update && apt-get install -y zlib1g-dev g++ git libicu-dev zip libzip-dev zip \
-    && docker-php-ext-install intl opcache pdo pdo_mysql \
+RUN apt-get update && apt-get install -y zlib1g-dev g++ git libicu-dev zip libzip-dev zip libpq-dev \
+    && docker-php-ext-install intl opcache pdo pdo_pgsql pgsql \
     && pecl install apcu \
-    && docker-php-ext-enable apcu \
     && docker-php-ext-configure zip \
-    && docker-php-ext-install zip
+    && docker-php-ext-install zip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN curl -sS https://get.symfony.com/cli/installer | bash

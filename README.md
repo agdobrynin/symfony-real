@@ -27,11 +27,11 @@ docker-compose run --rm front sh -c "yarn install && yarn encore production"
 ```shell
 docker-compose exec php bash
 ```
-в появившейся командной строке (мы находимся в контейнере)
+в появившейся командной строке (мы находимся в контейнере _php_)
 ```shell
 composer install  
 ```
-оставая в контецнере выполним миграции и заполним тестовыми данными базу
+оставая в контейнере _php_ выполним миграции и заполним тестовыми данными базу
 ```shell
 bin/console doctrine:migrations:migrate && bin/console doctrine:fixtures:load -q
 ```
@@ -39,7 +39,7 @@ bin/console doctrine:migrations:migrate && bin/console doctrine:fixtures:load -q
 ```shell
 bin/console debug:route
 ```
-открыть проект можно по адресу `localhost` в браузере
+открыть проект можно по адресу `http://localhost` в браузере
 
 ### Фронт часть проекта
 Фронт-часть проекта развернута в контейнере `front`
