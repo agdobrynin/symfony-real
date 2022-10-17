@@ -1,6 +1,15 @@
 # symfony-real
 Для проекта нужен docker (docker desktop) а так же docker-compose
 
+Структура директорий проекта:
+````
+|
+|_ app/ <-- symfony приложение и фронт част проекта
+|_ docker-files/ <-- настройка для docker контейнеров
+|_ docker-compose.yml <--- файл конфига основной для запуска через docker-compose
+|_ docker-compose.override.yml <--- файл дополнение для docker контейнеров
+````
+
 ## Сборка контейнеров и настройка проекта
 Для настройки переменных окружения **docker** контейнеров необходимо скопировать файл и внести собственные настройки
 ```shell
@@ -67,5 +76,13 @@ docker-compose run --rm front sh -c "yarn encore dev"
 ```shell
 docker-compose run --rm front sh -c "yarn encore dev --watch"
 ```
+### Остановка и запуск docker контейнеров
+Для остановки запушенных docker контейнеров используйте команды запуская их в корневой директории проекта
+```shell
+docker-compose stop
+```
+Запуска (если уже было сделана сборка контейнеров - build):
+```shell
+docker-compose up -d
+```
 
-ok.
