@@ -23,7 +23,7 @@ docker-compose up -d
 ```shell
 docker-compose run --rm front sh -c "yarn install && yarn encore production"
 ```
-для настройки symfony проекта заходим в контецнер php и выполняем настройку
+для настройки symfony проекта заходим в контейнер php и выполняем настройку
 ```shell
 docker-compose exec php bash
 ```
