@@ -39,7 +39,6 @@ final class Version20221017093945 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('DROP TABLE micro_post');
         $this->addSql('DROP TABLE messenger_messages');
     }
