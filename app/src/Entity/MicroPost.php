@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MicroPostRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=MicroPostRepository::class)
@@ -13,7 +14,8 @@ class MicroPost
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="string", unique=true, nullable=false)
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Column(type="uuid", unique=true, nullable=false)
      */
     private $uuid;
 
@@ -27,12 +29,12 @@ class MicroPost
      */
     private $date;
 
-    public function __construct()
+    public function __construct(?string $uuid = null)
     {
-        $this->uuid = Uuid::v4()->toRfc4122();
+        $this->uuid = $uuid ? Uuid::fromString($uuid) : Uuid::v4();
     }
 
-    public function getUuid(): ?string
+    public function getUuid(): UuidV4
     {
         return $this->uuid;
     }
