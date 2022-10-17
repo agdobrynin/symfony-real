@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Links to sub project:</h3>
+    <ul>
+        <li>
+            <strong>Simple service - WelcomeMessageInterface</strong>
+            <ul>
+                <li><a href="{{ path("controller_main_json") }}">Get response as json</a> </li>
+                <li><a href="{{ path("controller_main_html", {name: "Guest"}) }}">Get response as html page</a> </li>
+            </ul>
+        </li>
+        <li>
+            <strong>Simple blog use post store in web session (memory)</strong>
+            <ul>
+                <li><a href="{{ path("blog_list") }}">Main page of simple blog</a></li>
+            </ul>
+        </li>
+    </ul>
+{% endblock %}
