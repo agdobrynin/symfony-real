@@ -14,7 +14,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
- * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="There is already an account with this email 🔒"
+ * )
+ * @UniqueEntity(
+ *     fields={"nickName"},
+ *     message="This nickname {{ value }} is already exist."
+ * )
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -28,7 +35,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=50, unique=true)
      * @Assert\NotBlank
-     * @Assert\Length(min=10, max=50)
+     * @Assert\Length(min=5, max=50)
+     * @Assert\Regex(
+     *     "/^([a-z_\-]+)$/",
+     *     message="Not available symbols in nickname"
+     * )
      */
     private $nickName;
 
@@ -42,6 +53,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", unique=true, length=100)
+     * @Assert\NotBlank()
+     * @Assert\Email()
+     */
+    private $email;
 
     public function __construct(?string $uuid = null)
     {
@@ -72,7 +91,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->nickName;
+        return (string)$this->nickName;
     }
 
     /**
@@ -132,5 +151,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUsername(): string
     {
         return $this->nickName;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
     }
 }

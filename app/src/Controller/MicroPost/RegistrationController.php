@@ -31,24 +31,21 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
-
+            $passwordPlain = $form->get('password')->getData();
+            $passwordHash = $userPasswordHasher->hashPassword($user, $passwordPlain);
+            $user->setPassword($passwordHash);
+            $user->setRoles(['ROLE_USER']);
             $entityManager->persist($user);
             $entityManager->flush();
             $message = $welcomeMessage->welcomeMessage($user->getUserIdentifier());
 
-            $this->addFlash(FlashType::SUCCESS, $message);
+            $this->addFlash(FlashType::SUCCESS, $message->message);
 
             return $this->redirectToRoute('micro_post_list');
         }
 
-        return $this->render('micro-post/register.html.twig', [
-            'registrationForm' => $form->createView(),
+        return $this->renderForm('micro-post/register.html.twig', [
+            'registrationForm' => $form,
         ]);
     }
 }
