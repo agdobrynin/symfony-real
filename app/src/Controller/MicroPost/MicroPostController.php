@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\MicroPost;
 
 use App\Entity\MicroPost;
 use App\Helper\FlashType;
