@@ -1,0 +1,12 @@
+{% extends "micro-post/index.html.twig" %}
+
+{% block title %}{{ post.getContent|slice(0, 50) }}...{% endblock %}
+
+{% block microPostContent %}
+    <div class="card mb-5">
+        <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-primary">@username at {{ post.getDate|date }}</h6>
+            <p class="card-text">{{ post.getContent }}</p>
+        </div>
+    </div>
+{% endblock %}
