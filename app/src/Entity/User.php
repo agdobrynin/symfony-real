@@ -19,8 +19,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     message="There is already an account with this email 🔒"
  * )
  * @UniqueEntity(
- *     fields={"nickName"},
- *     message="This nickname {{ value }} is already exist."
+ *     fields={"login"},
+ *     message="Login {{ value }} is already exist."
+ * )
+ * @UniqueEntity(
+ *     fields={"nick"},
+ *     message="Nickname {{ value }} is already taken by someone."
  * )
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -33,15 +37,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $uuid;
 
     /**
-     * @ORM\Column(type="string", length=50, unique=true)
+     * @ORM\Column(type="string", length=50, unique=true, nullable=false)
      * @Assert\NotBlank
      * @Assert\Length(min=5, max=50)
      * @Assert\Regex(
      *     "/^([a-z_\-]+)$/",
-     *     message="Not available symbols in nickname"
+     *     message="Not available symbols in login"
      * )
      */
-    private $nickName;
+    private $login;
 
     /**
      * @ORM\Column(type="json")
@@ -56,11 +60,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var string
-     * @ORM\Column(type="string", unique=true, length=100)
+     * @ORM\Column(type="string", unique=true, nullable=false, length=100)
      * @Assert\NotBlank()
      * @Assert\Email()
      */
     private $email;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", unique=true, nullable=false, length=255)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=5, max=255)
+     */
+    private $nick;
 
     public function __construct(?string $uuid = null)
     {
@@ -72,14 +84,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->uuid;
     }
 
-    public function getNickName(): string
+    public function getLogin(): string
     {
-        return $this->nickName;
+        return $this->login;
     }
 
-    public function setNickName(string $nickName): self
+    public function setLogin(string $login): self
     {
-        $this->nickName = $nickName;
+        $this->login = $login;
 
         return $this;
     }
@@ -91,7 +103,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string)$this->nickName;
+        return (string)$this->login;
     }
 
     /**
@@ -150,7 +162,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUsername(): string
     {
-        return $this->nickName;
+        return $this->login;
     }
 
     public function getEmail(): string
@@ -161,6 +173,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getNick(): string
+    {
+        return $this->nick;
+    }
+
+    public function setNick(string $nick): self
+    {
+        $this->nick = $nick;
 
         return $this;
     }

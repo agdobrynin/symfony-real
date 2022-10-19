@@ -18,9 +18,12 @@ class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('nickName', TextType::class, [
-            'help' => 'Nick name must be contain a-z-_ symbols',
+        $builder->add('login', TextType::class, [
+            'help' => 'Login must be contain a-z-_ symbols',
         ])
+            ->add('nick', TextType::class, [
+                'help' => 'Nickname will be display with yours posts',
+            ])
             ->add('email', EmailType::class)
             ->add('password', RepeatedType::class, [
                     'type' => PasswordType::class,
