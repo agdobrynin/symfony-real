@@ -41,7 +41,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\NotBlank
      * @Assert\Length(min=5, max=50)
      * @Assert\Regex(
-     *     "/^([a-z_\-]+)$/",
+     *     "/^([a-z_\-\.]+)$/",
      *     message="Not available symbols in login"
      * )
      */

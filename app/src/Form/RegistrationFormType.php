@@ -19,7 +19,7 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('login', TextType::class, [
-            'help' => 'Login must be contain a-z-_ symbols',
+            'help' => 'Login must be contain "a-z-_." symbols without spaces',
         ])
             ->add('nick', TextType::class, [
                 'help' => 'Nickname will be display with yours posts',
