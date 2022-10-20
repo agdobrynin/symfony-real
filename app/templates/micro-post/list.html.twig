@@ -6,12 +6,15 @@
     {% for post in posts %}
         <div class="card mb-5">
             <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">Post from user @{{ post.user.nick }} at {{ post.getDate|date }}</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Post from user @{{ post.user.nick|default("anonymous") }}
+                    at {{ post.getDate|date }}</h6>
                 <p class="card-text">{{ post.getContent }}</p>
                 <p>
                     <a class="btn btn-primary" href="{{ url("micro_post_view", {uuid: post.getUuid}) }}">view more</a>
-                    <a class="btn btn-secondary" href="{{ url("micro_post_edit", {uuid: post.getUuid}) }}">edit</a>
-                    <a class="btn btn-danger" href="{{ url("micro_post_del", {uuid: post.getUuid}) }}">delete</a>
+                    {% if is_granted('EDIT_DEL_OWNER_OR_ADMIN', post) %}
+                        <a class="btn btn-secondary" href="{{ url("micro_post_edit", {uuid: post.getUuid}) }}">edit</a>
+                        <a class="btn btn-danger" href="{{ url("micro_post_del", {uuid: post.getUuid}) }}">delete</a>
+                    {% endif %}
                 </p>
             </div>
         </div>

@@ -7,7 +7,9 @@ namespace App\Controller\MicroPost;
 use App\Entity\MicroPost;
 use App\Helper\FlashType;
 use App\Repository\MicroPostRepository;
+use App\Security\Voter\MicroPostVoter;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -53,10 +55,15 @@ class MicroPostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var MicroPost $microPost */
             $microPost = $form->getData();
+            $microPost->setUser($this->getUser());
+
             $this->em->persist($microPost);
             $this->em->flush();
-            $this->addFlash(FlashType::SUCCESS, 'The micro post was added');
+
+            $message = $this->flashMessageWithPartOfContent('The micro post was added', $microPost);
+            $this->addFlash(FlashType::SUCCESS, $message);
 
             return $this->redirectToRoute('micro_post_list');
         }
@@ -66,6 +73,7 @@ class MicroPostController extends AbstractController
 
     /**
      * @Route("/edit/{uuid}", name="micro_post_edit", methods={"get", "post"})
+     * @IsGranted(MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN, subject="microPost")
      */
     public function edit(Request $request, ?MicroPost $microPost = null)
     {
@@ -81,7 +89,9 @@ class MicroPostController extends AbstractController
             $microPost = $form->getData();
             $this->em->persist($microPost);
             $this->em->flush();
-            $this->addFlash(FlashType::INFO, 'The micro post was updated');
+
+            $message = $this->flashMessageWithPartOfContent('The micro post was updated', $microPost);
+            $this->addFlash(FlashType::INFO, $message);
 
             return $this->redirectToRoute('micro_post_list');
         }
@@ -98,8 +108,12 @@ class MicroPostController extends AbstractController
             throw new NotFoundHttpException('Micro post not found for deleting');
         }
 
+        $this->denyAccessUnlessGranted(MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN, $microPost);
+
         $this->microPostRepository->remove($microPost, true);
-        $this->addFlash(FlashType::SUCCESS, 'The micro post was deleted');
+
+        $message = $this->flashMessageWithPartOfContent('The micro post was deleted', $microPost);
+        $this->addFlash(FlashType::SUCCESS, $message);
 
         return $this->redirectToRoute('micro_post_list');
     }
@@ -122,5 +136,10 @@ class MicroPostController extends AbstractController
             ->add('content', TextareaType::class, ['attr' => ['rows' => 5]])
             ->add('save', SubmitType::class, ['label' => 'Create post'])
             ->getForm();
+    }
+
+    private function flashMessageWithPartOfContent(string $mainPart, MicroPost $microPost): string
+    {
+        return sprintf('%s. [%s...]', $mainPart, mb_substr($microPost->getContent(), 0, 75));
     }
 }
