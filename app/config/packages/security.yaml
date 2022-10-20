@@ -40,7 +40,7 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-        # - { path: ^/micro-post, roles: ROLE_USER }
+        - { path: ^/micro-post/(add|edit), roles: ROLE_USER }
 
 when@test:
     security:
