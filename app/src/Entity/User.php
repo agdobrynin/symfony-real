@@ -200,7 +200,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPosts(): Collection
+    public function getPosts(): ArrayCollection
     {
         return $this->posts;
     }
