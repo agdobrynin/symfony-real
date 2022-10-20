@@ -6,7 +6,7 @@
     {% for post in posts %}
         <div class="card mb-5">
             <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">Post from user @username at {{ post.getDate|date }}</h6>
+                <h6 class="card-subtitle mb-2 text-muted">Post from user @{{ post.user.nick }} at {{ post.getDate|date }}</h6>
                 <p class="card-text">{{ post.getContent }}</p>
                 <p>
                     <a class="btn btn-primary" href="{{ url("micro_post_view", {uuid: post.getUuid}) }}">view more</a>
