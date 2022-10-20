@@ -10,9 +10,11 @@
 
             <ul class="nav nav-pills">
                 <li class="nav-item"><a href="{{ path("micro_post_add") }}" class="nav-link">New post</a></li>
-                <li class="nav-item"><a href="{{ path("micro_post_register") }}" class="nav-link">Sign up</a></li>
-                <li class="nav-item"><a href="{{ path("micro_post_login") }}" class="nav-link">Sign in</a></li>
-                {% if is_granted('ROLE_USER') %}
+                {% if is_granted('IS_AUTHENTICATED_FULLY') == false %}
+                    <li class="nav-item"><a href="{{ path("micro_post_register") }}" class="nav-link">Sign up</a></li>
+                    <li class="nav-item"><a href="{{ path("micro_post_login") }}" class="nav-link">Sign in</a></li>
+                {% endif %}
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item"><a href="{{ path("micro_post_logout") }}" class="nav-link">Logout</a></li>
                 {% endif %}
             </ul>
