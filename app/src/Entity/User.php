@@ -29,6 +29,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_DEFAULT = [self::ROLE_USER];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
@@ -74,9 +78,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $nick;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\MicroPost", mappedBy="user")
+     */
+    private $posts;
+
     public function __construct(?string $uuid = null)
     {
         $this->uuid = $uuid ? Uuid::fromString($uuid) : Uuid::v4();
+        $this->posts = new ArrayCollection();
     }
 
     public function getUuid(): UuidV4
@@ -113,7 +123,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = self::ROLE_USER;
 
         return array_unique($roles);
     }
@@ -187,5 +197,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->nick = $nick;
 
         return $this;
+    }
+
+    public function getPosts(): Collection
+    {
+        return $this->posts;
     }
 }

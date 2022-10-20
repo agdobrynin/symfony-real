@@ -34,7 +34,7 @@ class RegistrationController extends AbstractController
             $passwordPlain = $form->get('password')->getData();
             $passwordHash = $userPasswordHasher->hashPassword($user, $passwordPlain);
             $user->setPassword($passwordHash);
-            $user->setRoles(['ROLE_USER']);
+            $user->setRoles(User::ROLE_DEFAULT);
             $entityManager->persist($user);
             $entityManager->flush();
             $message = $welcomeMessage->welcomeMessage($user->getNick());

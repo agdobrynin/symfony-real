@@ -45,7 +45,7 @@ class AppFixtures extends Fixture
             ->setLogin('dev.php')
             ->setNick('🐘 Php developer')
             ->setPassword($this->userPasswordHasher->hashPassword($user, 'secret123'))
-            ->setRoles(['ROLE_USER']);
+            ->setRoles(User::ROLE_DEFAULT);
 
         $manager->persist($user);
         $manager->flush();

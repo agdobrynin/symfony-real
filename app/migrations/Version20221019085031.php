@@ -26,7 +26,6 @@ final class Version20221019085031 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('DROP INDEX UNIQ_8D93D649290B2F37');
     }
 }
