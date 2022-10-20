@@ -20,18 +20,19 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $this->loadMicroPost($manager);
         $this->loadUsers($manager);
+        $this->loadMicroPost($manager);
     }
 
     private function loadMicroPost(ObjectManager $manager): void
     {
         $faker = Factory::create('ru_RU');
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $microPost = new MicroPost();
             $microPost->setDate($faker->dateTimeBetween('-60 day', 'now'))
-                ->setContent($faker->realTextBetween(120, 250));
+                ->setContent($faker->realTextBetween(120, 250))
+                ->setUser($this->getReference('dev.php'));
             $manager->persist($microPost);
         }
 
@@ -46,7 +47,7 @@ class AppFixtures extends Fixture
             ->setNick('🐘 Php developer')
             ->setPassword($this->userPasswordHasher->hashPassword($user, 'secret123'))
             ->setRoles(User::ROLE_DEFAULT);
-
+        $this->addReference('dev.php', $user);
         $manager->persist($user);
         $manager->flush();
     }
