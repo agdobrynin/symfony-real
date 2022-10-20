@@ -31,8 +31,11 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 5; $i++) {
             $microPost = new MicroPost();
             $microPost->setDate($faker->dateTimeBetween('-60 day', 'now'))
-                ->setContent($faker->realTextBetween(120, 250))
-                ->setUser($this->getReference('dev.php'));
+                ->setContent($faker->realTextBetween(120, 250));
+
+            $referenceUser = $this->getReference($i === 0 ? 'admin' : 'dev.php');
+            $microPost->setUser($referenceUser);
+
             $manager->persist($microPost);
         }
 
@@ -41,14 +44,29 @@ class AppFixtures extends Fixture
 
     private function loadUsers(ObjectManager $manager): void
     {
-        $user = new User();
-        $user->setEmail('dev@kaspi.ru')
+        $user = (new User())
+            ->setEmail('dev@kaspi.ru')
             ->setLogin('dev.php')
             ->setNick('🐘 Php developer')
-            ->setPassword($this->userPasswordHasher->hashPassword($user, 'secret123'))
             ->setRoles(User::ROLE_DEFAULT);
+        $user->setPassword($this->getPasswordHash($user, 'secret123'));
         $this->addReference('dev.php', $user);
         $manager->persist($user);
+
+        $userAdmin = (new User())
+            ->setEmail('admin@kaspi.ru')
+            ->setLogin('admin')
+            ->setNick('🔮 Administrator')
+            ->setRoles([User::ROLE_ADMIN]);
+        $userAdmin->setPassword($this->getPasswordHash($userAdmin, 'secret321'));
+        $this->addReference('admin', $userAdmin);
+        $manager->persist($userAdmin);
+
         $manager->flush();
+    }
+
+    private function getPasswordHash(User $user, string $password): string
+    {
+        return $this->userPasswordHasher->hashPassword($user, $password);
     }
 }
