@@ -73,4 +73,16 @@ class MicroPost
 
         return $this;
     }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user = null): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
 }
