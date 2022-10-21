@@ -81,14 +81,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $nick;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\MicroPost", mappedBy="user")
+     * @ORM\OneToMany(targetEntity=MicroPost::class, mappedBy="user")
      */
     private $posts;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="followers")
+     */
+    private $following;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="following")
+     * @ORM\JoinTable(
+     *     name="user_following",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="follower_user_uuid", referencedColumnName="uuid")
+     *     }
+     * )
+     */
+    private $followers;
 
     public function __construct(?string $uuid = null)
     {
         $this->uuid = $uuid ? Uuid::fromString($uuid) : Uuid::v4();
         $this->posts = new ArrayCollection();
+        $this->following = new ArrayCollection();
+        $this->followers = new ArrayCollection();
     }
 
     public function getUuid(): UuidV4
@@ -204,4 +225,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->posts;
     }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getFollowing(): Collection
+    {
+        return $this->following;
+    }
+
 }

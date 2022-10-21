@@ -152,7 +152,7 @@ class MicroPostController extends AbstractController
 
         $posts = $user->getPosts();
 
-        return $this->render('micro-post/list.html.twig', [
+        return $this->render('micro-post/user-posts.html.twig', [
             'posts' => $posts,
             'user' => $user,
         ]);

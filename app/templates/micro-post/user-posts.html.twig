@@ -1,0 +1,32 @@
+{% extends 'micro-post/index.html.twig' %}
+
+{% block title %}Micro post from @{{ user.nick }} {% endblock %}
+
+{% block microPostContent %}
+    <div class="card mb-5">
+        <div class="card-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col"><h6 class="display-6">@{{ user.nick }}</h6></div>
+                    <div class="col text-end"><a class="btn btn-secondary" href="{{ path('micro_post_list') }}">All
+                            posts</a></div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            Followers:
+            {% for follower in user.followers %}
+                <a  class="badge rounded-pill text-bg-light"
+                    href="{{ path('micro_post_by_user', {nick: follower.nick}) }}"
+                >@{{ follower.nick }}</a>
+            {% else %}
+                Not followers ⌛
+            {% endfor %}
+        </div>
+    </div>
+
+    {% for post in posts %}
+        {{ include ("micro-post/post-item.html.twig", {post: post}) }}
+    {% endfor %}
+    <div class="mb-5">&nbsp;</div>
+{% endblock %}
