@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\MicroPost;
 
 use App\Entity\MicroPost;
+use App\Entity\User;
 use App\Helper\FlashType;
 use App\Repository\MicroPostRepository;
 use App\Security\Voter\MicroPostVoter;
@@ -139,6 +140,23 @@ class MicroPostController extends AbstractController
         }
 
         throw new NotFoundHttpException('Micro post not found');
+    }
+
+    /**
+     * @Route("/user/{nick}", name="micro_post_by_user")
+     */
+    public function getPostByUser(?User $user = null): Response
+    {
+        if (null === $user) {
+            throw new NotFoundHttpException('User not found');
+        }
+
+        $posts = $user->getPosts();
+
+        return $this->render('micro-post/list.html.twig', [
+            'posts' => $posts,
+            'user' => $user,
+        ]);
     }
 
     private function formMicroPost(MicroPost $microPost): FormInterface

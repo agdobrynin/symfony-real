@@ -3,11 +3,25 @@
 {% block title %}Micro post main page{% endblock %}
 
 {% block microPostContent %}
+    {% if app.request.attributes.get('_route') == 'micro_post_by_user' %}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('micro_post_list') }}">All posts</a></li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Post from <strong>@ {{ user.nick }}</strong>
+                </li>
+            </ol>
+        </nav>
+    {% endif %}
+
     {% for post in posts %}
         <div class="card mb-5">
             <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">Post from user @{{ post.user.nick|default("anonymous") }}
-                    at {{ post.getDate|date }}</h6>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    Post from user
+                    <a href="{{ path("micro_post_by_user", {"nick": post.user.nick}) }}">@{{ post.user.nick }}</a>
+                    at {{ post.getDate|date }}
+                </h6>
                 <p class="card-text">{{ post.getContent }}</p>
                 <p>
                     <a class="btn btn-primary" href="{{ url("micro_post_view", {uuid: post.getUuid}) }}">view more</a>
