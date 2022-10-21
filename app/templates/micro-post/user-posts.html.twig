@@ -20,7 +20,17 @@
                     href="{{ path('micro_post_by_user', {nick: follower.nick}) }}"
                 >@{{ follower.nick }}</a>
             {% else %}
-                Not followers ⌛
+                is empty ⌛
+            {% endfor %}
+        </div>
+        <div class="card-body">
+            Following:
+            {% for following in user.following %}
+                <a  class="badge rounded-pill text-bg-light"
+                    href="{{ path('micro_post_by_user', {nick: following.nick}) }}"
+                >@{{ following.nick }}</a>
+            {% else %}
+                is empty ⌛
             {% endfor %}
         </div>
     </div>
