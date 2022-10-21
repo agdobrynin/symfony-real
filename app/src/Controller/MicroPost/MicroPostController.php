@@ -73,7 +73,11 @@ class MicroPostController extends AbstractController
 
     /**
      * @Route("/edit/{uuid}", name="micro_post_edit", methods={"get", "post"})
-     * @IsGranted(MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN, subject="microPost")
+     * @IsGranted(
+     *     MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN,
+     *     subject="microPost",
+     *     message="Only the owner can edit a post."
+     * )
      */
     public function edit(Request $request, ?MicroPost $microPost = null)
     {
@@ -108,7 +112,11 @@ class MicroPostController extends AbstractController
             throw new NotFoundHttpException('Micro post not found for deleting');
         }
 
-        $this->denyAccessUnlessGranted(MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN, $microPost);
+        $this->denyAccessUnlessGranted(
+            MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN,
+            $microPost,
+            'Only the owner can delete a post'
+        );
 
         $this->microPostRepository->remove($microPost, true);
 
