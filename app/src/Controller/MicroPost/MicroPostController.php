@@ -46,6 +46,7 @@ class MicroPostController extends AbstractController
 
     /**
      * @Route("/add", name="micro_post_add", methods={"get", "post"})
+     * @IsGranted("is_granted(User::ROLE_USER)")
      */
     public function add(Request $request)
     {
@@ -57,6 +58,7 @@ class MicroPostController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var MicroPost $microPost */
             $microPost = $form->getData();
+            // Or inject TokenStorageInterface $tokenStorage and use it for fetch user
             $microPost->setUser($this->getUser());
 
             $this->em->persist($microPost);
@@ -105,6 +107,7 @@ class MicroPostController extends AbstractController
 
     /**
      * @Route("/del/{uuid}", name="micro_post_del", methods={"get"})
+     * Granted access control in file security.yaml in section "access_control"
      */
     public function del(?MicroPost $microPost = null): RedirectResponse
     {

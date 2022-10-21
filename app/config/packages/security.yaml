@@ -40,7 +40,7 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/micro-post/(add|edit|del), roles: ROLE_USER }
+         - { path: ^/micro-post/(edit|del), roles: ROLE_USER }
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
 
