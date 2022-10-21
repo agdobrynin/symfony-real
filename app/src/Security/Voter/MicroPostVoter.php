@@ -5,12 +5,20 @@ namespace App\Security\Voter;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class MicroPostVoter extends Voter
 {
     public const EDIT_DEL_OWNER_OR_ADMIN = 'EDIT_DEL_OWNER_OR_ADMIN';
+
+    private $accessDecisionManager;
+
+    public function __construct(AccessDecisionManagerInterface $accessDecisionManager)
+    {
+        $this->accessDecisionManager = $accessDecisionManager;
+    }
 
     protected function supports(string $attribute, $subject): bool
     {
@@ -27,6 +35,10 @@ class MicroPostVoter extends Voter
      */
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
+        if ($this->accessDecisionManager->decide($token, [User::ROLE_ADMIN])) {
+            return true;
+        }
+
         /** @var User $user */
         $user = $token->getUser();
         // if the user is anonymous, do not grant access
@@ -35,7 +47,6 @@ class MicroPostVoter extends Voter
         }
 
         // ... (check conditions and return true to grant permission) ...
-        return ($subject->getUser() && $subject->getUser()->getUuid() === $user->getUuid())
-            || \in_array(User::ROLE_ADMIN, $user->getRoles());
+        return $subject->getUser() && $subject->getUser()->getUuid() === $user->getUuid();
     }
 }
