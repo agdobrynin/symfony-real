@@ -31,7 +31,7 @@ class MicroPost
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
-     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
+     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid", nullable=false)
      */
     private $user;
 
