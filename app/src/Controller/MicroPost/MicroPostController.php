@@ -47,7 +47,7 @@ class MicroPostController extends AbstractController
 
     /**
      * @Route("/add", name="micro_post_add", methods={"get", "post"})
-     * @IsGranted("is_granted(User::ROLE_USER)")
+     * @IsGranted(User::ROLE_USER)
      */
     public function add(Request $request)
     {
