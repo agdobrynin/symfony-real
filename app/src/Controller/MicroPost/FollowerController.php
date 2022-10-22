@@ -32,7 +32,7 @@ class FollowerController extends AbstractController
      */
     public function follow(User $followUser): RedirectResponse
     {
-        if ($followUser !== $this->currentUser) {
+        if ($followUser->getUuid() !== $this->currentUser->getUuid()) {
             $this->currentUser->getFollowing()->add($followUser);
             $this->entityManager->flush();
         }
@@ -45,7 +45,7 @@ class FollowerController extends AbstractController
      */
     public function unfollow(User $unfollowUser): RedirectResponse
     {
-        if ($unfollowUser !== $this->currentUser) {
+        if ($unfollowUser->getUuid() !== $this->currentUser->getUuid()) {
             $this->currentUser->getFollowing()->removeElement($unfollowUser);
             $this->entityManager->flush();
         }
