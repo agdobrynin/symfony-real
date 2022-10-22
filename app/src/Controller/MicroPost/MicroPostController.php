@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Controller\MicroPost;
@@ -8,6 +7,7 @@ use App\Entity\MicroPost;
 use App\Entity\User;
 use App\Helper\FlashType;
 use App\Repository\MicroPostRepository;
+use App\Repository\UserRepository;
 use App\Security\Voter\MicroPostVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -28,11 +28,16 @@ class MicroPostController extends AbstractController
 {
     private $microPostRepository;
     private $em;
+    private $userRepository;
 
-    public function __construct(MicroPostRepository $microPostRepository, EntityManagerInterface $em)
+    public function __construct(
+        MicroPostRepository    $microPostRepository,
+        EntityManagerInterface $em,
+        UserRepository         $userRepository)
     {
         $this->microPostRepository = $microPostRepository;
         $this->em = $em;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -40,9 +45,21 @@ class MicroPostController extends AbstractController
      */
     public function index(): Response
     {
-        $posts = $this->microPostRepository->findBy([], ['date' => 'desc']);
+        /** @var User|null $currentUser */
+        $currentUser = $this->getUser();
+        $followUser = [];
 
-        return $this->render('micro-post/list.html.twig', ['posts' => $posts]);
+        if ($this->getUser() instanceof User) {
+            $posts = $this->microPostRepository->findAllByUsers($currentUser->getFollowing());
+
+            if (0 === count($posts)) {
+                $followUser = $this->userRepository->getUsersWhoHaveMoreThen5Posts();
+            }
+        } else {
+            $posts = $this->microPostRepository->findBy([], ['date' => 'desc']);
+        }
+
+        return $this->render('micro-post/list.html.twig', compact('posts', 'followUser'));
     }
 
     /**

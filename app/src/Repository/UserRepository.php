@@ -57,6 +57,21 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->add($user, true);
     }
 
+    /**
+     * @return User[]
+     */
+    public function getUsersWhoHaveMoreThen5Posts(): array
+    {
+        $query = $this->createQueryBuilder('u')
+            ->select('u')
+            ->innerJoin('u.posts', 'mp')
+            ->groupBy('u.uuid')
+            ->having('count(mp) > 5')
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

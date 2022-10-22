@@ -3,8 +3,23 @@
 {% block title %}Micro post main page{% endblock %}
 
 {% block microPostContent %}
-    {% for post in posts %}
-        {{ include ("micro-post/post-item.html.twig", {post: post}) }}
-    {% endfor %}
+    {% if posts %}
+        {% for post in posts %}
+            {{ include ("micro-post/post-item.html.twig", {post: post}) }}
+        {% endfor %}
+    {% else %}
+        <p>Your not have the following user, yet!</p>
+        {% if followUser %}
+            <p>You might find these users interesting:</p>
+            <ul class="list-group list-group-horizontal">
+                {% for blogger in followUser %}
+                    <a href="{{ path('micro_post_by_user', {nick: blogger.nick}) }}"
+                       class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ blogger.nick }} <sup class="m-3">{{ blogger.posts|length }} posts</sup>
+                    </a>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
     <div class="mb-5">&nbsp;</div>
 {% endblock %}

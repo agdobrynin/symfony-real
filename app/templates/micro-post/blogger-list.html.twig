@@ -1,0 +1,18 @@
+{% extends 'micro-post/index.html.twig' %}
+
+{% block title %}List of bloggers{% endblock %}
+
+{% block microPostContent %}
+    <ul class="list-group list-group-horizontal">
+        {% for blogger in bloggers %}
+            <a href="{{ path('micro_post_by_user', {nick: blogger.nick}) }}"
+               class="list-group-item list-group-item-action">
+                {{ blogger.nick }}
+                <sup class="m-3">{{ blogger.posts|length }} posts</sup>
+            </a>
+        {% else %}
+            <li>Bloggers not found</li>
+        {% endfor %}
+    </ul>
+    <div class="mb-5">&nbsp;</div>
+{% endblock %}
