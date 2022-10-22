@@ -53,7 +53,7 @@ class MicroPostController extends AbstractController
             $posts = $this->microPostRepository->findAllByUsers($currentUser->getFollowing());
 
             if (0 === count($posts)) {
-                $followUser = $this->userRepository->getUsersWhoHaveMoreThen5Posts();
+                $followUser = $this->userRepository->getUsersWhoHaveMoreThen5PostsExcludeUser($currentUser);
             }
         } else {
             $posts = $this->microPostRepository->findBy([], ['date' => 'desc']);

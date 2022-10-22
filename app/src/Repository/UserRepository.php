@@ -5,6 +5,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -62,14 +63,27 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function getUsersWhoHaveMoreThen5Posts(): array
     {
-        $query = $this->createQueryBuilder('u')
+        return $this->getUsersWhoHaveMoreThen5PostsQuery()
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getUsersWhoHaveMoreThen5PostsExcludeUser(User $user): array
+    {
+        return $this->getUsersWhoHaveMoreThen5PostsQuery()
+            ->andHaving('u != :user')
+            ->setParameter(':user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    private function getUsersWhoHaveMoreThen5PostsQuery(): QueryBuilder
+    {
+        return $this->createQueryBuilder('u')
             ->select('u')
             ->innerJoin('u.posts', 'mp')
             ->groupBy('u.uuid')
-            ->having('count(mp) > 5')
-            ->getQuery();
-
-        return $query->getResult();
+            ->having('count(mp) > 5');
     }
 
 //    /**
