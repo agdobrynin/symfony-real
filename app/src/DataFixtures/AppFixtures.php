@@ -57,7 +57,8 @@ class AppFixtures extends Fixture
             $user = (new User())
                 ->setEmail($faker->email)
                 ->setLogin($fixtureUser->login)
-                ->setNick($fixtureUser->icon . $faker->userName);
+                ->setNick($faker->name)
+                ->setEmoji($fixtureUser->emoji);
             $role = $fixtureUser->isAdmin ? User::ROLE_ADMIN : User::ROLE_USER;
             $user->setRoles([$role]);
             $user->setPassword($this->getPasswordHash($user));

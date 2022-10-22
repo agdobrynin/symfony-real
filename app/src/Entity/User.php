@@ -7,7 +7,6 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -81,6 +80,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\Length(min=5, max=255)
      */
     private $nick;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true, length=1)
+     * @Assert\Regex(
+     *     "(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])",
+     *     message="This filed can content emoji symbols only"
+     * )
+     */
+    private $emoji;
 
     /**
      * @ORM\OneToMany(targetEntity=MicroPost::class, mappedBy="user")
@@ -220,7 +229,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPosts(): PersistentCollection
+    public function getPosts(): Collection
     {
         return $this->posts;
     }
@@ -242,5 +251,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->getFollowing()->add($user);
+    }
+
+    public function getEmoji(): string
+    {
+        return $this->emoji ?: '👱‍';
+    }
+
+    public function setEmoji(string $emoji): self
+    {
+        $this->emoji = $emoji;
+
+        return $this;
     }
 }

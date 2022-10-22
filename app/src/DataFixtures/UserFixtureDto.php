@@ -5,13 +5,13 @@ namespace App\DataFixtures;
 class UserFixtureDto
 {
     public $login;
-    public $icon;
+    public $emoji;
     public $isAdmin;
 
-    public function __construct(string $login, string $icon = '🔔', bool $isAdmin = false)
+    public function __construct(string $login, string $emoji = '🔔', bool $isAdmin = false)
     {
         $this->login = $login;
-        $this->icon = $icon;
+        $this->emoji = $emoji;
         $this->isAdmin = $isAdmin;
     }
 }
