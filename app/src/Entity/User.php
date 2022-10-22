@@ -5,8 +5,8 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -219,28 +219,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|MicroPost[]
-     */
-    public function getPosts(): Collection
+    public function getPosts(): PersistentCollection
     {
         return $this->posts;
     }
 
-    /**
-     * @return Collection|User[]
-     */
-    public function getFollowers(): Collection
+    public function getFollowers(): PersistentCollection
     {
         return $this->followers;
     }
 
-    /**
-     * @return Collection|User[]
-     */
-    public function getFollowing(): Collection
+    public function getFollowing(): PersistentCollection
     {
         return $this->following;
     }
 
+    public function follow(User $user): void
+    {
+        if ($this->getFollowing()->contains($user)) {
+            return;
+        }
+
+        $this->getFollowing()->add($user);
+    }
 }
