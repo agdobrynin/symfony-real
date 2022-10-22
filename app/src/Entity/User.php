@@ -87,23 +87,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $posts;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="followers")
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="following")
      */
-    private $following;
+    private $followers;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="following")
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="followers")
      * @ORM\JoinTable(
      *     name="user_following",
      *     joinColumns={
      *          @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
      *     },
      *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="follower_user_uuid", referencedColumnName="uuid")
+     *          @ORM\JoinColumn(name="following_user_uuid", referencedColumnName="uuid")
      *     }
      * )
      */
-    private $followers;
+    private $following;
 
     public function __construct(?string $uuid = null)
     {
