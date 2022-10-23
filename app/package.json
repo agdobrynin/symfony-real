@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.19.3",
-    "@babel/preset-env": "^7.19.4"
+    "@babel/preset-env": "^7.19.4",
+    "picmo": "^5.7.1"
   }
 }
