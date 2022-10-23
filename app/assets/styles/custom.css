@@ -15,3 +15,10 @@ body {
     color: #fff;
     margin: 0 auto;
 }
+#emoji-toolbar {
+    display: none;
+    position: absolute;
+}
+.emoji-input input {
+    cursor: pointer;
+}
