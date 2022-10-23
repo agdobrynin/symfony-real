@@ -84,10 +84,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string
      * @ORM\Column(type="string", nullable=true, length=1)
-     * @Assert\Regex(
-     *     "(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])",
-     *     message="This filed can content emoji symbols only"
-     * )
+     * @Assert\NotBlank(allowNull=true)
+     * @Assert\Length(min=1, max=1)
      */
     private $emoji;
 
@@ -258,8 +256,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->emoji ?: '👱‍';
     }
 
-    public function setEmoji(string $emoji): self
+    public function setEmoji(?string $emoji = null): self
     {
+//        if (null !== $emoji) {
+//            preg_match("/^(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])$/", $emoji, $r);
+//            dd($r);
+//        }
+
         $this->emoji = $emoji;
 
         return $this;

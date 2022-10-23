@@ -24,6 +24,10 @@ class RegistrationFormType extends AbstractType
             ->add('nick', TextType::class, [
                 'help' => 'Nickname will be display with yours posts',
             ])
+            ->add('emoji', TextType::class, [
+                'help' => 'For input emoji symbol use on keyboard keys "WIN"+"." (command key and dot key)',
+                'attr' => ['maxlength' => 2],
+            ])
             ->add('email', EmailType::class)
             ->add('password', RepeatedType::class, [
                     'type' => PasswordType::class,

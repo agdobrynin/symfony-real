@@ -15,7 +15,7 @@
                 {% for blogger in followUser %}
                     <a href="{{ path('micro_post_by_user', {nick: blogger.nick}) }}"
                        class="list-group-item d-flex justify-content-between align-items-center">
-                        @{{ blogger.nick }} <sup class="m-3">{{ blogger.posts|length }} posts</sup>
+                        {{ blogger.emoji }}@{{ blogger.nick }} <sup class="m-3">{{ blogger.posts|length }} posts</sup>
                     </a>
                 {% endfor %}
             </ul>
