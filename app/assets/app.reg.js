@@ -15,11 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const picker = createPicker({
             rootElement,
-            showSearch: false,
-            showCategoryTabs: false,
+            showSearch: true,
+            showCategoryTabs: true,
             emojiSize: "1.3em",
             showPreview: false,
             showRecents: false,
+            showVariants: false,
         });
 
         picker.addEventListener('emoji:select', event => {
