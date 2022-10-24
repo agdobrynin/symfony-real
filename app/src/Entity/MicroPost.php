@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\MicroPostRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV4;
@@ -38,6 +40,19 @@ class MicroPost
     private $user;
 
     /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="postsLiked")
+     * @ORM\JoinTable(name="post_likes",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="post_uuid", referencedColumnName="uuid")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
+     *     }
+     * )
+     */
+    private $likedBy;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $date;
@@ -45,6 +60,7 @@ class MicroPost
     public function __construct(?string $uuid = null)
     {
         $this->uuid = $uuid ? Uuid::fromString($uuid) : Uuid::v4();
+        $this->likedBy = new ArrayCollection();
     }
 
     public function getUuid(): UuidV4
@@ -92,6 +108,20 @@ class MicroPost
     public function setUser(?User $user = null): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getLikedBy(): Collection
+    {
+        return $this->likedBy;
+    }
+
+    public function like(User $user): self
+    {
+        if (!$this->likedBy->contains($user)) {
+            $this->likedBy->add($user);
+        }
 
         return $this;
     }

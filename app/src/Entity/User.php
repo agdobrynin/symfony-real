@@ -113,12 +113,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $following;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=MicroPost::class, mappedBy="likedBy")
+     */
+    private $postsLiked;
+
     public function __construct(?string $uuid = null)
     {
         $this->uuid = $uuid ? Uuid::fromString($uuid) : Uuid::v4();
         $this->posts = new ArrayCollection();
         $this->following = new ArrayCollection();
         $this->followers = new ArrayCollection();
+        $this->postsLiked = new ArrayCollection();
     }
 
     public function getUuid(): UuidV4
@@ -258,13 +264,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setEmoji(?string $emoji = null): self
     {
-//        if (null !== $emoji) {
-//            preg_match("/^(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])$/", $emoji, $r);
-//            dd($r);
-//        }
-
         $this->emoji = $emoji;
 
         return $this;
+    }
+
+    public function getPostsLiked(): Collection
+    {
+        return $this->postsLiked;
     }
 }
