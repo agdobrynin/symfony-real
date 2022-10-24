@@ -3,19 +3,5 @@
 {% block title %}{{ post.getContent|slice(0, 50) }}...{% endblock %}
 
 {% block microPostContent %}
-    <div class="card mb-5">
-        <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-primary">
-                {{ post.user.emoji }}@{{ post.user.nick }}
-                at {{ post.getDate|date }}
-            </h6>
-            <p class="card-text">{{ post.getContent }}</p>
-        </div>
-        {% if is_granted('EDIT_DEL_OWNER_OR_ADMIN', post) %}
-            <div class="card-footer">
-                <a class="btn btn-secondary" href="{{ url("micro_post_edit", {uuid: post.getUuid}) }}">edit</a>
-                <a class="btn btn-danger" href="{{ url("micro_post_del", {uuid: post.getUuid}) }}">delete</a>
-            </div>
-        {% endif %}
-    </div>
+    {{ include ("micro-post/post-item.html.twig", {post: post}) }}
 {% endblock %}

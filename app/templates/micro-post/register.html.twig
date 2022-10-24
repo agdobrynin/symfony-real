@@ -1,6 +1,7 @@
 {% extends 'micro-post/index.html.twig' %}
 
-{% block javascript_app_reg %}
+{% block javascripts %}
+    {{ parent() }}
     {{ encore_entry_script_tags('app.reg') }}
 {% endblock %}
 
