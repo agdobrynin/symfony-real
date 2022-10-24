@@ -32,8 +32,8 @@ class LikeController extends AbstractController
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
 
-        if (!$currentUser instanceof User) {
-            return $this->json([], Response::HTTP_UNAUTHORIZED);
+        if ($errorResponse = $this->checkIfUserRegistered($currentUser)) {
+            return $errorResponse;
         }
 
         $microPost->like($currentUser);
@@ -52,8 +52,8 @@ class LikeController extends AbstractController
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
 
-        if (!$currentUser instanceof User) {
-            return $this->json([], Response::HTTP_UNAUTHORIZED);
+        if ($errorResponse = $this->checkIfUserRegistered($currentUser)) {
+            return $errorResponse;
         }
 
         $microPost->getLikedBy()->removeElement($currentUser);
@@ -61,5 +61,14 @@ class LikeController extends AbstractController
         $likeDto = new LikePostDto($microPost->getLikedBy()->count());
 
         return $this->json($likeDto);
+    }
+
+    private function checkIfUserRegistered(?User $user): ?JsonResponse
+    {
+        if (!$user instanceof User) {
+            return $this->json(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        return null;
     }
 }
