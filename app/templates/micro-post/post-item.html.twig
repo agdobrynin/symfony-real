@@ -13,8 +13,8 @@
                 <button type="button"
                         data-uuid="{{ post.uuid }}"
                         data-action="{% if isLiked %}unlike{% else %}like{% endif %}"
-                        data-label-like="Like"
-                        data-label-unlike="Unlike"
+                        data-label-like="Like" data-css-class-like="btn-outline-primary"
+                        data-label-unlike="Unlike" data-css-class-unlike="btn-outline-secondary"
                         class="btn btn-sm {% if isLiked %}btn-outline-secondary{% else %}btn-outline-primary{% endif %}">
                     <span class="like-spinner spinner-border spinner-border-sm" style="display: none"></span>
                     {% if isLiked %}Unlike{% else %}Like{% endif %}

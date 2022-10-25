@@ -48,7 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         counterEl.innerText = data.count;
                     }
 
-                    const {labelLike = "like", labelUnlike = "unlike"} = elButtonClicked.dataset;
+                    const {
+                        labelLike = "like", cssClassLike,
+                        labelUnlike = "unlike", cssClassUnlike
+                    } = elButtonClicked.dataset;
 
                     const likeUnlikeReg = new RegExp(`(${labelLike}|${labelUnlike})`, "i");
 
@@ -62,10 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     if (isLikeAction) {
                         elButtonClicked.dataset.action = likeActionTitleUnlike;
-                        elButtonClicked.classList.replace("btn-outline-primary", "btn-outline-secondary");
+                        elButtonClicked.classList.replace(cssClassLike, cssClassUnlike);
                     } else {
                         elButtonClicked.dataset.action = likeActionTitleLike;
-                        elButtonClicked.classList.replace("btn-outline-secondary", "btn-outline-primary");
+                        elButtonClicked.classList.replace(cssClassUnlike, cssClassLike);
                     }
 
                     toggleLoading(elButtonClicked, false);
