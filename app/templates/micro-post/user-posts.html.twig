@@ -2,6 +2,11 @@
 
 {% block title %}Micro post from @{{ user.nick }} {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('app.likes') }}
+{% endblock %}
+
 {% block microPostContent %}
     <div class="card mb-5">
         <div class="card-header">
