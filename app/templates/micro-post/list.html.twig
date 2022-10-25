@@ -2,6 +2,12 @@
 
 {% block title %}Micro post main page{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('app.likes') }}
+{% endblock %}
+
+
 {% block microPostContent %}
     {% if posts %}
         <div class="mb-5">

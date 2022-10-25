@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/micro-post")
+ * @Route("/micro-post", methods={"get"})
  */
 class LikeController extends AbstractController
 {
@@ -66,7 +66,12 @@ class LikeController extends AbstractController
     private function checkIfUserRegistered(?User $user): ?JsonResponse
     {
         if (!$user instanceof User) {
-            return $this->json(null, Response::HTTP_UNAUTHORIZED);
+            $dto = new class {
+                public $redirect;
+            };
+            $dto->redirect = $this->generateUrl('micro_post_register');
+
+            return $this->json($dto, Response::HTTP_UNAUTHORIZED);
         }
 
         return null;

@@ -2,6 +2,12 @@
 
 {% block title %}{{ post.getContent|slice(0, 50) }}...{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('app.likes') }}
+{% endblock %}
+
+
 {% block microPostContent %}
     {{ include ("micro-post/post-item.html.twig", {post: post}) }}
 {% endblock %}

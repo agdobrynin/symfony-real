@@ -22,6 +22,7 @@ Encore
      */
     .addEntry('app', './assets/app.js')
     .addEntry('app.reg', './assets/app.reg.js')
+    .addEntry('app.likes', './assets/app.likes.js')
     .addStyleEntry('style', './assets/styles/app.scss')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
@@ -53,8 +54,10 @@ Encore
 
     // enables @babel/preset-env polyfills
     .configureBabelPresetEnv((config) => {
-        config.useBuiltIns = 'usage';
-        config.corejs = 3;
+        // config.useBuiltIns = 'usage';
+        // config.corejs = 3;
+        config.useBuiltIns = 'entry';
+        config.corejs = '3.22';
     })
 
 // enables Sass/SCSS support
