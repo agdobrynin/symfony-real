@@ -17,13 +17,13 @@
                 {% endif %}
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item"><a href="{{ path("micro_post_logout") }}" class="nav-link">Sign out</a></li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown dropstart">
                         <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                            {{ app.User.emoji }}@{{ app.User.nick }}
                             <span id="notification-main">
                                 <span id="notification-text" class="badge border"></span>
                                 <span id="notification-loader" class="spinner-border spinner-border-sm"></span>
                             </span>
+                            {{ app.User.emoji }}@{{ app.User.nick }}
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Action</a></li>
