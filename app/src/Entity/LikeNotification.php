@@ -18,9 +18,9 @@ class LikeNotification extends Notification
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(name="liked_by_user_uuid", referencedColumnName="uuid")
+     * @ORM\JoinColumn(name="by_user_uuid", referencedColumnName="uuid")
      */
-    private $likedBy;
+    private $byUser;
 
     public function getPost(): ?MicroPost
     {
@@ -32,13 +32,13 @@ class LikeNotification extends Notification
         $this->post = $post;
     }
 
-    public function getLikedBy(): ?User
+    public function getByUser(): ?User
     {
-        return $this->likedBy;
+        return $this->byUser;
     }
 
-    public function setLikedBy(User $likedBy): void
+    public function setByUser(User $byUser): void
     {
-        $this->likedBy = $likedBy;
+        $this->byUser = $byUser;
     }
 }

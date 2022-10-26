@@ -33,7 +33,7 @@ class LikeNotificationSubscriber implements EventSubscriberInterface
                         $likeNotification = new LikeNotification();
                         $likeNotification->setUser($entity->getUser());
                         $likeNotification->setPost($entity);
-                        $likeNotification->setLikedBy(reset($insertDiff));
+                        $likeNotification->setByUser(reset($insertDiff));
                         $em->persist($likeNotification);
                         $uow->computeChangeSet(
                             $em->getClassMetadata(LikeNotification::class),
