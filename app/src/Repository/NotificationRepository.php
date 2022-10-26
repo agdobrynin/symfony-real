@@ -41,13 +41,14 @@ class NotificationRepository extends ServiceEntityRepository
     }
 
 
-    public function findUnseenLikeNotificationByUser(User $user): int
+    public function findUnseenNotificationByUser(User $user): int
     {
-        $qb = $this->createQueryBuilder('ln');
+        $qb = $this->createQueryBuilder('n');
 
-        return $qb->select('count(ln)')
-            ->where('ln.user = :user')
+        return $qb->select('count(n)')
+            ->where('n.user = :user')
             ->setParameter(':user', $user)
+            ->andWhere('n.seen = false')
             ->getQuery()
             ->getSingleScalarResult();
     }

@@ -34,7 +34,7 @@ class NotificationController extends AbstractController
         /** @var User $currentUser - this always User entity because this controller has security annotation */
         $currentUser = $this->getUser();
 
-        $dto->all = $this->notificationRepository->findUnseenLikeNotificationByUser($currentUser);
+        $dto->all = $this->notificationRepository->findUnseenNotificationByUser($currentUser);
 
         return $this->json($dto);
     }
