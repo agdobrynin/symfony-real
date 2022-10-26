@@ -18,7 +18,7 @@ class LikeNotification extends Notification
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
+     * @ORM\JoinColumn(name="liked_by_user_uuid", referencedColumnName="uuid")
      */
     private $likedBy;
 
