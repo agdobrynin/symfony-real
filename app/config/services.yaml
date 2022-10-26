@@ -35,3 +35,9 @@ services:
         autowire: true
         autoconfigure: true
         public: true
+
+    App\EventListener\LikeNotificationSubscriber:
+        tags:
+            - name: 'doctrine.event_subscriber'
+              priority: 500
+              connection: 'default'
