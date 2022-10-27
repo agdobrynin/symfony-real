@@ -36,10 +36,7 @@ class LikeNotificationSubscriber implements EventSubscriberInterface
                 continue;
             }
 
-            $likeDiff = $collectionUpdate->getInsertDiff();
-            $unlikeDiff = $collectionUpdate->getDeleteDiff();
-
-            if ($likeDiff) {
+            if ($likeDiff = $collectionUpdate->getInsertDiff()) {
                 $notification = (new LikeNotification())
                     ->setUser($entity->getUser())
                     ->setPost($entity)
@@ -52,7 +49,7 @@ class LikeNotificationSubscriber implements EventSubscriberInterface
                 );
             }
 
-            if ($unlikeDiff) {
+            if ($unlikeDiff = $collectionUpdate->getDeleteDiff()) {
                 $notification = (new UnlikeNotification())
                     ->setUser($entity->getUser())
                     ->setPost($entity)
