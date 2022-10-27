@@ -28,37 +28,40 @@ class LikeNotificationSubscriber implements EventSubscriberInterface
         foreach ($uow->getScheduledCollectionUpdates() as $collectionUpdate) {
             /** @var MicroPost|mixed $entity */
             $entity = $collectionUpdate->getOwner();
-            if ($entity instanceof MicroPost) {
-                if ('likedBy' === $collectionUpdate->getMapping()['fieldName']) {
-                    $likeDiff = $collectionUpdate->getInsertDiff();
-                    $unlikeDiff = $collectionUpdate->getDeleteDiff();
+            $isMicropostEntity = $entity instanceof MicroPost;
+            $hasFieldNameLikedBy = 'likedBy' === $collectionUpdate->getMapping()['fieldName'];
 
-                    if ($likeDiff) {
-                        $notification = (new LikeNotification())
-                            ->setUser($entity->getUser())
-                            ->setPost($entity)
-                            ->setByUser(reset($likeDiff));
+            if (!$isMicropostEntity && !$hasFieldNameLikedBy) {
+                continue;
+            }
 
-                        $em->persist($notification);
-                        $uow->computeChangeSet(
-                            $em->getClassMetadata(LikeNotification::class),
-                            $notification
-                        );
-                    }
+            $likeDiff = $collectionUpdate->getInsertDiff();
+            $unlikeDiff = $collectionUpdate->getDeleteDiff();
 
-                    if ($unlikeDiff) {
-                        $notification = (new UnlikeNotification())
-                            ->setUser($entity->getUser())
-                            ->setPost($entity)
-                            ->setByUser(reset($unlikeDiff));
+            if ($likeDiff) {
+                $notification = (new LikeNotification())
+                    ->setUser($entity->getUser())
+                    ->setPost($entity)
+                    ->setByUser(reset($likeDiff));
 
-                        $em->persist($notification);
-                        $uow->computeChangeSet(
-                            $em->getClassMetadata(UnlikeNotification::class),
-                            $notification
-                        );
-                    }
-                }
+                $em->persist($notification);
+                $uow->computeChangeSet(
+                    $em->getClassMetadata(LikeNotification::class),
+                    $notification
+                );
+            }
+
+            if ($unlikeDiff) {
+                $notification = (new UnlikeNotification())
+                    ->setUser($entity->getUser())
+                    ->setPost($entity)
+                    ->setByUser(reset($unlikeDiff));
+
+                $em->persist($notification);
+                $uow->computeChangeSet(
+                    $em->getClassMetadata(UnlikeNotification::class),
+                    $notification
+                );
             }
         }
     }
