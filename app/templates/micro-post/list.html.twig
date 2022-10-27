@@ -12,7 +12,7 @@
     {% if posts %}
         <div class="mb-5">
             {% if is_granted('ROLE_USER') %}
-                <h4 class="display-3">Last following posts</h4>
+                <h4 class="display-3">Latest messages from subscribed users</h4>
             {% else %}
                 <h4 class="display-3">Last posts</h4>
             {% endif %}
