@@ -22,7 +22,8 @@ class AppFixtures extends Fixture
         $this->userPasswordHasher = $userPasswordHasher;
         $this->fixtureUsers[] = new UserFixtureDto('admin', '🛡', true);
         $this->fixtureUsers[] = new UserFixtureDto('blogger', '🎭');
-        $this->fixtureUsers[] = new UserFixtureDto('super-man', '🚀');
+        $this->fixtureUsers[] = new UserFixtureDto('superman', '🚀');
+        $this->fixtureUsers[] = new UserFixtureDto('santa', '🎅');
     }
 
     public function load(ObjectManager $manager): void
