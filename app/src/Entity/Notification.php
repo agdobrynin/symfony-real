@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass=NotificationRepository::class)
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="dicsr", type="string")
- * @ORM\DiscriminatorMap({"like" = "LikeNotification"})
+ * @ORM\DiscriminatorMap({"like" = "LikeNotification", "unlike" = "UnlikeNotification"})
  */
 abstract class Notification
 {
@@ -49,9 +49,11 @@ abstract class Notification
         return $this->user;
     }
 
-    public function setUser(User $user): void
+    public function setUser(User $user): self
     {
         $this->user = $user;
+
+        return $this;
     }
 
     public function getSeen(): bool
@@ -59,8 +61,10 @@ abstract class Notification
         return $this->seen;
     }
 
-    public function setSeen(bool $seen): void
+    public function setSeen(bool $seen): self
     {
         $this->seen = $seen;
+
+        return $this;
     }
 }

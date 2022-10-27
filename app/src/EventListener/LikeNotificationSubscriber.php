@@ -5,6 +5,7 @@ namespace App\EventListener;
 
 use App\Entity\LikeNotification;
 use App\Entity\MicroPost;
+use App\Entity\UnlikeNotification;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
@@ -29,15 +30,32 @@ class LikeNotificationSubscriber implements EventSubscriberInterface
             $entity = $collectionUpdate->getOwner();
             if ($entity instanceof MicroPost) {
                 if ('likedBy' === $collectionUpdate->getMapping()['fieldName']) {
-                    if ($insertDiff = $collectionUpdate->getInsertDiff()) {
-                        $likeNotification = new LikeNotification();
-                        $likeNotification->setUser($entity->getUser());
-                        $likeNotification->setPost($entity);
-                        $likeNotification->setByUser(reset($insertDiff));
-                        $em->persist($likeNotification);
+                    $likeDiff = $collectionUpdate->getInsertDiff();
+                    $unlikeDiff = $collectionUpdate->getDeleteDiff();
+
+                    if ($likeDiff) {
+                        $notification = (new LikeNotification())
+                            ->setUser($entity->getUser())
+                            ->setPost($entity)
+                            ->setByUser(reset($likeDiff));
+
+                        $em->persist($notification);
                         $uow->computeChangeSet(
                             $em->getClassMetadata(LikeNotification::class),
-                            $likeNotification
+                            $notification
+                        );
+                    }
+
+                    if ($unlikeDiff) {
+                        $notification = (new UnlikeNotification())
+                            ->setUser($entity->getUser())
+                            ->setPost($entity)
+                            ->setByUser(reset($unlikeDiff));
+
+                        $em->persist($notification);
+                        $uow->computeChangeSet(
+                            $em->getClassMetadata(UnlikeNotification::class),
+                            $notification
                         );
                     }
                 }
