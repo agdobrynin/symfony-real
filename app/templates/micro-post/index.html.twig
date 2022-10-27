@@ -27,6 +27,8 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Notifications</a></li>
+                            <li><a class="dropdown-item"
+                                   href="{{ path('micro_post_by_user', { nick:app.User.nick }) }}">My posts</a></li>
                             <li><a class="dropdown-item" href="#">Profile</a></li>
                         </ul>
                     </li>
