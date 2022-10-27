@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  *     "abstract-like-unlike" = "LikeUnlikeNotification",
  *     "like" = "LikeNotification",
  *     "unlike" = "UnlikeNotification",
+ *     "follow" = "FollowNotification",
+ *     "unfollow" = "UnfollowNotification",
  *     })
  */
 abstract class Notification
