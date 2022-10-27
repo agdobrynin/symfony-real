@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\Entity\LikeNotification;
+use App\Entity\LikeUnlikeNotification;
 use App\Entity\MicroPost;
 use App\Entity\UnlikeNotification;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
@@ -63,6 +64,24 @@ class LikeNotificationSubscriber implements EventSubscriberInterface
                     $notification
                 );
             }
+        }
+
+        // Delete from notification when delete MicroPost
+        $postForDelete = [];
+
+        foreach ($uow->getScheduledEntityDeletions() as $entityDeletion) {
+            if ($entityDeletion instanceof MicroPost) {
+                $postForDelete[] = $entityDeletion;
+            }
+        }
+
+        if ($postForDelete) {
+            $em->createQueryBuilder()
+                ->delete(LikeUnlikeNotification::class, 'n')
+                ->where('n.post IN (:posts)')
+                ->setParameter(':posts', $postForDelete)
+                ->getQuery()
+                ->execute();
         }
     }
 }
