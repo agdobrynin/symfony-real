@@ -20,15 +20,16 @@
                     <li class="nav-item dropdown dropstart">
                         <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
                             <span id="notification-main">
-                                <span id="notification-text" class="badge border"></span>
+                                <span id="notification-text" class="badge border" title="Unread notification"></span>
                                 <span id="notification-loader" class="spinner-border spinner-border-sm"></span>
                             </span>
                             {{ app.User.emoji }}@{{ app.User.nick }}
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Notifications</a></li>
+                            <li><a class="dropdown-item" href="#">My notifications</a></li>
                             <li><a class="dropdown-item"
-                                   href="{{ path('micro_post_by_user', { nick:app.User.nick }) }}">My posts</a></li>
+                                   href="{{ path('micro_post_by_user', { nick:app.User.nick }) }}">My micro posts</a>
+                            </li>
                             <li><a class="dropdown-item" href="#">Profile</a></li>
                         </ul>
                     </li>
