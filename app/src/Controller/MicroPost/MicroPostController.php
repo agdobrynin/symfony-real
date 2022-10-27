@@ -84,7 +84,7 @@ class MicroPostController extends AbstractController
             $message = $this->flashMessageWithPartOfContent('The micro post was added', $microPost);
             $this->addFlash(FlashType::SUCCESS, $message);
 
-            return $this->redirectToRoute('micro_post_list');
+            return $this->redirectToRoute('micro_post_by_user', ['nick' => $this->getUser()->getNick()]);
         }
 
         return $this->renderForm('micro-post/add.html.twig', ['form' => $form]);
@@ -116,7 +116,7 @@ class MicroPostController extends AbstractController
             $message = $this->flashMessageWithPartOfContent('The micro post was updated', $microPost);
             $this->addFlash(FlashType::INFO, $message);
 
-            return $this->redirectToRoute('micro_post_list');
+            return $this->redirectToRoute('micro_post_view', ['uuid' => $microPost->getUUid()]);
         }
 
         return $this->renderForm('micro-post/add.html.twig', ['form' => $form]);
