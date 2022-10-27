@@ -30,17 +30,17 @@ class LikeNotificationSubscriber implements EventSubscriberInterface
             /** @var MicroPost|mixed $entity */
             $entity = $collectionUpdate->getOwner();
             $isMicropostEntity = $entity instanceof MicroPost;
-            $hasFieldNameLikedBy = 'likedBy' === $collectionUpdate->getMapping()['fieldName'];
+            $hasFieldNameLikedBy = MicroPost::FIELD_NAME_FOR_NOTIFICATION_LIKED === $collectionUpdate->getMapping()['fieldName'];
 
             if (!$isMicropostEntity && !$hasFieldNameLikedBy) {
                 continue;
             }
 
-            if ($likeDiff = $collectionUpdate->getInsertDiff()) {
+            if ($insertDiff = $collectionUpdate->getInsertDiff()) {
                 $notification = (new LikeNotification())
                     ->setUser($entity->getUser())
                     ->setPost($entity)
-                    ->setByUser(reset($likeDiff));
+                    ->setByUser(reset($insertDiff));
 
                 $em->persist($notification);
                 $uow->computeChangeSet(
@@ -49,11 +49,11 @@ class LikeNotificationSubscriber implements EventSubscriberInterface
                 );
             }
 
-            if ($unlikeDiff = $collectionUpdate->getDeleteDiff()) {
+            if ($deleteDiff = $collectionUpdate->getDeleteDiff()) {
                 $notification = (new UnlikeNotification())
                     ->setUser($entity->getUser())
                     ->setPost($entity)
-                    ->setByUser(reset($unlikeDiff));
+                    ->setByUser(reset($deleteDiff));
 
                 $em->persist($notification);
                 $uow->computeChangeSet(

@@ -37,6 +37,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_DEFAULT = [self::ROLE_USER];
 
     /**
+     * @see User::$following
+     */
+    public const FIELD_NAME_FOR_NOTIFICATION_FOLLOW = 'following';
+
+    // public const FIELD_NAME_OF
+
+    /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="uuid", unique=true, nullable=false)

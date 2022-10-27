@@ -41,3 +41,8 @@ services:
             - name: 'doctrine.event_subscriber'
               priority: 500
               connection: 'default'
+    App\EventListener\FollowerNotificationSubscriber:
+        tags:
+            - name: 'doctrine.event_subscriber'
+              priority: 500
+              connection: 'default'

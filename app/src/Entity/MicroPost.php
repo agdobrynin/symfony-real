@@ -18,6 +18,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class MicroPost
 {
     /**
+     * @see MicroPost::$likedBy;
+     */
+    public const FIELD_NAME_FOR_NOTIFICATION_LIKED = 'likedBy';
+    /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="uuid", unique=true, nullable=false)
