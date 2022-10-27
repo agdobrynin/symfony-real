@@ -101,7 +101,9 @@ class MicroPost
      */
     public function setDateOnPersist(): void
     {
-        $this->date = new \DateTime();
+        if (!$this->date instanceof \DateTimeInterface) {
+            $this->date = new \DateTime();
+        }
     }
 
     public function getUser(): ?User
