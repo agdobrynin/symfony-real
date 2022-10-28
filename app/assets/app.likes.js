@@ -3,6 +3,7 @@
  */
 
 import ky from 'ky';
+import {toggleLoading} from "./function_utils";
 
 document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (event) => {
@@ -19,20 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (postUuid && likeActionTitle && likeActionTitlesSupport.includes(likeActionTitle)
             && elButtonClicked instanceof HTMLButtonElement) {
             const isLikeAction = likeActionTitle === likeActionTitleLike;
-
-            /**
-             * @param {HTMLButtonElement} el Clicked button
-             * @param {boolean} isLoading Show loading element
-             */
-            function toggleLoading(el, isLoading) {
-                el.disabled = isLoading;
-                /** @type {HTMLSpanElement|null} spinner */
-                const spinner = el.querySelector(".like-spinner");
-
-                if (spinner) {
-                    spinner.style.display = isLoading ? "inline-block" : "none";
-                }
-            }
 
             const route = `/micro-post/${isLikeAction ? 'like' : 'unlike'}` + `/${postUuid}`;
 

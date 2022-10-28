@@ -51,6 +51,6 @@
     </div>
 
     {% for post in posts %}
-        {{ include ("micro-post/post-item.html.twig", {post: post}) }}
+        {{ include ("micro-post/post-item.html.twig", { post }) }}
     {% endfor %}
 {% endblock %}
