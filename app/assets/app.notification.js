@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
             toggleLoading(targetEl, true);
             sendData.push(notificationId);
 
-            ky.post("/micro-post/notification/set-seen", {
+            ky.post("/micro-post/notification/set-seen-by-id", {
                 headers: {
                     'content-type': 'application/json'
                 },

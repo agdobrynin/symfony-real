@@ -7,6 +7,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -38,5 +39,28 @@ class NotificationRepository extends ServiceEntityRepository
             ->andWhere('n.seen = false')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function setSeenAllNotificationByUser(User $user): void
+    {
+        $this->partQuerySeenNotificationByUser($user)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function setSeenSomeNotificationByUser(User $user, array $notificationIds): void
+    {
+        $this->partQuerySeenNotificationByUser($user)
+            ->andWhere('n.id = :ids')->setParameter(':ids', $notificationIds)
+            ->getQuery()
+            ->execute();
+    }
+
+    private function partQuerySeenNotificationByUser(User $user): QueryBuilder
+    {
+        return $this->createQueryBuilder('n')
+            ->update(Notification::class, 'n')
+            ->set('n.seen', 'true')
+            ->where('n.user = :user')->setParameter(':user', $user);
     }
 }
