@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     "follow" = "FollowNotification",
  *     "unfollow" = "UnfollowNotification",
  *     })
+ * @ORM\HasLifecycleCallbacks()
  */
 abstract class Notification
 {
@@ -37,6 +38,16 @@ abstract class Notification
      * @ORM\Column(type="boolean")
      */
     private $seen;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createAt;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $updateAt;
 
     public function __construct()
     {
@@ -73,5 +84,27 @@ abstract class Notification
         $this->seen = $seen;
 
         return $this;
+    }
+
+    public function getCreateAt(): \DateTimeInterface
+    {
+        return $this->createAt;
+    }
+
+    public function getUpdateAt(): \DateTimeInterface
+    {
+        return $this->updateAt;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setDatesOnPersist(): void
+    {
+        if (!$this->createAt instanceof \DateTimeInterface) {
+            $this->createAt = new \DateTime();
+        }
+
+        $this->updateAt = new \DateTime();
     }
 }

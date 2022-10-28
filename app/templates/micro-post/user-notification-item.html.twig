@@ -17,7 +17,7 @@
 <div class="alert {{ alert_css }}">
     <a class="alert-link fw-normal" href="{{ path('micro_post_by_user', {nick: notification.byUser.nick}) }}">
         {{ notification.byUser.emoji }}@{{ notification.byUser.nick }}</a>
-    {{ alert_text }}
+    {{ alert_text }} at {{ notification.createAt|date }}
     {% if  notification.post is defined %}
         <p class="pt-2">
             <a class="alert-link fw-normal"
