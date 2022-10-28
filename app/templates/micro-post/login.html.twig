@@ -1,11 +1,12 @@
 {% extends 'micro-post/index.html.twig' %}
 
-{% block title %} Sign in{% endblock %}
+{% block title %}Sign in{% endblock %}
 
 {% block microPostContent %}
     <div class="row justify-content-center">
-        <div class="col-4 align-self-center">
-            <h1>Please sign in</h1>
+        <div class="col-6 align-self-center">
+            <h3 class="display-3">Please sign in or <a href="{{ path('micro_post_register') }}">register</a></h3>
+            <hr>
             {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
