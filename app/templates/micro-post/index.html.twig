@@ -17,7 +17,8 @@
                 {% endif %}
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item">
-                        <a href="/" id="notification"
+                        <a href="{{ path('micro_post_notification_all') }}"
+                           id="notification"
                            class="nav-link popover"
                            data-bs-toggle="popover"
                            data-bs-trigger="hover focus"

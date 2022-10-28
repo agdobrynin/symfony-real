@@ -1,0 +1,45 @@
+{% extends 'micro-post/index.html.twig' %}
+
+{% block title %} Unread notification {% endblock %}
+
+{% block microPostContent %}
+    <div class="mb-5">
+        {% for notification in notifications %}
+            {% if notification is is_notification_like or notification is is_notification_unlike %}
+                <div class="alert {% if notification is is_notification_like %}alert-info{% else %}alert-warning{% endif %}">
+                    <a class="alert-link" href="{{ path('micro_post_by_user', {nick: notification.byUser.nick}) }}">
+                        {{ notification.byUser.emoji }}@{{ notification.byUser.nick }}</a>
+                    {% if notification is is_notification_like %}like{% else %}unlike{% endif %} our post
+                    <p>
+                        <a class="alert-link"
+                           href="{{ path('micro_post_view', {uuid: notification.post.uuid}) }}">{{ notification.post.content|slice(0, 50) }}
+                            ...</a>
+                    </p>
+                    <hr>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" data-notitifation-id="{{ notification.id }}"
+                                class="notification-read btn btn-sm btn-outline-primary">👌 Mark as read
+                        </button>
+                    </div>
+                </div>
+            {% elseif notification is is_notification_follow or notification is is_notification_unfollow %}
+                <div class="alert {% if notification is is_notification_unfollow %}alert-danger{% else %}alert-success{% endif %}">
+                    <a class="alert-link" href="{{ path('micro_post_by_user', {nick: notification.byUser.nick}) }}">
+                        {{ notification.byUser.emoji }}@{{ notification.byUser.nick }}</a>
+                    {% if notification is is_notification_unfollow %}
+                        not follow to you 😐
+                    {% else %}
+                        now is your follower 🎈
+                    {% endif %}
+                    <hr>
+                    <div class="d-flex justify-content-end">
+                        <button type="button"
+                                data-notitifation-id="{{ notification.id }}"
+                                class="notification-read btn btn-sm btn-outline-primary">Mark as read
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

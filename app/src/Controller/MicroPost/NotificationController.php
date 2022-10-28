@@ -8,6 +8,7 @@ use App\Repository\NotificationRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -34,8 +35,18 @@ class NotificationController extends AbstractController
         /** @var User $currentUser - this always User entity because this controller has security annotation */
         $currentUser = $this->getUser();
 
-        $dto->all = $this->notificationRepository->findUnseenNotificationByUser($currentUser);
+        $dto->all = $this->notificationRepository->getCountUnseenNotificationByUser($currentUser);
 
         return $this->json($dto);
+    }
+
+    /**
+     * @Route("/all", name="micro_post_notification_all", methods={"get"})
+     */
+    public function getAllNotification(): Response
+    {
+        $notifications = $this->notificationRepository->findBy(['seen' => false], ['id' => 'desc']);
+
+        return $this->render('micro-post/user-notification.html.twig', compact('notifications'));
     }
 }

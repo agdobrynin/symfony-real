@@ -28,7 +28,7 @@ class NotificationRepository extends ServiceEntityRepository
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function findUnseenNotificationByUser(User $user): int
+    public function getCountUnseenNotificationByUser(User $user): int
     {
         $qb = $this->createQueryBuilder('n');
 

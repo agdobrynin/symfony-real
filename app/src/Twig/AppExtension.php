@@ -3,11 +3,26 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
+use App\Entity\FollowNotification;
+use App\Entity\LikeNotification;
+use App\Entity\UnfollowNotification;
+use App\Entity\UnlikeNotification;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigTest;
 
 class AppExtension extends AbstractExtension
 {
+    public function getTests(): array
+    {
+        return [
+            new TwigTest('is_notification_like', array($this, 'isNotificationLike')),
+            new TwigTest('is_notification_unlike', array($this, 'isNotificationUnlike')),
+            new TwigTest('is_notification_follow', array($this, 'isNotificationFollow')),
+            new TwigTest('is_notification_unfollow', array($this, 'isNotificationUnfollow')),
+        ];
+    }
+
     public function getFilters(): array
     {
         return [
@@ -36,5 +51,25 @@ class AppExtension extends AbstractExtension
         $message = sprintf('Percent value of part text must be between 1 and 100. Yor values is %s', $percent);
 
         throw new \UnexpectedValueException($message);
+    }
+
+    public function isNotificationLike($var): bool
+    {
+        return $var instanceof LikeNotification;
+    }
+
+    public function isNotificationUnlike($var): bool
+    {
+        return $var instanceof UnlikeNotification;
+    }
+
+    public function isNotificationFollow($var): bool
+    {
+        return $var instanceof FollowNotification;
+    }
+
+    public function isNotificationUnfollow($var): bool
+    {
+        return $var instanceof UnfollowNotification;
     }
 }
