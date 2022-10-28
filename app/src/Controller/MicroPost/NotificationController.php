@@ -45,7 +45,10 @@ class NotificationController extends AbstractController
      */
     public function getAllNotification(): Response
     {
-        $notifications = $this->notificationRepository->findBy(['seen' => false], ['id' => 'desc']);
+        $notifications = $this->notificationRepository->findBy([
+            'seen' => false,
+            'user' => $this->getUser(),
+        ], ['id' => 'desc']);
 
         return $this->render('micro-post/user-notification.html.twig', compact('notifications'));
     }
