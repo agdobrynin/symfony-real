@@ -32,7 +32,7 @@
             Followers:
             {% for follower in user.followers %}
                 <a class="badge rounded-pill text-bg-light"
-                   href="{{ path('micro_post_by_user', {nick: follower.nick}) }}"
+                   href="{{ path('micro_post_by_user', {uuid: follower.uuid}) }}"
                 >@{{ follower.nick }}</a>
             {% else %}
                 is empty ⌛
@@ -42,7 +42,7 @@
             Following:
             {% for following in user.following %}
                 <a class="badge rounded-pill text-bg-light"
-                   href="{{ path('micro_post_by_user', {nick: following.nick}) }}"
+                   href="{{ path('micro_post_by_user', {uuid: following.uuid}) }}"
                 >@{{ following.nick }}</a>
             {% else %}
                 is empty ⌛

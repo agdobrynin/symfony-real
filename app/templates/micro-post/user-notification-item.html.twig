@@ -15,7 +15,7 @@
     {% set alert_text = 'not follow to you 😥' %}
 {% endif %}
 <div class="alert {{ alert_css }}">
-    <a class="alert-link fw-normal" href="{{ path('micro_post_by_user', {nick: notification.byUser.nick}) }}">
+    <a class="alert-link fw-normal" href="{{ path('micro_post_by_user', {uuid: notification.byUser.uuid}) }}">
         {{ notification.byUser.emoji }}@{{ notification.byUser.nick }}</a>
     {{ alert_text }} at {{ notification.createAt|date }}
     {% if  notification.post is defined %}

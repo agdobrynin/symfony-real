@@ -32,7 +32,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ path('micro_post_by_user', { nick:app.User.nick }) }}" class="btn btn-secondary">
+                        <a href="{{ path('micro_post_by_user', { uuid: app.User.uuid }) }}" class="btn btn-secondary">
                             {{ app.User.emoji }}@{{ app.User.nick }}
                         </a>
                     </li>

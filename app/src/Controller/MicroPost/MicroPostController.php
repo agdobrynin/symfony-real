@@ -159,7 +159,7 @@ class MicroPostController extends AbstractController
     }
 
     /**
-     * @Route("/user/{nick}", name="micro_post_by_user")
+     * @Route("/user/{uuid}", name="micro_post_by_user")
      */
     public function getPostByUser(?User $user = null): Response
     {

@@ -1,5 +1,5 @@
 <p>Hello {{ userHello }}! User <a
-            href="{{ url('micro_post_by_user', {nick: likeByUser.nick}) }}">{{ likeByUser.nick }}</a>
+            href="{{ url('micro_post_by_user', {uuid: likeByUser.uuid}) }}">{{ likeByUser.nick }}</a>
     like your post at {{ createAt|date }}:</p>
 <blockquote>
     {{ post.content|slice(0, 150) }}...

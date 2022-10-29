@@ -26,7 +26,7 @@
             <p>You might find these users interesting:</p>
             <ul class="list-group list-group-horizontal-md">
                 {% for blogger in followUser %}
-                    <a href="{{ path('micro_post_by_user', {nick: blogger.nick}) }}"
+                    <a href="{{ path('micro_post_by_user', {uuid: blogger.uuid}) }}"
                        class="list-group-item d-flex justify-content-between align-items-center">
                         {{ blogger.emoji }}@{{ blogger.nick }} <sup class="m-3">{{ blogger.posts|length }} posts</sup>
                     </a>

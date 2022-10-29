@@ -2,7 +2,7 @@
     <div class="card-body">
         <h6 class="card-subtitle mb-2 text-muted">
             Post from user
-            {{ post.user.emoji }}@<a href="{{ path("micro_post_by_user", {"nick": post.user.nick}) }}">
+            {{ post.user.emoji }}@<a href="{{ path("micro_post_by_user", {uuid: post.user.uuid}) }}">
                 {{ post.user.nick }}</a> at {{ post.getDate|date }}
         </h6>
         <p class="card-text">{{ post.getContent }}</p>
