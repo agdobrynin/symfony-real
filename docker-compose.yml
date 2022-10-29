@@ -5,6 +5,22 @@ networks:
         driver: bridge
 
 services:
+    # consumer
+    consumer:
+        build:
+            context: ./docker-files/consumer
+            args:
+                app_dir: ${APP_DIR_IN_CONTAINER:-/app}
+            dockerfile: Dockerfile
+        container_name: consumer
+        restart: on-failure
+        depends_on:
+            - database
+        user: 1000:1000
+        volumes:
+            - ./app:${APP_DIR_IN_CONTAINER:-/app}:rw,cached
+        networks:
+            - my-symfony
     # nginx
     nginx:
         build:
@@ -21,6 +37,7 @@ services:
         depends_on:
             - php
             - database
+            - consumer
     # php
     php:
         build:
@@ -38,6 +55,7 @@ services:
             - ./app:${APP_DIR_IN_CONTAINER:-/app}:rw,cached
         depends_on:
             - database
+            - consumer
     # mysql
     database:
         image: postgres:12
@@ -60,3 +78,13 @@ services:
             dockerfile: Dockerfile
         volumes:
             - ./app:${APP_DIR_IN_CONTAINER:-/app}
+
+    # For Development env
+    mailcatcher:
+        image: schickling/mailcatcher
+        container_name: mailcatcher
+        ports:
+            - "1025:1025"
+            - "1080:1080"
+        networks:
+            - my-symfony
