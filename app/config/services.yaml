@@ -29,11 +29,11 @@ services:
         arguments:
             $machineName: "%welcome.message.machine%"
 
-    App\Service\MicroPost\WelcomeMessageEmailService:
+    App\Mailer\WelcomeMailer:
         arguments:
             $adminEmail: '%micropost.admin.email%'
 
-    App\Event\LikeNotifyByEmailSubscriber:
+    App\Mailer\LikeMailer:
         arguments:
             $adminEmail: '%micropost.admin.email%'
 

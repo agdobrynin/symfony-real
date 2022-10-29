@@ -4,32 +4,19 @@ declare(strict_types=1);
 namespace App\Service\MicroPost;
 
 use App\Entity\User;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\MailerInterface;
+use App\Mailer\WelcomeMailerInterface;
 
 class WelcomeMessageEmailService implements WelcomeMessageEmailServiceInterface
 {
-    private $mailer;
-    private $adminEmail;
+    private $welcomeMailer;
 
-    public function __construct(MailerInterface $mailer, string $adminEmail)
+    public function __construct(WelcomeMailerInterface $welcomeMailer)
     {
-        $this->mailer = $mailer;
-        $this->adminEmail = $adminEmail;
+        $this->welcomeMailer = $welcomeMailer;
     }
 
     public function send(User $user): bool
     {
-        $email = (new TemplatedEmail())
-            ->from($this->adminEmail)
-            ->to($user->getEmail())
-            ->subject('Welcome to Micro Post App!')
-            ->htmlTemplate('micro-post/email/welcome.html.twig')
-            ->textTemplate('micro-post/email/welcome.text.twig')
-            ->context(compact('user'));
-
-        $this->mailer->send($email);
-
-        return true;
+        return $this->welcomeMailer->send($user);
     }
 }
