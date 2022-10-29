@@ -40,12 +40,12 @@ abstract class Notification
     private $seen;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=false)
      */
     private $createAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $updateAt;
 
@@ -96,6 +96,13 @@ abstract class Notification
         return $this->updateAt;
     }
 
+    public function setUpdateAt(\DateTimeInterface $dateTime): self
+    {
+        $this->updateAt = $dateTime;
+
+        return $this;
+    }
+
     /**
      * @ORM\PrePersist()
      */
@@ -103,8 +110,8 @@ abstract class Notification
     {
         if (!$this->createAt instanceof \DateTimeInterface) {
             $this->createAt = new \DateTime();
+        } else {
+            $this->updateAt = new \DateTime();
         }
-
-        $this->updateAt = new \DateTime();
     }
 }

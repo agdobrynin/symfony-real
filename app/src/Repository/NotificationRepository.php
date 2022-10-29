@@ -61,6 +61,8 @@ class NotificationRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('n')
             ->update(Notification::class, 'n')
             ->set('n.seen', 'true')
+            ->set('n.updateAt', ':dt')
+            ->setParameter(':dt', new \DateTime())
             ->where('n.user = :user')->setParameter(':user', $user);
     }
 }
