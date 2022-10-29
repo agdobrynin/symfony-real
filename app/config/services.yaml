@@ -33,6 +33,10 @@ services:
         arguments:
             $adminEmail: '%micropost.admin.email%'
 
+    App\Event\LikeNotifyByEmailSubscriber:
+        arguments:
+            $adminEmail: '%micropost.admin.email%'
+
     App\Service\PostStore:
         arguments:
             $pageSize: '%post.list.page_size%'
@@ -47,6 +51,7 @@ services:
             - name: 'doctrine.event_subscriber'
               priority: 500
               connection: 'default'
+
     App\EventListener\FollowerNotificationSubscriber:
         tags:
             - name: 'doctrine.event_subscriber'

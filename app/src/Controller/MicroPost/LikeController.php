@@ -6,11 +6,13 @@ namespace App\Controller\MicroPost;
 use App\Dto\LikePostDto;
 use App\Entity\MicroPost;
 use App\Entity\User;
+use App\Event\LikeNotifyByEmailEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @Route("/micro-post", methods={"get"})
@@ -18,10 +20,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class LikeController extends AbstractController
 {
     private $entityManager;
+    private $eventDispatcher;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, EventDispatcherInterface $eventDispatcher)
     {
         $this->entityManager = $entityManager;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -38,6 +42,10 @@ class LikeController extends AbstractController
 
         $microPost->like($currentUser);
         $this->entityManager->flush();
+
+        // Notify by email - creates the event and dispatches it
+        $event = new LikeNotifyByEmailEvent($microPost, $currentUser);
+        $this->eventDispatcher->dispatch($event, LikeNotifyByEmailEvent::NAME);
 
         $likeDto = new LikePostDto($microPost->getLikedBy()->count());
 

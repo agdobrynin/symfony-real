@@ -59,10 +59,7 @@ abstract class Notification
         return $this->id;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getUser()
+    public function getUser(): User
     {
         return $this->user;
     }
@@ -91,7 +88,7 @@ abstract class Notification
         return $this->createAt;
     }
 
-    public function getUpdateAt(): \DateTimeInterface
+    public function getUpdateAt(): ?\DateTimeInterface
     {
         return $this->updateAt;
     }
