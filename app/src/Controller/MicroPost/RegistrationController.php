@@ -5,6 +5,7 @@ namespace App\Controller\MicroPost;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Helper\FlashType;
+use App\Service\MicroPost\WelcomeMessageEmailServiceInterface;
 use App\Service\WelcomeMessageInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,10 +20,11 @@ class RegistrationController extends AbstractController
      * @Route("/micro-post/register", name="micro_post_register")
      */
     public function register(
-        Request                     $request,
-        UserPasswordHasherInterface $userPasswordHasher,
-        EntityManagerInterface      $entityManager,
-        WelcomeMessageInterface     $welcomeMessage
+        Request                             $request,
+        UserPasswordHasherInterface         $userPasswordHasher,
+        EntityManagerInterface              $entityManager,
+        WelcomeMessageInterface             $welcomeMessage,
+        WelcomeMessageEmailServiceInterface $emailService
     ): Response
     {
         $user = new User();
@@ -40,6 +42,7 @@ class RegistrationController extends AbstractController
             $message = $welcomeMessage->welcomeMessage($user->getNick());
 
             $this->addFlash(FlashType::SUCCESS, $message->message);
+            $emailService->send($user);
 
             return $this->redirectToRoute('micro_post_list');
         }
