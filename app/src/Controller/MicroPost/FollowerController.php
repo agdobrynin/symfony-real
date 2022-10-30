@@ -55,6 +55,6 @@ class FollowerController extends AbstractController
 
     private function redirectTo(User $user): RedirectResponse
     {
-        return $this->redirectToRoute('micro_post_by_user', ['nick' => $user->getNick()]);
+        return $this->redirectToRoute('micro_post_by_user', ['uuid' => $user->getUuid()]);
     }
 }
