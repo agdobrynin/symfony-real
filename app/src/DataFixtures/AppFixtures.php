@@ -20,10 +20,10 @@ class AppFixtures extends Fixture
     public function __construct(UserPasswordHasherInterface $userPasswordHasher)
     {
         $this->userPasswordHasher = $userPasswordHasher;
-        $this->fixtureUsers[] = new UserFixtureDto('admin', '🛡', true);
-        $this->fixtureUsers[] = new UserFixtureDto('blogger', '🎭');
-        $this->fixtureUsers[] = new UserFixtureDto('superman', '🚀');
-        $this->fixtureUsers[] = new UserFixtureDto('santa', '🎅');
+        $this->fixtureUsers[] = new UserFixtureDto('admin', 'Admin of App', '🛡', true);
+        $this->fixtureUsers[] = new UserFixtureDto('blogger', 'The best blogger', '🎭');
+        $this->fixtureUsers[] = new UserFixtureDto('superman', 'Ironman', '🚀');
+        $this->fixtureUsers[] = new UserFixtureDto('santa', 'Santa Claus', '🎅');
     }
 
     public function load(ObjectManager $manager): void
@@ -58,8 +58,9 @@ class AppFixtures extends Fixture
             $user = (new User())
                 ->setEmail($faker->email)
                 ->setLogin($fixtureUser->login)
-                ->setNick($faker->name)
-                ->setEmoji($fixtureUser->emoji);
+                ->setNick($fixtureUser->nick)
+                ->setEmoji($fixtureUser->emoji)
+                ->setIsActive(true);
             $role = $fixtureUser->isAdmin ? User::ROLE_ADMIN : User::ROLE_USER;
             $user->setRoles([$role]);
             $user->setPassword($this->getPasswordHash($user));
