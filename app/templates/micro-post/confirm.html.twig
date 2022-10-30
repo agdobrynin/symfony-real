@@ -1,0 +1,19 @@
+{% extends 'micro-post/index.html.twig' %}
+
+{% block title %} Confirmation user registration {% endblock %}
+
+{% block microPostContent %}
+    <div class="mb-5">
+        {% if user %}
+            <div class="alert alert-success">
+                Congratulation your login is confirmed. Please go to <a class="alert-link"
+                                                                        href="{{ path('micro_post_login') }}">login
+                    page</a>.
+            </div>
+        {% else %}
+            <div class="alert alert-danger">
+                Something is wrong! Please check your mailbox and find email with confirmation link.
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

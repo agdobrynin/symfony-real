@@ -29,6 +29,7 @@ security:
                 path: micro_post_logout
                 # where to redirect after logout
                 target: micro_post_list
+            user_checker: App\Security\UserChecker
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 

@@ -5,6 +5,7 @@ namespace App\Controller\MicroPost;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Helper\FlashType;
+use App\Security\ConfirmationTokenGeneratorInterface;
 use App\Service\MicroPost\WelcomeMessageEmailServiceInterface;
 use App\Service\WelcomeMessageInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,7 +25,8 @@ class RegistrationController extends AbstractController
         UserPasswordHasherInterface         $userPasswordHasher,
         EntityManagerInterface              $entityManager,
         WelcomeMessageInterface             $welcomeMessage,
-        WelcomeMessageEmailServiceInterface $emailService
+        WelcomeMessageEmailServiceInterface $emailService,
+        ConfirmationTokenGeneratorInterface $confirmationTokenGenerator
     ): Response
     {
         $user = new User();
@@ -37,11 +39,13 @@ class RegistrationController extends AbstractController
             $passwordHash = $userPasswordHasher->hashPassword($user, $passwordPlain);
             $user->setPassword($passwordHash);
             $user->setRoles(User::ROLE_DEFAULT);
+            $user->setConfirmationToken($confirmationTokenGenerator->getRandomSecureToken());
             $entityManager->persist($user);
             $entityManager->flush();
-            $message = $welcomeMessage->welcomeMessage($user->getNick());
+            $message = $welcomeMessage->welcomeMessage($user->getNick())->message;
+            $message .= '. For activate your login check your mailbox and click confirmation link!';
 
-            $this->addFlash(FlashType::SUCCESS, $message->message);
+            $this->addFlash(FlashType::SUCCESS, $message);
             $emailService->send($user);
 
             return $this->redirectToRoute('micro_post_list');

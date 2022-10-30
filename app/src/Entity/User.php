@@ -125,6 +125,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $postsLiked;
 
+    /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     */
+    private $confirmationToken;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private $isActive;
+
     public function __construct(?string $uuid = null)
     {
         $this->uuid = $uuid ? Uuid::fromString($uuid) : Uuid::v4();
@@ -132,6 +142,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->following = new ArrayCollection();
         $this->followers = new ArrayCollection();
         $this->postsLiked = new ArrayCollection();
+        $this->isActive = false;
     }
 
     public function getUuid(): UuidV4
@@ -279,5 +290,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPostsLiked(): Collection
     {
         return $this->postsLiked;
+    }
+
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmationToken;
+    }
+
+    public function setConfirmationToken(?string $confirmationToken): void
+    {
+        $this->confirmationToken = $confirmationToken;
+    }
+
+    public function getIsActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): void
+    {
+        $this->isActive = $isActive;
     }
 }

@@ -1,5 +1,6 @@
 Welcome to MicroPost App!
 
-Login to MicroPost app as {{ user.nick }} goto link {{ url('micro_post_login') }}
+Dear {{ user.nick }}! Your user account is not confirm yet.
+Please confirm your account at {{ url('micro_post_confirm_registraction', {token: user.confirmationToken}) }}
 
 Best regards MicroPost App administrator.

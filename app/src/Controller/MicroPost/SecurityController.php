@@ -2,7 +2,10 @@
 
 namespace App\Controller\MicroPost;
 
+use App\Entity\User;
 use App\Form\LoginFormType;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +36,27 @@ class SecurityController extends AbstractController
             'error' => $error,
             'loginForm' => $form
         ]);
+    }
+
+    /**
+     * @Route(
+     *     "/confirm/{token}",
+     *     name="micro_post_confirm_registraction",
+     *     methods={"get"}
+     * )
+     */
+    public function confirm(string $token, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    {
+        $user = $userRepository->findOneBy(['confirmationToken' => $token]);
+
+        if ($user instanceof User) {
+            $user->setConfirmationToken(null);
+            $user->setIsActive(true);
+            $entityManager->persist($user);
+            $entityManager->flush();
+        }
+
+        return $this->render('micro-post/confirm.html.twig', compact('user'));
     }
 
     /**

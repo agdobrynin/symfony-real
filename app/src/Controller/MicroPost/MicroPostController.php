@@ -124,7 +124,6 @@ class MicroPostController extends AbstractController
 
     /**
      * @Route("/del/{uuid}", name="micro_post_del", methods={"get"})
-     * Granted access control in file security.yaml in section "access_control"
      */
     public function del(?MicroPost $microPost = null): RedirectResponse
     {
