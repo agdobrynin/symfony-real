@@ -131,6 +131,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $confirmationToken;
 
     /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastLoginTime;
+
+    /**
      * @ORM\Column(type="boolean", options={"default": false})
      */
     private $isActive;
@@ -310,6 +315,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getLastLoginTime(): ?\DateTimeInterface
+    {
+        return $this->lastLoginTime;
+    }
+
+    public function setLastLoginTime(?\DateTimeInterface $lastLoginTime): self
+    {
+        $this->lastLoginTime = $lastLoginTime;
 
         return $this;
     }
