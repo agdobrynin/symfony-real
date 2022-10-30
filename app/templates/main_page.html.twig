@@ -6,21 +6,23 @@
         <li>
             <strong>Simple service - WelcomeMessageInterface</strong>
             <ul>
-                <li><a href="{{ path("controller_main_json") }}">Get response as json</a> </li>
-                <li><a href="{{ path("controller_main_html", {name: "Guest"}) }}">Get response as html page</a> </li>
+                <li><a href="{{ path("controller_main_json") }}" target="simplecontroller">Get response as json</a></li>
+                <li><a href="{{ path("controller_main_html", {name: "Guest"}) }}" target="simplecontroller">Get response
+                        as html page</a></li>
             </ul>
         </li>
         <li>
             <strong>Simple blog use post store in web session (memory)</strong>
             <ul>
-                <li><a href="{{ path("blog_list") }}">Main page of simple blog</a></li>
+                <li><a href="{{ path("blog_list") }}" target="simpleblog">Main page of simple blog</a></li>
             </ul>
         </li>
         <li>
             <strong>Micro post project use database (doctrine) and other features of symfony</strong>
             <ul>
-                <li><a href="{{ path("micro_post_list") }}">Main page of Micro Post App</a></li>
-                <li><a href="http://localhost:1080">Mail Catcher for debug mail sent from Micro Post App</a></li>
+                <li><a href="{{ path("micro_post_list") }}" target="micropostapp">Main page of Micro Post App</a></li>
+                <li><a href="http://localhost:1080" target="mailcatcher">Mail Catcher for debug mail sent from Micro
+                        Post App</a></li>
             </ul>
         </li>
     </ul>
