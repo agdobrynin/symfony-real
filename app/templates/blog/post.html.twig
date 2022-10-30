@@ -3,7 +3,7 @@
 {% block title %}A post with title - &laquo;{{ post.title|slice(0, 10)  }}...&raquo;{% endblock %}
 
 {% block blogContent %}
-    <h1 class="display-1">{{ post.title }}</h1>
+    <h1 class="display-6">{{ post.title }}</h1>
     <p class="lead text-dark">{{ post.content }}</p>
     <blockquote class="text-muted">
         <p>Author: {{ post.author|default("anomymous") }}, at {{ post.date|date }}</p>

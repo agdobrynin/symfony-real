@@ -9,7 +9,7 @@
             <hr>
         {% endif %}
         {% for post in posts %}
-            <h3>{{ post.title }}</h3>
+            <h3 class="display-6">{{ post.title }}</h3>
             <h5>Author: {{ post.author|default("anonymous") }}</h5>
             <h6>Date: {{ post.date|date }}</h6>
             <p>

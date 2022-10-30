@@ -2,7 +2,7 @@
 
 {% block body %}
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-        <a class="navbar-brand" href="{{ path("blog_list") }}">Super blog home page</a>
+        <a class="navbar-brand" href="{{ path("blog_list") }}">Micro blog App</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -10,10 +10,7 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path("blog_gen") }}">Generate new 10 posts</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path("blog_gen", {"count": 22}) }}">Generate new 22 posts</a>
+                    <a class="nav-link" href="{{ path("blog_gen", {"count": 33}) }}">Generate new 33 posts</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path("blog_destroy") }}">Delete all posts</a>

@@ -4,18 +4,18 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Dto\SimplePostDto;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class PostStore implements PostStoreInterface
 {
     private const KEY_POSTS = 'posts';
 
-    private $session;
+    private $requestStack;
     private $pageSize;
 
-    public function __construct(SessionInterface $session, int $pageSize)
+    public function __construct(RequestStack $requestStack, int $pageSize)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->pageSize = $pageSize;
     }
 
@@ -25,16 +25,16 @@ class PostStore implements PostStoreInterface
             $postDto->uuid = uniqid();
         }
 
-        $posts = $this->session->get(self::KEY_POSTS, []);
+        $posts = $this->requestStack->getSession()->get(self::KEY_POSTS, []);
         $posts[$postDto->uuid] = $postDto;
-        $this->session->set(self::KEY_POSTS, $posts);
+        $this->requestStack->getSession()->set(self::KEY_POSTS, $posts);
 
         return $postDto;
     }
 
     public function get(string $uuid): ?SimplePostDto
     {
-        return $this->session->get(self::KEY_POSTS, [])[$uuid] ?? null;
+        return $this->requestStack->getSession()->get(self::KEY_POSTS, [])[$uuid] ?? null;
     }
 
     /**
@@ -44,12 +44,12 @@ class PostStore implements PostStoreInterface
     {
         $offset = ($page - 1) * $this->pageSize;
 
-        return array_slice($this->session->get(self::KEY_POSTS, []), $offset, $this->pageSize);
+        return array_slice($this->requestStack->getSession()->get(self::KEY_POSTS, []), $offset, $this->pageSize);
     }
 
     public function getPageCount(): int
     {
-        $postCount = count($this->session->get(self::KEY_POSTS, []));
+        $postCount = count($this->requestStack->getSession()->get(self::KEY_POSTS, []));
 
         return (int)ceil($postCount / $this->pageSize);
     }
@@ -61,6 +61,6 @@ class PostStore implements PostStoreInterface
 
     public function destroy(): void
     {
-        $this->session->remove(self::KEY_POSTS);
+        $this->requestStack->getSession()->remove(self::KEY_POSTS);
     }
 }
