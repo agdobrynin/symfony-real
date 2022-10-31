@@ -24,5 +24,18 @@ micro-post:
     unlike: 'Unlike'
 registration_form:
   title: 'Registration'
+  form:
+    login:
+      label: 'Login'
+      help: 'Login must be contain "a-z-_." symbols without spaces'
+    nick:
+      help: 'Nickname will be display with yours posts'
+    emoji:
+      help: 'Choose an emoji icon - click on field for display emoji collection'
+      label: 'Your emoji'
+    password:
+      label_1: 'Password'
+      label_2: 'Confirm Password'
+    submit: 'Sign up me'
 login_form:
   title: 'Please sign in'

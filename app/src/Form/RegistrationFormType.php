@@ -19,20 +19,22 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('login', TextType::class, [
-            'help' => 'Login must be contain "a-z-_." symbols without spaces',
+            'label' => 'registration_form.form.login.label',
+            'help' => 'registration_form.form.login.help',
         ])
             ->add('nick', TextType::class, [
-                'help' => 'Nickname will be display with yours posts',
+                'help' => 'registration_form.form.nick.help',
             ])
             ->add('emoji', TextType::class, [
-                'help' => 'Choose an emoji icon - click on field for display emoji collection',
+                'label' => 'registration_form.form.emoji.label',
+                'help' => 'registration_form.form.emoji.help',
                 'attr' => ['maxlength' => 2, 'readonly' => 'readonly'],
             ])
             ->add('email', EmailType::class)
             ->add('password', RepeatedType::class, [
                     'type' => PasswordType::class,
-                    'first_options' => ['label' => 'Password'],
-                    'second_options' => ['label' => 'Confirm Password'],
+                    'first_options' => ['label' => 'registration_form.form.password.label_1'],
+                    'second_options' => ['label' => 'registration_form.form.password.label_2'],
                     'invalid_message' => 'The password fields must match.',
                     'mapped' => false,
                     'constraints' => [
@@ -47,7 +49,7 @@ class RegistrationFormType extends AbstractType
                     ]
                 ]
             )
-            ->add('save', SubmitType::class, ['label' => 'Sign up me']);
+            ->add('save', SubmitType::class, ['label' => 'registration_form.form.submit']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
