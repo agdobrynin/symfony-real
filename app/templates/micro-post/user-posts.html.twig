@@ -29,23 +29,20 @@
             </div>
         </div>
         <div class="card-body">
-            Followers:
+            {{ 'micro-post.profile.followers'|trans({'%count%': user.followers|length, '%nick%': user.nick}) }}
+            {% trans with {'%nick%': 'Fabien'} from 'app' %}Hello %name%{% endtrans %}
             {% for follower in user.followers %}
                 <a class="badge rounded-pill text-bg-light"
                    href="{{ path('micro_post_by_user', {uuid: follower.uuid}) }}"
                 >@{{ follower.nick }}</a>
-            {% else %}
-                is empty ⌛
             {% endfor %}
         </div>
         <div class="card-body">
-            Following:
+            {{ 'micro-post.profile.following'|trans({'%count%': user.following|length, '%nick%': user.nick}) }}
             {% for following in user.following %}
                 <a class="badge rounded-pill text-bg-light"
                    href="{{ path('micro_post_by_user', {uuid: following.uuid}) }}"
                 >@{{ following.nick }}</a>
-            {% else %}
-                is empty ⌛
             {% endfor %}
         </div>
     </div>
