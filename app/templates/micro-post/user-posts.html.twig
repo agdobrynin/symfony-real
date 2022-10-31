@@ -30,7 +30,6 @@
         </div>
         <div class="card-body">
             {{ 'micro-post.profile.followers'|trans({'%count%': user.followers|length, '%nick%': user.nick}) }}
-            {% trans with {'%nick%': 'Fabien'} from 'app' %}Hello %name%{% endtrans %}
             {% for follower in user.followers %}
                 <a class="badge rounded-pill text-bg-light"
                    href="{{ path('micro_post_by_user', {uuid: follower.uuid}) }}"
