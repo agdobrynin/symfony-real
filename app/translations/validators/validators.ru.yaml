@@ -1,0 +1,4 @@
+registration_form:
+  form:
+    password:
+      invalid_message: 'Пароли не совпадают, повторите ввод.'

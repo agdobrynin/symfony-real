@@ -35,15 +35,12 @@ class RegistrationFormType extends AbstractType
                     'type' => PasswordType::class,
                     'first_options' => ['label' => 'registration_form.form.password.label_1'],
                     'second_options' => ['label' => 'registration_form.form.password.label_2'],
-                    'invalid_message' => 'The password fields must match.',
+                    'invalid_message' => 'registration_form.form.password.invalid_message',
                     'mapped' => false,
                     'constraints' => [
-                        new NotBlank([
-                            'message' => 'Please enter a password',
-                        ]),
+                        new NotBlank(),
                         new Length([
                             'min' => 6,
-                            'minMessage' => 'Your password should be at least {{ limit }} characters',
                             'max' => 4096,
                         ]),
                     ]

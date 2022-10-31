@@ -1,0 +1,4 @@
+registration_form:
+  form:
+    password:
+      invalid_message: 'The password fields must match.'
