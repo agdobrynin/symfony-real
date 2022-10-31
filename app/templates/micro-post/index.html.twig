@@ -48,10 +48,16 @@
                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ app.request.locale|locale_name(app.request.locale)|u.title }}
                     </a>
+
+                    {% set _route = app.request.get('_route') %}
+                    {% set _route_params = app.request.get('_route_params') %}
+
                     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-language">
-                        <li><a class="dropdown-item" href="{{ path('micro_post_list', {_locale: 'en'}) }}">English</a>
+                        <li><a class="dropdown-item"
+                               href="{{ path(_route, _route_params|merge({_locale: 'en'})) }}">English</a>
                         </li>
-                        <li><a class="dropdown-item" href="{{ path('micro_post_list', {_locale: 'ru'}) }}">Русский</a>
+                        <li><a class="dropdown-item"
+                               href="{{ path(_route, _route_params|merge({_locale: 'ru'})) }}">Русский</a>
                         </li>
                     </ul>
                 </li>

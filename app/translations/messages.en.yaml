@@ -22,3 +22,7 @@ micro-post:
     del: 'Delete'
     like: 'Like'
     unlike: 'Unlike'
+registration_form:
+  title: 'Registration'
+login_form:
+  title: 'Please sign in'

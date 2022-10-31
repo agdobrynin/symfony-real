@@ -32,3 +32,7 @@ You might find these users interesting:
   'Возможно вы найдете интересных авторов здесь'
 Notifications:
   'Оповещения'
+registration_form:
+  title: 'Регистрация'
+login_form:
+  title: 'Пожайлуста авторизуйтесь'

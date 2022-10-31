@@ -10,7 +10,7 @@
 {% block microPostContent %}
     <div class="row justify-content-center">
         <div class="col-6 align-self-center">
-            <h3 class="display-3">Register or <a href="{{ path('micro_post_login') }}">login</a></h3>
+            <h3 class="display-3">{{ 'registration_form.title'|trans }}</h3>
             <hr>
             {{ form_start(registrationForm) }}
             {{ form_errors(registrationForm) }}
