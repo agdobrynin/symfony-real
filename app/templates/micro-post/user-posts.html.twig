@@ -14,14 +14,17 @@
                 <div class="row align-items-center">
                     <div class="col"><h6 class="display-6">{{ user.emoji }}@{{ user.nick }}</h6></div>
                     <div class="col text-end">
-                        <a class="btn btn-outline-secondary" href="{{ path('micro_post_list') }}">All posts</a>
+                        <a class="btn btn-outline-secondary" href="{{ path('micro_post_list') }}">
+                            {{ 'micro-post.profile.all-posts'|trans }}</a>
                         {% if app.user and app.user != user %}
                             {% if app.user.following.contains(user) %}
                                 <a class="btn btn-outline-danger"
-                                   href="{{ path('micro-post-unfollowing', {uuid: user.uuid}) }}">Unfollowing</a>
+                                   href="{{ path('micro-post-unfollowing', {uuid: user.uuid}) }}">
+                                    {{ 'micro-post.profile.unfollowing'|trans }}</a>
                             {% else %}
                                 <a class="btn btn-outline-success"
-                                   href="{{ path('micro-post-following', {uuid: user.uuid}) }}">Following</a>
+                                   href="{{ path('micro-post-following', {uuid: user.uuid}) }}">
+                                    {{ 'micro-post.profile.follow'|trans }}</a>
                             {% endif %}
                         {% endif %}
                     </div>

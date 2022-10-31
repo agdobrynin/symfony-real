@@ -9,11 +9,15 @@
             </a>
 
             <ul class="nav nav-pills">
-                <li class="nav-item"><a href="{{ path("micro_post_add") }}" class="nav-link">New post</a></li>
-                <li class="nav-item"><a href="{{ path("micro_post_blogger_list") }}" class="nav-link">Bloggers</a></li>
+                <li class="nav-item"><a href="{{ path("micro_post_add") }}" class="nav-link">
+                        {{ 'micro-post.menu.nav.new-post'|trans }}</a></li>
+                <li class="nav-item"><a href="{{ path("micro_post_blogger_list") }}" class="nav-link">
+                        {{ 'micro-post.menu.nav.bloggers'|trans }}</a></li>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') == false %}
-                    <li class="nav-item"><a href="{{ path("micro_post_register") }}" class="nav-link">Sign up</a></li>
-                    <li class="nav-item"><a href="{{ path("micro_post_login") }}" class="nav-link">Sign in</a></li>
+                    <li class="nav-item"><a href="{{ path("micro_post_register") }}" class="nav-link">
+                            {{ 'micro-post.menu.nav.sign-up'|trans }}</a></li>
+                    <li class="nav-item"><a href="{{ path("micro_post_login") }}" class="nav-link">
+                            {{ 'micro-post.menu.nav.sign-in'|trans }}</a></li>
                 {% endif %}
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item">
@@ -23,7 +27,7 @@
                            data-bs-toggle="popover"
                            data-bs-trigger="hover focus"
                            data-bs-placement="bottom"
-                           data-bs-content="Notifications"
+                           data-bs-content="{{ 'Notifications'|trans }}"
                            tabindex="0">
                             🔔
                             <span id="notification-text"
@@ -36,8 +40,21 @@
                             {{ app.User.emoji }}@{{ app.User.nick }}
                         </a>
                     </li>
-                    <li class="nav-item"><a href="{{ path("micro_post_logout") }}" class="nav-link">Sign out</a></li>
+                    <li class="nav-item"><a href="{{ path("micro_post_logout") }}" class="nav-link">
+                            {{ 'micro-post.menu.nav.sign-out'|trans }}</a></li>
                 {% endif %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle border" href="#" id="dropdown-language" role="button"
+                       data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ app.request.locale|locale_name(app.request.locale)|u.title }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-language">
+                        <li><a class="dropdown-item" href="{{ path('micro_post_list', {_locale: 'en'}) }}">English</a>
+                        </li>
+                        <li><a class="dropdown-item" href="{{ path('micro_post_list', {_locale: 'ru'}) }}">Русский</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </header>
     </div>

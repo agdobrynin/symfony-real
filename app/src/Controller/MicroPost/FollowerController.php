@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * @Route("/micro-post")
+ * @Route("/micro-post/{_locale<%app.supported_locales%>}")
  * @IsGranted(User::ROLE_USER)
  */
 class FollowerController extends AbstractController

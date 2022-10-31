@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
- * @Route("/micro-post")
+ * @Route("/micro-post/{_locale<%app.supported_locales%>}")
  */
 class SecurityController extends AbstractController
 {

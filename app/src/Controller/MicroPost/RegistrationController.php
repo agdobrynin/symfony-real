@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistrationController extends AbstractController
 {
     /**
-     * @Route("/micro-post/register", name="micro_post_register")
+     * @Route("/micro-post/{_locale<%app.supported_locales%>}/register", name="micro_post_register")
      */
     public function register(
         Request                             $request,

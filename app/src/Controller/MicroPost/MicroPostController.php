@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/micro-post")
+ * @Route("/micro-post/{_locale<%app.supported_locales%>}")
  */
 class MicroPostController extends AbstractController
 {

@@ -12,23 +12,25 @@
     {% if posts %}
         <div class="mb-5">
             {% if is_granted('ROLE_USER') %}
-                <h4 class="display-3">Latest messages from subscribed users</h4>
+                <h4 class="display-3">
+                    {{ 'Latest messages from subscribed users'|trans }}</h4>
             {% else %}
-                <h4 class="display-3">Last posts</h4>
+                <h4 class="display-3">{{ 'Last posts'|trans }}</h4>
             {% endif %}
         </div>
         {% for post in posts %}
             {{ include ("micro-post/post-item.html.twig", {post: post}) }}
         {% endfor %}
     {% else %}
-        <p>Your not have the following user, yet!</p>
+        <p>{{ 'Your not have the following user, yet'|trans }}!</p>
         {% if followUser %}
-            <p>You might find these users interesting:</p>
+            <p>{{ 'You might find these users interesting'|trans }}:</p>
             <ul class="list-group list-group-horizontal-md">
                 {% for blogger in followUser %}
                     <a href="{{ path('micro_post_by_user', {uuid: blogger.uuid}) }}"
                        class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ blogger.emoji }}@{{ blogger.nick }} <sup class="m-3">{{ blogger.posts|length }} posts</sup>
+                        {{ blogger.emoji }}@{{ blogger.nick }}
+                        <sup class="m-3">{{ 'micro-post.post-from-following.posts'|trans({'%count%': blogger.posts|length}) }}</sup>
                     </a>
                 {% endfor %}
             </ul>

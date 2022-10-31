@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/micro-post")
+ * @Route("/micro-post/{_locale<%app.supported_locales%>}")
  */
 class BloggerController extends AbstractController
 {

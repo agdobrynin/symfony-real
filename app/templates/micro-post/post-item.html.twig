@@ -1,9 +1,10 @@
 <div class="card mb-5">
     <div class="card-body">
         <h6 class="card-subtitle mb-2 text-muted">
-            Post from user
+            {{ 'micro-post.post-item.post-from'|trans }}
             {{ post.user.emoji }}@<a href="{{ path("micro_post_by_user", {uuid: post.user.uuid}) }}">
-                {{ post.user.nick }}</a> at {{ post.getDate|date }}
+                {{ post.user.nick }}</a> {{ 'micro-post.post-item.post-from-prefix-date'|trans }}
+            {{ post.getDate|format_datetime('medium', 'short') }}
         </h6>
         <p class="card-text">{{ post.getContent }}</p>
         <div class="row">
@@ -13,22 +14,28 @@
                 <button type="button"
                         data-uuid="{{ post.uuid }}"
                         data-action="{% if isLiked %}unlike{% else %}like{% endif %}"
-                        data-label-like="Like" data-css-class-like="btn-outline-primary"
-                        data-label-unlike="Unlike" data-css-class-unlike="btn-outline-secondary"
+                        data-label-like="{{ 'micro-post.post-item.like'|trans }}"
+                        data-css-class-like="btn-outline-primary"
+                        data-label-unlike="{{ 'micro-post.post-item.unlike'|trans }}"
+                        data-css-class-unlike="btn-outline-secondary"
                         class="btn btn-sm {% if isLiked %}btn-outline-secondary{% else %}btn-outline-primary{% endif %}">
                     <span class="spinner-into-btn spinner-border spinner-border-sm" style="display: none"></span>
-                    {% if isLiked %}Unlike{% else %}Like{% endif %}
+                    {% if isLiked %}{{ 'micro-post.post-item.unlike'|trans }}{% else %}{{ 'micro-post.post-item.like'|trans }}{% endif %}
                     <sup>{{ post.getLikedBy.count }}</sup>
                 </button>
             </div>
             <div class="col-md-6 text-end">
                 <div class="btn-group">
-                    <a class="btn btn-primary btn-sm" href="{{ url("micro_post_view", {uuid: post.getUuid}) }}">view
-                        more</a>
+                    <a class="btn btn-primary btn-sm"
+                       href="{{ url("micro_post_view", {uuid: post.getUuid}) }}">
+                        {{ 'micro-post.post-item.view'|trans }}</a>
                     {% if is_granted('EDIT_DEL_OWNER_OR_ADMIN', post) %}
-                        <a class="btn btn-secondary btn-sm" href="{{ url("micro_post_edit", {uuid: post.getUuid}) }}">edit</a>
+                        <a class="btn btn-secondary btn-sm"
+                           href="{{ url("micro_post_edit", {uuid: post.getUuid}) }}">
+                            {{ 'micro-post.post-item.edit'|trans }}</a>
                         <a class="btn btn-danger btn-sm"
-                           href="{{ url("micro_post_del", {uuid: post.getUuid}) }}">delete</a>
+                           href="{{ url("micro_post_del", {uuid: post.getUuid}) }}">
+                            {{ 'micro-post.post-item.del'|trans }}</a>
                     {% endif %}
                 </div>
             </div>

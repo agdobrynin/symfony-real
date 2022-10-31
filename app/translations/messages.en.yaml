@@ -2,3 +2,23 @@ micro-post:
   profile:
     followers: '{0}"%nick%" don''t have any followers yet.|{1}The follower of %nick%|]1,Inf[Followers of "%nick%":'
     following: '{0}The user "%nick%" not following anyone yet.|{1}"%nick%" following to user:|]1,Inf["%nick%" following to users:'
+    all-posts: 'My following posts'
+    unfollowing: 'Unfollowing'
+    follow: 'Following'
+  post-from-following:
+    'posts': '%count% post|%count%  post|]1,Inf[%count% posts'
+  menu:
+    nav:
+      new-post: 'New post'
+      bloggers: 'Bloggers'
+      sign-up: 'Sign up'
+      sign-in: 'Sign in'
+      sign-out: 'Logout'
+  post-item:
+    post-from: 'Post from user'
+    post-from-prefix-date: 'at'
+    view: 'View more'
+    edit: 'Edit'
+    del: 'Delete'
+    like: 'Like'
+    unlike: 'Unlike'

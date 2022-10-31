@@ -1,0 +1,34 @@
+micro-post:
+  profile:
+    followers: '{0}"%nick%" пока без подписчиков.|{1}У пользователя %nick% есть подписчик|]1,Inf[Подписчики "%nick%":'
+    following: '{0}"%nick%" пока ни на кого не подписан.|"%nick%" подписан на блогера:|]1,Inf["%nick%" подпсан на блоггеров:'
+    all-posts: 'Посты моих подписок'
+    unfollowing: 'Отписаться'
+    follow: 'Подписаться'
+  post-from-following:
+    'posts': '{0}%count% постов|{1}%count% пост|]2,4] %count% поста|[5,Inf[%count% постов'
+  menu:
+    nav:
+      'new-post': 'Добавить пост'
+      bloggers: 'Авторы'
+      sign-up: 'Регистрация'
+      sign-in: 'Авторизоваться'
+      sign-out: 'Выйти'
+  post-item:
+    post-from: 'Пост пользователя'
+    post-from-prefix-date: 'от'
+    view: 'Подробнее'
+    edit: 'Рдактировать'
+    del: 'Удалить'
+    like: 'Супер'
+    unlike: 'Не супер'
+Latest messages from subscribed users:
+  'Последние публикации моих подписок'
+Last posts:
+  'Публикации блогеров'
+Your not have the following user, yet:
+  'У Вас пока нет подписок'
+You might find these users interesting:
+  'Возможно вы найдете интересных авторов здесь'
+Notifications:
+  'Оповещения'
