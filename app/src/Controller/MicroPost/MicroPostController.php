@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/micro-post/{_locale<%app.supported_locales%>}")
@@ -29,15 +30,18 @@ class MicroPostController extends AbstractController
     private $microPostRepository;
     private $em;
     private $userRepository;
+    private $translator;
 
     public function __construct(
         MicroPostRepository    $microPostRepository,
         EntityManagerInterface $em,
-        UserRepository         $userRepository)
+        UserRepository         $userRepository,
+        TranslatorInterface    $translator)
     {
         $this->microPostRepository = $microPostRepository;
         $this->em = $em;
         $this->userRepository = $userRepository;
+        $this->translator = $translator;
     }
 
     /**
@@ -81,7 +85,8 @@ class MicroPostController extends AbstractController
             $this->em->persist($microPost);
             $this->em->flush();
 
-            $message = $this->flashMessageWithPartOfContent('The micro post was added', $microPost);
+            $partOfMessage = $this->translator->trans('micro-post.form_edit_add_del.message.add');
+            $message = $this->flashMessageWithPartOfContent($partOfMessage, $microPost);
             $this->addFlash(FlashType::SUCCESS, $message);
 
             return $this->redirectToRoute('micro_post_by_user', ['uuid' => $this->getUser()->getUUid()]);
@@ -92,17 +97,18 @@ class MicroPostController extends AbstractController
 
     /**
      * @Route("/edit/{uuid}", name="micro_post_edit", methods={"get", "post"})
-     * @IsGranted(
-     *     MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN,
-     *     subject="microPost",
-     *     message="Only the owner can edit a post."
-     * )
      */
     public function edit(Request $request, ?MicroPost $microPost = null)
     {
         if (null === $microPost) {
-            throw new NotFoundHttpException('Micro post not found for editing');
+            throw new NotFoundHttpException($this->translator->trans('micro-post.form_edit_add_del.message.not_found'));
         }
+
+        $this->denyAccessUnlessGranted(
+            MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN,
+            $microPost,
+            $this->translator->trans('micro-post.form_edit_add_del.message.edit_owner')
+        );
 
         $form = $this->formMicroPost($microPost);
         $microPost->setDate(new \DateTime());
@@ -113,7 +119,8 @@ class MicroPostController extends AbstractController
             $this->em->persist($microPost);
             $this->em->flush();
 
-            $message = $this->flashMessageWithPartOfContent('The micro post was updated', $microPost);
+            $partOfMessage = $this->translator->trans('micro-post.form_edit_add_del.message.update');
+            $message = $this->flashMessageWithPartOfContent($partOfMessage, $microPost);
             $this->addFlash(FlashType::INFO, $message);
 
             return $this->redirectToRoute('micro_post_view', ['uuid' => $microPost->getUUid()]);
@@ -128,18 +135,19 @@ class MicroPostController extends AbstractController
     public function del(?MicroPost $microPost = null): RedirectResponse
     {
         if (null === $microPost) {
-            throw new NotFoundHttpException('Micro post not found for deleting');
+            throw new NotFoundHttpException($this->translator->trans('micro-post.form_edit_add_del.message.not_found'));
         }
 
         $this->denyAccessUnlessGranted(
             MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN,
             $microPost,
-            'Only the owner can delete a post'
+            $this->translator->trans('micro-post.form_edit_add_del.message.del_owner')
         );
 
         $this->microPostRepository->remove($microPost, true);
 
-        $message = $this->flashMessageWithPartOfContent('The micro post was deleted', $microPost);
+        $partOfMessage = $this->translator->trans('micro-post.form_edit_add_del.message.del');
+        $message = $this->flashMessageWithPartOfContent($partOfMessage, $microPost);
         $this->addFlash(FlashType::SUCCESS, $message);
 
         return $this->redirectToRoute('micro_post_list');
@@ -154,7 +162,7 @@ class MicroPostController extends AbstractController
             return $this->render('micro-post/view.html.twig', ['post' => $microPost]);
         }
 
-        throw new NotFoundHttpException('Micro post not found');
+        throw new NotFoundHttpException($this->translator->trans('micro-post.form_edit_add_del.message.not_found'));
     }
 
     /**
@@ -178,11 +186,11 @@ class MicroPostController extends AbstractController
     {
         return $this->createFormBuilder($microPost)
             ->add('content', TextareaType::class, [
-                'label' => 'micro-post.form_edit_add.content',
+                'label' => 'micro-post.form_edit_add_del.content',
                 'attr' => ['rows' => 5]
             ])
             ->add('save', SubmitType::class, [
-                'label' => 'micro-post.form_edit_add.button_submit'
+                'label' => 'micro-post.form_edit_add_del.button_submit'
             ])
             ->getForm();
     }

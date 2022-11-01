@@ -22,9 +22,16 @@ micro-post:
     del: 'Delete'
     like: 'Like'
     unlike: 'Unlike'
-  form_edit_add:
+  form_edit_add_del:
     content: 'Content'
     button_submit: '💾 Save'
+    message:
+      add: 'The micro post was added'
+      update: 'The micro post was updated'
+      del: 'The micro post was deleted'
+      del_owner: 'Only the owner can delete this post'
+      edit_owner: 'Only the owner can edit this post'
+      not_found: 'Micro post not found'
 registration_form:
   title: 'Registration'
   form:
