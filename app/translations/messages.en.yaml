@@ -63,3 +63,8 @@ notification_page:
   button_mark_read: 'Mark this notification as read'
   button_mark_read_all: 'Set as read for all notifications'
   notification_not_found: 'No new notifications'
+email:
+  registration:
+    subject: 'Registration in Micro Post App!'
+  like:
+    subject: 'Hey! Your post like by %nick%'

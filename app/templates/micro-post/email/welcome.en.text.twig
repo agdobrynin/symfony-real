@@ -1,6 +1,6 @@
 Welcome to MicroPost App!
 
 Dear {{ user.nick }}! Your user account is not confirm yet.
-Please confirm your account at {{ url('micro_post_confirm_registraction', {token: user.confirmationToken}) }}
+Please confirm your account at {{ url('micro_post_confirm_registration', {token: user.confirmationToken, _locale: locale}) }}
 
 Best regards MicroPost App administrator.

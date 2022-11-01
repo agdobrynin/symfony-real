@@ -1,6 +1,7 @@
 <h3>Welcome to MicroPost App</h3>
 <p>Dear {{ user.nick }}! Your user account is not confirm yet.</p>
 <p>Please confirm your account <a
-            href="{{ url('micro_post_confirm_registraction', {token: user.confirmationToken}) }}">here</a>.</p>
+            href="{{ url('micro_post_confirm_registration', {token: user.confirmationToken, _locale: locale}) }}">here</a>.
+</p>
 
 <p><small>Best regards MicroPost App administrator.</small></p>

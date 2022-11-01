@@ -6,5 +6,5 @@ use App\Entity\User;
 
 interface WelcomeMessageEmailServiceInterface
 {
-    public function send(User $user): bool;
+    public function send(User $user, string $locale): bool;
 }

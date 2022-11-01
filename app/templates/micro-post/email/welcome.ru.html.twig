@@ -1,0 +1,7 @@
+<h3>Добро пожаловать в MicroPost App!</h3>
+<p>Уважаемый {{ user.nick }}, Ваш логин еще не подтвержден.</p>
+<p>Пожалуйста подтвердите ваш логин по <a
+            href="{{ url('micro_post_confirm_registration', {token: user.confirmationToken, _locale: locale}) }}">ссылке</a>.
+</p>
+
+<p><small>С уважением администратор сервиса MicroPost App.</small></p>

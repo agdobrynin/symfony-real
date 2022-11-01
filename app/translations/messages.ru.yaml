@@ -75,3 +75,8 @@ notification_page:
   notification_not_found: 'Нет новых оповещений'
 # Message for annotation IsGranted in MicropostController::edit
 'Only the owner can edit a post.': 'Только владелец поста может его редакитровать'
+email:
+  registration:
+    subject: 'Регстраиця в Micro Post App!'
+  like:
+    subject: 'Ура! Ваш пост отмечен как "нравится" пользователем %nick%'

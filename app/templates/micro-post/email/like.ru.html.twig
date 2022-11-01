@@ -1,0 +1,10 @@
+<p>Привет {{ userHello }}! Пользователь <a
+            href="{{ url('micro_post_by_user', {uuid: likeByUser.uuid, _locale: locale}) }}">{{ likeByUser.nick }}</a>
+    отметил ваш пост как "нравится" в {{ createAt|date }}:</p>
+<blockquote>
+    {{ post.content|slice(0, 150) }}...
+</blockquote>
+<div><a href="{{ url('micro_post_view', {uuid: post.uuid, _locale: locale}) }}">читать полность</a></div>
+<p>
+    <small>С уважением администратор Micro Post App.</small>
+</p>

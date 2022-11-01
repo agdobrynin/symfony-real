@@ -41,7 +41,7 @@ class SecurityController extends AbstractController
     /**
      * @Route(
      *     "/confirm/{token}",
-     *     name="micro_post_confirm_registraction",
+     *     name="micro_post_confirm_registration",
      *     methods={"get"}
      * )
      */

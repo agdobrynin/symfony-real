@@ -46,7 +46,7 @@ class RegistrationController extends AbstractController
             $message .= '. For activate your login check your mailbox and click confirmation link!';
 
             $this->addFlash(FlashType::SUCCESS, $message);
-            $emailService->send($user);
+            $emailService->send($user, $request->getLocale());
 
             return $this->redirectToRoute('micro_post_list');
         }

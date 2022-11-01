@@ -10,12 +10,13 @@ use App\Event\LikeNotifyByEmailEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
- * @Route("/micro-post", methods={"get"})
+ * @Route("/micro-post/{_locale<%app.supported_locales%>}", methods={"get"})
  */
 class LikeController extends AbstractController
 {
@@ -31,7 +32,7 @@ class LikeController extends AbstractController
     /**
      * @Route("/like/{uuid}", name="micro_post_like")
      */
-    public function like(MicroPost $microPost): JsonResponse
+    public function like(MicroPost $microPost, Request $request): JsonResponse
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
@@ -44,7 +45,7 @@ class LikeController extends AbstractController
         $this->entityManager->flush();
 
         // Notify by email - creates the event and dispatches it
-        $event = new LikeNotifyByEmailEvent($microPost, $currentUser);
+        $event = new LikeNotifyByEmailEvent($microPost, $currentUser, $request->getLocale());
         $this->eventDispatcher->dispatch($event, LikeNotifyByEmailEvent::NAME);
 
         $likeDto = new LikePostDto($microPost->getLikedBy()->count());

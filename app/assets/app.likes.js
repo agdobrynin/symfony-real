@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const elButtonClicked = event.target;
         /** @type {string|undefined} postUuid */
         const postUuid = elButtonClicked.dataset.uuid;
+        /** @type {string|undefined} locale */
+        const locale = elButtonClicked.dataset.locale || "en";
         /** @type {string|undefined} postUuid */
         const likeActionTitle = elButtonClicked.dataset.action;
 
@@ -21,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
             && elButtonClicked instanceof HTMLButtonElement) {
             const isLikeAction = likeActionTitle === likeActionTitleLike;
 
-            const route = `/micro-post/${isLikeAction ? 'like' : 'unlike'}` + `/${postUuid}`;
+            const route = `/micro-post/${locale}/${isLikeAction ? 'like' : 'unlike'}` + `/${postUuid}`;
 
             toggleLoading(elButtonClicked, true);
 

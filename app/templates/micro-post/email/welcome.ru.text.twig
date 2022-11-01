@@ -1,0 +1,6 @@
+Добро пожаловать в MicroPost App!
+
+Уважаемый {{ user.nick }}, Ваш логин еще не подтвержден.
+Пожалуйста подтвердите ваш логин по ссылке {{ url('micro_post_confirm_registration', {token: user.confirmationToken, _locale: locale}) }}
+
+С уважением администратор сервиса MicroPost App.

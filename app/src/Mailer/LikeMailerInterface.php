@@ -7,5 +7,5 @@ use App\Entity\User;
 
 interface LikeMailerInterface
 {
-    public function send(MicroPost $post, User $likedByUser): bool;
+    public function send(MicroPost $post, User $likedByUser, string $locale): bool;
 }

@@ -10,9 +10,9 @@
         <div class="row">
             <div class="col-md-6">
                 {% set isLiked = post.getLikedBy.contains(app.user) %}
-
                 <button type="button"
                         data-uuid="{{ post.uuid }}"
+                        data-locale="{{ app.request.locale }}"
                         data-action="{% if isLiked %}unlike{% else %}like{% endif %}"
                         data-label-like="{{ 'micro-post.post-item.like'|trans }}"
                         data-css-class-like="btn-outline-primary"

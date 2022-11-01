@@ -1,8 +1,0 @@
-Hello {{ userHello }}! User {{ likeByUser.nick }} like your post at {{ createAt|date }}.
-
-{{ post.content|slice(0, 150) }}...
-
-Link to Micro post {{ url('micro_post_view', {uuid: post.uuid}) }}.
-Link to {{ likeByUser.nick }} profile {{ url('micro_post_by_user', {uuid: likeByUser.uuid}) }}
-
-Best regards Micro post administrator.
