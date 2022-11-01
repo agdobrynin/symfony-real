@@ -22,6 +22,9 @@ micro-post:
     del: 'Delete'
     like: 'Like'
     unlike: 'Unlike'
+  form_edit_add:
+    content: 'Content'
+    button_submit: '💾 Save'
 registration_form:
   title: 'Registration'
   form:
@@ -39,3 +42,17 @@ registration_form:
     submit: 'Sign up me'
 login_form:
   title: 'Please sign in'
+  form:
+    login:
+      label: 'Login'
+      password: 'Password'
+      button: 'Sign up me'
+notification_page:
+  message:
+    unfollow: 'not follow to you 😥 at %date%'
+    follow: 'now is your follower 😍 at %date%'
+    like: 'like our post 😊 at %date%'
+    unlike: 'unlike your post 😮 at %date%'
+  button_mark_read: 'Mark this notification as read'
+  button_mark_read_all: 'Set as read for all notifications'
+  notification_not_found: 'No new notifications'

@@ -12,10 +12,10 @@
         <div class="container">
             {% if notifications|length %}
                 <a href="{{ path('micro_post_notification_set_seen_all') }}" class="btn btn-outline-success">
-                    Set as read for all notifications</a>
+                    {{ 'notification_page.button_mark_read_all'|trans }}</a>
                 <hr>
             {% else %}
-                <h4 class="display-4">No notifications</h4>
+                <h4 class="display-4">{{ 'notification_page.notification_not_found'|trans }}</h4>
             {% endif %}
             <div class="row g-3">
                 {% for notification in notifications %}

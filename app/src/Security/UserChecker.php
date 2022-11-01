@@ -25,8 +25,7 @@ class UserChecker implements UserCheckerInterface
         }
 
         if (!$user->getIsActive()) {
-            $message = 'Your user account is not confirm. 
-            Please look for an email in your inbox with a confirmation link.';
+            $message = 'Your user account is not confirm. Please look for an email in your inbox with a confirmation link.';
 
             throw new CustomUserMessageAccountStatusException($message);
         }

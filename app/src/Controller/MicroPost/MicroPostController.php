@@ -177,8 +177,13 @@ class MicroPostController extends AbstractController
     private function formMicroPost(MicroPost $microPost): FormInterface
     {
         return $this->createFormBuilder($microPost)
-            ->add('content', TextareaType::class, ['attr' => ['rows' => 5]])
-            ->add('save', SubmitType::class, ['label' => 'Create post'])
+            ->add('content', TextareaType::class, [
+                'label' => 'micro-post.form_edit_add.content',
+                'attr' => ['rows' => 5]
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => 'micro-post.form_edit_add.button_submit'
+            ])
             ->getForm();
     }
 

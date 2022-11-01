@@ -14,10 +14,13 @@ class LoginFormType extends AbstractType
     {
         $builder
             ->add('_username', TextType::class, [
-                'label' => 'Login',
-                'help' => 'Login must be contain "a-z-_." symbols without spaces',
+                'label' => 'login_form.form.login.label',
             ])
-            ->add('_password', PasswordType::class)
-            ->add('save', SubmitType::class, ['label' => 'Sign up']);
+            ->add('_password', PasswordType::class, [
+                'label' => 'login_form.form.login.password',
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => 'login_form.form.login.button'
+            ]);
     }
 }

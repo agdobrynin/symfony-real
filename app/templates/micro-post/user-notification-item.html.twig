@@ -1,23 +1,24 @@
 {% set alert_css = 'alert-secondary' %}
 {% set alert_text = 'hmmmmm...' %}
+{% set dateFormated = notification.createAt|format_datetime('medium', 'short') %}
 
 {% if notification is is_notification_like %}
     {% set alert_css = 'alert-primary' %}
-    {% set alert_text = 'like our post 😊' %}
+    {% set alert_text = 'notification_page.message.like'|trans({'%date%': dateFormated}) %}
 {% elseif notification is is_notification_unlike %}
     {% set alert_css = 'alert-warning' %}
-    {% set alert_text = 'unlike your post 😮' %}
+    {% set alert_text = 'notification_page.message.unlike'|trans({'%date%': dateFormated}) %}
 {% elseif notification is is_notification_follow %}
     {% set alert_css = 'alert-success' %}
-    {% set alert_text = 'now is your follower 😍' %}
+    {% set alert_text = 'notification_page.message.follow'|trans({'%date%': dateFormated}) %}
 {% elseif notification is is_notification_unfollow %}
     {% set alert_css = 'alert-danger' %}
-    {% set alert_text = 'not follow to you 😥' %}
+    {% set alert_text = 'notification_page.message.unfollow'|trans({'%date%': dateFormated}) %}
 {% endif %}
 <div class="alert {{ alert_css }}">
     <a class="alert-link fw-normal" href="{{ path('micro_post_by_user', {uuid: notification.byUser.uuid}) }}">
         {{ notification.byUser.emoji }}@{{ notification.byUser.nick }}</a>
-    {{ alert_text }} at {{ notification.createAt|date }}
+    {{ alert_text }}
     {% if  notification.post is defined %}
         <p class="pt-2">
             <a class="alert-link fw-normal"
@@ -30,7 +31,7 @@
         <button type="button" data-notitifation-id="{{ notification.id }}"
                 class="notification-read btn btn-sm btn-outline-primary">
             <span class="spinner-into-btn spinner-border spinner-border-sm" style="display: none"></span>
-            Mark this notification as read
+            {{ 'notification_page.button_mark_read'|trans }}
         </button>
     </div>
 </div>
