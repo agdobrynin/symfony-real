@@ -3,15 +3,29 @@
 {% block title %}List of bloggers{% endblock %}
 
 {% block microPostContent %}
-    <ul class="list-group list-group-horizontal-md">
-        {% for blogger in bloggers %}
-            <a href="{{ path('micro_post_by_user', {uuid: blogger.uuid}) }}"
-               class="list-group-item list-group-item-action">
-                {{ blogger.emoji }}@{{ blogger.nick }}
-                <sup class="m-3 text-nowrap">{{ 'micro-post.post-from-following.posts'|trans({'%count%': blogger.posts|length}) }}</sup>
-            </a>
-        {% else %}
-            <li>Bloggers not found</li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            {% for blogger in bloggers %}
+                <div class="col-auto pb-4">
+                    <div class="card" style="width: 15rem;">
+                        <div class="card-header text-truncate overflow-hidden fs-5">
+                            {{ blogger.emoji }}@{{ blogger.nick }}
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">{{ 'bloggers_list.title_post'|trans }}
+                                : {{ blogger.posts|length }}</li>
+                            <li class="list-group-item">{{ 'bloggers_list.title_followers'|trans }}
+                                : {{ blogger.followers|length }}</li>
+                        </ul>
+                        <div class="card-footer">
+                            <a href="{{ path('micro_post_by_user', {uuid: blogger.uuid}) }}"
+                               class="card-link">{{ 'bloggers_list.title_profile'|trans }}</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col">{{ 'bloggers_list.title_not_found'|trans }}</div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

@@ -68,3 +68,8 @@ email:
     subject: 'Registration in Micro Post App!'
   like:
     subject: 'Hey! Your post like by %nick%'
+bloggers_list:
+  title_post: 'Posts'
+  title_followers: 'Followers'
+  title_profile: 'Profile'
+  title_not_found: 'Bloggers not found'

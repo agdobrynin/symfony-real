@@ -80,3 +80,8 @@ email:
     subject: 'Регстраиця в Micro Post App!'
   like:
     subject: 'Ура! Ваш пост отмечен как "нравится" пользователем %nick%'
+bloggers_list:
+  title_post: 'Постов'
+  title_followers: 'Подписчиков'
+  title_profile: 'Профиль'
+  title_not_found: 'Блогеров не найдено'
