@@ -2,7 +2,6 @@ micro-post:
   profile:
     followers: '{0}"%nick%" пока без подписчиков.|{1}У пользователя %nick% есть подписчик|]1,Inf[Подписчики "%nick%":'
     following: '{0}"%nick%" пока ни на кого не подписан.|"%nick%" подписан на блогера:|]1,Inf["%nick%" подпсан на блоггеров:'
-    all-posts: 'Посты моих подписок'
     unfollowing: 'Отписаться'
     follow: 'Подписаться'
   post-from-following:
@@ -11,6 +10,7 @@ micro-post:
     nav:
       'new-post': 'Добавить пост'
       bloggers: 'Авторы'
+      following_post: 'Посты моих подписок'
       sign-up: 'Регистрация'
       sign-in: 'Авторизоваться'
       sign-out: 'Выйти'
