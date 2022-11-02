@@ -20,6 +20,12 @@
                             {{ 'micro-post.menu.nav.sign-in'|trans }}</a></li>
                 {% endif %}
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    {% if app.user.following.count %}
+                        <li class="nav-item">
+                            <a href="{{ path('micro_post_list') }}"
+                               class="nav-link">{{ 'micro-post.profile.all-posts'|trans }}</a>
+                        </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a href="{{ path('micro_post_notification_all') }}"
                            id="notification"

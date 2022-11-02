@@ -14,8 +14,6 @@
                 <div class="row align-items-center">
                     <div class="col"><h6 class="display-6">{{ user.emoji }}@{{ user.nick }}</h6></div>
                     <div class="col text-end">
-                        <a class="btn btn-outline-secondary" href="{{ path('micro_post_list') }}">
-                            {{ 'micro-post.profile.all-posts'|trans }}</a>
                         {% if app.user and app.user != user %}
                             {% if app.user.following.contains(user) %}
                                 <a class="btn btn-outline-danger"
