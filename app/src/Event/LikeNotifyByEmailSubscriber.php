@@ -24,6 +24,6 @@ class LikeNotifyByEmailSubscriber implements EventSubscriberInterface
 
     public function onLikeNotifyByEmail(LikeNotifyByEmailEvent $event)
     {
-        $this->likeMailer->send($event->getMicroPost(), $event->getLikedByUser(), $event->getLocale());
+        $this->likeMailer->send($event->getMicroPost(), $event->getLikedByUser());
     }
 }

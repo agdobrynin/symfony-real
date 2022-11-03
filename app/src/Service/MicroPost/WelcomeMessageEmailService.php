@@ -15,8 +15,8 @@ class WelcomeMessageEmailService implements WelcomeMessageEmailServiceInterface
         $this->welcomeMailer = $welcomeMailer;
     }
 
-    public function send(User $user, string $locale): bool
+    public function send(User $user): bool
     {
-        return $this->welcomeMailer->send($user, $locale);
+        return $this->welcomeMailer->send($user);
     }
 }

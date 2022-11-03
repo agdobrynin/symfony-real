@@ -45,7 +45,7 @@ class LikeController extends AbstractController
         $this->entityManager->flush();
 
         // Notify by email - creates the event and dispatches it
-        $event = new LikeNotifyByEmailEvent($microPost, $currentUser, $request->getLocale());
+        $event = new LikeNotifyByEmailEvent($microPost, $currentUser);
         $this->eventDispatcher->dispatch($event, LikeNotifyByEmailEvent::NAME);
 
         $likeDto = new LikePostDto($microPost->getLikedBy()->count());

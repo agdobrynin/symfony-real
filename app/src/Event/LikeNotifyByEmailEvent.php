@@ -13,13 +13,11 @@ class LikeNotifyByEmailEvent extends Event
 
     private $microPost;
     private $likeByUser;
-    private $locale;
 
-    public function __construct(MicroPost $microPost, User $likeByUser, string $locale)
+    public function __construct(MicroPost $microPost, User $likeByUser)
     {
         $this->microPost = $microPost;
         $this->likeByUser = $likeByUser;
-        $this->locale = $locale;
     }
 
     public function getMicroPost(): MicroPost
@@ -30,10 +28,5 @@ class LikeNotifyByEmailEvent extends Event
     public function getLikedByUser(): User
     {
         return $this->likeByUser;
-    }
-
-    public function getLocale(): string
-    {
-        return $this->locale;
     }
 }
