@@ -3,9 +3,11 @@
 namespace App\Controller\MicroPost;
 
 use App\Entity\User;
+use App\Entity\UserPreferences;
 use App\Form\RegistrationFormType;
 use App\Helper\FlashType;
 use App\Security\ConfirmationTokenGeneratorInterface;
+use App\Service\MicroPost\LocalesInterface;
 use App\Service\MicroPost\WelcomeMessageEmailServiceInterface;
 use App\Service\WelcomeMessageInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,7 +28,8 @@ class RegistrationController extends AbstractController
         EntityManagerInterface              $entityManager,
         WelcomeMessageInterface             $welcomeMessage,
         WelcomeMessageEmailServiceInterface $emailService,
-        ConfirmationTokenGeneratorInterface $confirmationTokenGenerator
+        ConfirmationTokenGeneratorInterface $confirmationTokenGenerator,
+        LocalesInterface                    $locales
     ): Response
     {
         $user = new User();
@@ -40,6 +43,11 @@ class RegistrationController extends AbstractController
             $user->setPassword($passwordHash);
             $user->setRoles(User::ROLE_DEFAULT);
             $user->setConfirmationToken($confirmationTokenGenerator->getRandomSecureToken());
+
+            $locale = $form->get('locale')->getData() ?: $locales->getDefaultLocale();
+            $preferences = (new UserPreferences())->setLocale($locale);
+            $user->setPreferences($preferences);
+
             $entityManager->persist($user);
             $entityManager->flush();
             $message = $welcomeMessage->welcomeMessage($user->getNick())->message;

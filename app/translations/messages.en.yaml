@@ -47,6 +47,7 @@ registration_form:
       label_1: 'Password'
       label_2: 'Confirm Password'
     submit: 'Sign up me'
+    locale: 'Prefer interface language'
 login_form:
   title: 'Please sign in'
   form:

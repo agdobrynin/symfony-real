@@ -23,7 +23,7 @@ security:
                 username_parameter: "login_form[_username]"
                 password_parameter: "login_form[_password]"
                 check_path: micro_post_login
-                default_target_path: micro_post_list
+                default_target_path: micro_post_success_auth
                 use_referer: true
             logout:
                 path: micro_post_logout

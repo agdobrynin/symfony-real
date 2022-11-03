@@ -140,6 +140,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $isActive;
 
+    /**
+     * @ORM\OneToOne(targetEntity=UserPreferences::class, cascade={"persist"})
+     */
+    private $preferences;
+
     public function __construct(?string $uuid = null)
     {
         $this->uuid = $uuid ? Uuid::fromString($uuid) : Uuid::v4();
@@ -327,6 +332,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastLoginTime(?\DateTimeInterface $lastLoginTime): self
     {
         $this->lastLoginTime = $lastLoginTime;
+
+        return $this;
+    }
+
+    public function getPreferences(): ?UserPreferences
+    {
+        return $this->preferences;
+    }
+
+    public function setPreferences(?UserPreferences $preferences): self
+    {
+        $this->preferences = $preferences;
 
         return $this;
     }

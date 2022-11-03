@@ -5,6 +5,8 @@ namespace App\DataFixtures;
 
 use App\Entity\MicroPost;
 use App\Entity\User;
+use App\Entity\UserPreferences;
+use App\Service\MicroPost\LocalesInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -16,14 +18,16 @@ class AppFixtures extends Fixture
     private $userPasswordHasher;
     /** @var UserFixtureDto[] */
     private $fixtureUsers;
+    private $locales;
 
-    public function __construct(UserPasswordHasherInterface $userPasswordHasher)
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher, LocalesInterface $locales)
     {
         $this->userPasswordHasher = $userPasswordHasher;
         $this->fixtureUsers[] = new UserFixtureDto('admin', 'Admin of App', '🛡', true);
         $this->fixtureUsers[] = new UserFixtureDto('blogger', 'The best blogger', '🎭');
         $this->fixtureUsers[] = new UserFixtureDto('superman', 'Ironman', '🚀');
         $this->fixtureUsers[] = new UserFixtureDto('santa', 'Santa Claus', '🎅');
+        $this->locales = $locales;
     }
 
     public function load(ObjectManager $manager): void
@@ -64,6 +68,9 @@ class AppFixtures extends Fixture
             $role = $fixtureUser->isAdmin ? User::ROLE_ADMIN : User::ROLE_USER;
             $user->setRoles([$role]);
             $user->setPassword($this->getPasswordHash($user));
+
+            $preferences = (new UserPreferences())->setLocale($this->getRandomUserLocale());
+            $user->setPreferences($preferences);
             $this->addReference($fixtureUser->login, $user);
             $manager->persist($user);
         }
@@ -99,4 +106,9 @@ class AppFixtures extends Fixture
         return $users[rand(0, $maxIndex)]->login;
     }
 
+    private function getRandomUserLocale(): string
+    {
+        $locales = $this->locales->getLocales();
+        return $locales[rand(0, count($locales) - 1)];
+    }
 }

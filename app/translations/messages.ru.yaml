@@ -57,6 +57,7 @@ registration_form:
       label_1: 'Пароль'
       label_2: 'Повторите пароль'
     submit: 'Регистрация'
+    locale: 'Предпочитаемый язык интерфейса'
 login_form:
   title: 'Пожайлуста авторизуйтесь'
   form:
