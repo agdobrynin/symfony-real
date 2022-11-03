@@ -48,13 +48,13 @@ services:
         autoconfigure: true
         public: true
 
-    App\EventListener\LikeNotificationSubscriber:
+    App\EventSubscriber\LikeNotificationSubscriber:
       tags:
         - name: 'doctrine.event_subscriber'
           priority: 500
           connection: 'default'
 
-    App\EventListener\FollowerNotificationSubscriber:
+    App\EventSubscriber\FollowerNotificationSubscriber:
       tags:
         - name: 'doctrine.event_subscriber'
           priority: 500

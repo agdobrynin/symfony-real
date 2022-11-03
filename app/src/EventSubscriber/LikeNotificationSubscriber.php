@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\EventListener;
+namespace App\EventSubscriber;
 
 use App\Entity\LikeNotification;
 use App\Entity\LikeUnlikeNotification;
