@@ -29,7 +29,7 @@ class WelcomeMailer implements WelcomeMailerInterface
         $locale = $user->getPreferences()->getLocale() ?: $this->locales->getDefaultLocale();
         $subject = $this->translator->trans('email.registration.subject', [], null, $locale);
         $templateHtml = sprintf('micro-post/email/welcome.%s.html.twig', $locale);
-        $templateText = sprintf('micro-post/email/welcome.%s.text.twig', $locale);;
+        $templateText = sprintf('micro-post/email/welcome.%s.text.twig', $locale);
         $email = (new TemplatedEmail())
             ->from($this->adminEmail)
             ->to($user->getEmail())

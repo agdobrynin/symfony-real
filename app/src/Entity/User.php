@@ -307,9 +307,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->confirmationToken;
     }
 
-    public function setConfirmationToken(?string $confirmationToken): void
+    public function setConfirmationToken(?string $confirmationToken): self
     {
         $this->confirmationToken = $confirmationToken;
+
+        return $this;
     }
 
     public function getIsActive(): bool
