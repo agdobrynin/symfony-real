@@ -13,45 +13,46 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WelcomeMailerTest extends TestCase
 {
+    private $user;
+
+    public function setUp(): void
+    {
+        $userPreferences = (new UserPreferences())->setLocale('en');
+        $this->user = (new User())
+            ->setNick('Superman')
+            ->setEmail('superman@outlook.com')
+            ->setConfirmationToken('abc-confirm-token')
+            ->setPreferences($userPreferences);
+    }
+
     public function testWelcomeMailer(): void
     {
-        $confirmationToken = 'abc-confirm-token';
-        $nick = 'Superman';
-        $email = 'superman@outlook.com';
-        $localeDefault = 'en';
         $adminEmail = 'admin@outlook.com';
         $subject = 'Welcome';
-        $templateHtml = sprintf('micro-post/email/welcome.%s.html.twig', $localeDefault);
-        $templateText = sprintf('micro-post/email/welcome.%s.text.twig', $localeDefault);
-
-        $userPreferences = (new UserPreferences())->setLocale($localeDefault);
-        $user = (new User())
-            ->setNick($nick)
-            ->setEmail($email)
-            ->setConfirmationToken($confirmationToken)
-            ->setPreferences($userPreferences);
+        $templateHtml = sprintf(WelcomeMailer::TEMPLATE_HTML_PATTERN, $this->user->getPreferences()->getLocale());
+        $templateText = sprintf(WelcomeMailer::TEMPLATE_TEXT_PATTERN, $this->user->getPreferences()->getLocale());
 
         $mailer = self::createMock(MailerInterface::class);
         $mailer->expects($this->once())
             ->method('send')
-            ->with(self::callback(function (TemplatedEmail $item) use ($subject, $templateText, $templateHtml, $adminEmail, $email) {
+            ->with(self::callback(function (TemplatedEmail $item) use ($subject, $templateText, $templateHtml, $adminEmail) {
                 return $item->getSubject() === $subject
                     && $item->getTextTemplate() === $templateText
                     && $item->getHtmlTemplate() === $templateHtml
                     && $item->getFrom()[0]->getAddress() === $adminEmail
-                    && $item->getTo()[0]->getAddress() === $email;
+                    && $item->getTo()[0]->getAddress() === $this->user->getEmail();
             }));
 
         $translator = self::createMock(TranslatorInterface::class);
         $translator
             ->expects($this->once())
             ->method("trans")
-            ->with('email.registration.subject', [], null, $localeDefault)
+            ->with('email.registration.subject', [], null, $this->user->getPreferences()->getLocale())
             ->willReturn($subject);
 
         $locales = self::createMock(LocalesInterface::class);
 
         $welcomeMailer = new WelcomeMailer($mailer, $adminEmail, $translator, $locales);
-        $welcomeMailer->send($user);
+        $welcomeMailer->send($this->user);
     }
 }
