@@ -11,6 +11,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WelcomeMailer implements WelcomeMailerInterface
 {
+    public const TEMPLATE_HTML_PATTERN = 'micro-post/email/welcome.%s.html.twig';
+    public const TEMPLATE_TEXT_PATTERN = 'micro-post/email/welcome.%s.text.twig';
+
     private $mailer;
     private $adminEmail;
     private $translator;
@@ -28,8 +31,8 @@ class WelcomeMailer implements WelcomeMailerInterface
     {
         $locale = $user->getPreferences()->getLocale() ?: $this->locales->getDefaultLocale();
         $subject = $this->translator->trans('email.registration.subject', [], null, $locale);
-        $templateHtml = sprintf('micro-post/email/welcome.%s.html.twig', $locale);
-        $templateText = sprintf('micro-post/email/welcome.%s.text.twig', $locale);
+        $templateHtml = sprintf(self::TEMPLATE_HTML_PATTERN, $locale);
+        $templateText = sprintf(self::TEMPLATE_TEXT_PATTERN, $locale);
         $email = (new TemplatedEmail())
             ->from($this->adminEmail)
             ->to($user->getEmail())
