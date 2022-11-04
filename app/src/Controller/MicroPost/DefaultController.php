@@ -53,6 +53,7 @@ class DefaultController extends AbstractController
             $refererPathInfo = Request::create($referer)->getPathInfo();
             $routeInfos = $router->match($refererPathInfo);
             $refererRoute = $routeInfos['_route'] ?? '';
+
             if ($refererRoute) {
                 if ($this->getUser() instanceof User) {
                     /** @var User $currentUser */
@@ -71,7 +72,15 @@ class DefaultController extends AbstractController
                     }
                 }
 
-                return $this->redirectToRoute($refererRoute, ['_locale' => $locale]);
+                $params = [];
+
+                foreach ($routeInfos as $key => $val) {
+                    if (0 !== strpos($key, '_', 0)) {
+                        $params[$key] = $val;
+                    }
+                }
+
+                return $this->redirectToRoute($refererRoute, array_merge($params, ['_locale' => $locale]));
             }
         }
 
