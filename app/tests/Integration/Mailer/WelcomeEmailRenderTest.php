@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\Mailer;
+namespace App\Tests\Integration\Mailer;
 
 use App\Entity\User;
 use App\Entity\UserPreferences;

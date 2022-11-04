@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
-namespace App\Security;
+namespace App\Tests\Unit\Security;
 
+use App\Security\ConfirmationTokenGenerator;
 use PHPUnit\Framework\TestCase;
 
 class ConfirmationTokenGeneratorTest extends TestCase

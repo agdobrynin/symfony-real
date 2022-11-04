@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\Service\MicroPost;
+namespace App\Tests\Integration\Service\MicroPost;
 
 use App\Service\MicroPost\Locales;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
