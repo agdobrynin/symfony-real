@@ -13,11 +13,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Intl\Languages;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use function Symfony\Component\String\u;
 
 class RegistrationFormType extends AbstractType
 {
@@ -32,12 +30,6 @@ class RegistrationFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $choicesLocale = [];
-
-        foreach ($this->locales->getLocales() as $locale) {
-            $choicesLocale[(string)u(Languages::getName($locale))->title()] = $locale;
-        }
-
         $builder->add('login', TextType::class, [
             'priority' => 1,
             'label' => 'registration_form.form.login.label',
@@ -77,7 +69,7 @@ class RegistrationFormType extends AbstractType
                 'priority' => 0,
                 'mapped' => false,
                 'label' => 'registration_form.form.locale',
-                'choices' => $choicesLocale,
+                'choices' => HelperForm::getDataForChoiceType($this->locales),
                 'data' => $this->requestStack->getCurrentRequest()->getLocale(),
             ])
             ->add('save', SubmitType::class, [

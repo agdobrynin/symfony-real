@@ -21,7 +21,7 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
-    .addEntry('app.reg', './assets/app.reg.js')
+    .addEntry('app.form.emoji', './assets/app.form.emoji.js')
     .addEntry('app.likes', './assets/app.likes.js')
     .addEntry('app.notification', './assets/app.notification.js')
     .addStyleEntry('style', './assets/styles/app.scss')

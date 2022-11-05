@@ -1,0 +1,50 @@
+{% extends 'micro-post/user-profile.html.twig' %}
+
+{% block title %}{{ 'my_profile.title'|trans }}{% endblock %}
+
+{% block profileContent %}
+    <div class="mb-3 row border-bottom">
+        <label class="col-sm-12 col-md-4 col-form-label">Email</label>
+        <div class="col-sm-12 col-md-8">
+            <input type="text" readonly class="lead form-control-plaintext" value="{{ app.user.email }}">
+        </div>
+    </div>
+    <div class="mb-3 row border-bottom">
+        <label class="col-sm-12 col-md-4 col-form-label">
+            {{ 'my_profile.form.emoji.label'|trans }}@{{ 'my_profile.view.nick'|trans }}
+        </label>
+        <div class="col-sm-12 col-md-8">
+            <input type="text" readonly class="lead form-control-plaintext"
+                   value="{{ app.user.emoji }}@{{ app.user.nick }}">
+        </div>
+    </div>
+    <div class="mb-3 row border-bottom">
+        <label class="col-sm-12 col-md-4 col-form-label">
+            {{ 'my_profile.form.locale'|trans }}
+        </label>
+        <div class="col-sm-12 col-md-8">
+            <input type="text" readonly class="lead form-control-plaintext"
+                   value="{{ app.user.preferences.locale|locale_name(app.request.locale)|u.title }}">
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <label class="col-sm-12 col-md-4 col-form-label">
+            {{ 'my_profile.view.stat.title'|trans }}
+        </label>
+        <div class="col-sm-12 col-md-8">
+            <div class="card">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        {{ 'my_profile.view.stat.post'|trans({'%count%': app.user.posts|length}) }}
+                    </li>
+                    <li class="list-group-item">
+                        {{ 'my_profile.view.stat.followers'|trans({'%count%': app.user.followers|length}) }}
+                    </li>
+                    <li class="list-group-item">
+                        {{ 'my_profile.view.stat.following'|trans({'%count%': app.user.following|length}) }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

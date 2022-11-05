@@ -1,6 +1,6 @@
 {% extends 'micro-post/index.html.twig' %}
 
-{% block title %}Micro post from @{{ user.nick }} {% endblock %}
+{% block title %} {{ 'micro-post.menu.nav.profile.html_title'|trans({'%nick%': user.nick}) }}{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}

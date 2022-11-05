@@ -1,0 +1,32 @@
+{% extends 'micro-post/index.html.twig' %}
+
+{% block title %}{{ 'micro-post.menu.nav.profile.form'|trans }}{% endblock %}
+
+{% block microPostContent %}
+    {% set route_name = app.request.attributes.get('_route') %}
+
+    <div class="row justify-content-center">
+        <div class="col-8 p-0">
+            <ul class="nav nav-tabs nav nav-fill">
+                <li class="nav-item">
+                    <a class="nav-link {% if route_name == 'micro_post_profile_view' %}active disabled{% endif %}"
+                       href="{{ path('micro_post_profile_view') }}">{{ 'my_profile.title'|trans }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if route_name == 'micro_post_profile_edit' %}active disabled{% endif %}"
+                       href="{{ path('micro_post_profile_edit') }}">{{ 'my_profile.form.title'|trans }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if route_name == 'micro_post_profile_password' %}active disabled{% endif %}"
+                       href="{{ path('micro_post_profile_password') }}">{{ 'my_profile.password.title'|trans }}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-8 pt-3 align-self-center border-start border-end border-bottom">
+            {% block profileContent %}{% endblock %}
+        </div>
+    </div>
+
+{% endblock %}

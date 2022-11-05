@@ -2,7 +2,7 @@ import {createPicker} from "picmo";
 
 document.addEventListener("DOMContentLoaded", () => {
     const rootElement = document.querySelector("div#emoji-toolbar");
-    const emojiInput = document.querySelector("[name='registration_form[emoji]']");
+    const emojiInput = document.querySelector("[name$='_form[emoji]']");
 
     function toggle(emojiDiv) {
         const {display} = emojiDiv.style;
@@ -24,8 +24,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         picker.addEventListener('emoji:select', event => {
-            document.querySelector("[name='registration_form[emoji]']").value = event.emoji;
+            document.querySelector("[name$='_form[emoji]']").value = event.emoji;
             toggle(rootElement);
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!rootElement.contains(event.target) && event.target !== emojiInput) {
+                rootElement.style.display = 'none';
+            }
         });
     }
 });

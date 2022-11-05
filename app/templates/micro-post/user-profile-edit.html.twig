@@ -1,0 +1,29 @@
+{% extends 'micro-post/user-profile.html.twig' %}
+
+{% block title %}{{ 'my_profile.title'|trans }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('app.form.emoji') }}
+{% endblock %}
+
+{% block profileContent %}
+    {{ form_start(profileForm) }}
+    {{ form_errors(profileForm) }}
+    <div class="row mb-3">
+        <div class="col-lg-3 col-md-4 col-sm-12 emoji-input">
+            {{ form_label(profileForm.emoji) }}
+            {{ form_widget(profileForm.emoji) }}
+        </div>
+        <div class="col-lg-9 col-md-8 col-sm-12">
+            <div id="emoji-toolbar"></div>
+        </div>
+        <div class="col">
+            {{ form_help(profileForm.emoji) }}
+            <div class="form-error">
+                {{ form_errors(profileForm.emoji) }}
+            </div>
+        </div>
+    </div>
+    {{ form_end(profileForm) }}
+{% endblock %}

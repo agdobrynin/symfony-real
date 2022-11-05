@@ -14,6 +14,10 @@ micro-post:
       sign-up: 'Sign up'
       sign-in: 'Sign in'
       sign-out: 'Logout'
+      profile:
+        my-posts: 'My posts'
+        profile: 'My profile'
+        html_title: 'Posts from @%nick%'
   post-item:
     post-from: 'Post from user'
     post-from-prefix-date: 'at'
@@ -48,6 +52,25 @@ registration_form:
       label_2: 'Confirm Password'
     submit: 'Sign up me'
     locale: 'Prefer interface language'
+my_profile:
+  title: 'Your profile'
+  form:
+    title: 'Edit'
+    emoji:
+      help: 'Choose an emoji icon - click on field for display emoji collection'
+      label: 'Your emoji'
+    locale: 'Prefer interface language'
+    submit: '💾 Update'
+  password:
+    title: 'Change password'
+  view:
+    nick: 'Nick'
+    stat:
+      title: 'Statistic'
+      post: 'Published %count% posts'
+      followers: 'Follow to you %count% bloggers'
+      following: 'You following to %count% bloggers'
+  success_update: 'Your profile was updated'
 login_form:
   title: 'Please sign in'
   form:
