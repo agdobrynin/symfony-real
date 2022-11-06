@@ -100,6 +100,9 @@ notification_page:
 # Message for annotation IsGranted in MicropostController::edit
 'Only the owner can edit a post.': 'Только владелец поста может его редакитровать'
 email:
+  change_email:
+    subject: 'Подтверждение смены email адреса'
+    flush_message: 'Вы изменили email для подтверждения его необходимо подтвердить логин по ссылке из отправленного письма на новый email'
   registration:
     subject: 'Регстраиця в Micro Post App!'
   like:

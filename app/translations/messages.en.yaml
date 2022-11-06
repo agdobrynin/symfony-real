@@ -88,6 +88,9 @@ notification_page:
   button_mark_read_all: 'Set as read for all notifications'
   notification_not_found: 'No new notifications'
 email:
+  change_email:
+    subject: 'Confirm email changed'
+    flush_message: 'You have changed your email to confirm it, you need to confirm the login using the link from the sent email to the new email'
   registration:
     subject: 'Registration in Micro Post App!'
   like:

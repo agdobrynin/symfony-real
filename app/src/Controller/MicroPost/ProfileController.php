@@ -6,6 +6,8 @@ namespace App\Controller\MicroPost;
 use App\Entity\User;
 use App\Form\ProfileFormType;
 use App\Helper\FlashType;
+use App\Mailer\EmailChangeMailerInterface;
+use App\Security\ConfirmationTokenGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,6 +15,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -25,7 +28,14 @@ class ProfileController extends AbstractController
      * @Route("/edit", name="micro_post_profile_edit", methods={"get", "post"})
      * @return RedirectResponse|Response
      */
-    public function profileEdit(Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator)
+    public function profileEdit(
+        Request                    $request,
+        EntityManagerInterface     $entityManager,
+        TranslatorInterface        $translator,
+        ConfirmationTokenGenerator $tokenGenerator,
+        EmailChangeMailerInterface $emailChangeMailer,
+        TokenStorageInterface      $tokenStorage
+    )
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
@@ -33,9 +43,27 @@ class ProfileController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // If user change email - user profile set isActive = false, logout and send email with confirmation token
+            $previousEmail = $entityManager->getUnitOfWork()->getOriginalEntityData($currentUser)['email'];
+
+            if ($previousEmail !== $currentUser->getEmail()) {
+                $currentUser->setIsActive(false);
+                $currentUser->setConfirmationToken($tokenGenerator->getRandomSecureToken());
+            }
+
             $currentUser->getPreferences()->setLocale($form->get('userLocale')->getData());
             $entityManager->persist($currentUser);
             $entityManager->flush();
+
+            if ($previousEmail !== $currentUser->getEmail()) {
+                $emailChangeMailer->send($currentUser);
+                $tokenStorage->setToken(null);
+                $message = $translator->trans('email.change_email.flush_message');
+                $this->addFlash(FlashType::SUCCESS, $message);
+
+                return $this->redirectToRoute('micro_post_login');
+            }
+
             $message = $translator->trans('my_profile.success_update', [], null, $currentUser->getPreferences()->getLocale());
 
             $this->addFlash(FlashType::SUCCESS, $message);

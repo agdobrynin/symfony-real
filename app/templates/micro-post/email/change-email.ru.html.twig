@@ -1,0 +1,5 @@
+<p>Привет {{ user.nick }}! Вы изменили свой email. Пожалуйста подтвердите логин по
+    <a href="{{ url('micro_post_confirm_registration', {token: user.confirmationToken, _locale: locale}) }}">ссылке</a>
+<p>
+    <small>C уважением администратор Micro Post App.</small>
+</p>
