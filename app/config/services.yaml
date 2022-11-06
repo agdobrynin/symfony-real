@@ -43,6 +43,10 @@ services:
       arguments:
         $adminEmail: '%micropost.admin.email%'
 
+    App\Mailer\PasswordChangeMailer:
+      arguments:
+        $adminEmail: '%micropost.admin.email%'
+
     App\Service\PostStore:
       arguments:
         $pageSize: '%post.list.page_size%'

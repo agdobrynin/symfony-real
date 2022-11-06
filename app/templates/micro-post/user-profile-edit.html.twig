@@ -8,6 +8,8 @@
 {% endblock %}
 
 {% block profileContent %}
+    <p class="alert alert-warning">{{ 'my_profile.form.note'|trans }}</p>
+
     {{ form_start(profileForm) }}
     {{ form_errors(profileForm) }}
     <div class="row mb-3">

@@ -2,6 +2,10 @@ registration_form:
   form:
     password:
       invalid_message: 'Пароли не совпадают, повторите ввод.'
+my_profile:
+  form:
+    password:
+      invalid_message: 'Новые пароли не совпадают, повторите ввод.'
 'Login {{ value }} is already exist.': 'Логин {{ value }} уже занят. Придумайте другой'
 'There is already an account with this email 🔒': 'Ткаой email уже используется. Выберете другой email 🔒'
 'Nickname {{ value }} is already taken by someone.': 'Ткаой никнейм уже используется кем то.'

@@ -56,6 +56,7 @@ my_profile:
   title: 'Your profile'
   form:
     title: 'Edit'
+    note: '⚠ After changing the email, the profile will be logged out. To reactivate the login, we will send a link to confirm the new email'
     emoji:
       help: 'Choose an emoji icon - click on field for display emoji collection'
       label: 'Your emoji'
@@ -63,6 +64,15 @@ my_profile:
     submit: '💾 Update'
   password:
     title: 'Change password'
+    note: '⚠ After changing the password, the profile will be logged out. To reactivate the login, we will send a link to confirm the new email'
+    form:
+      label: 'Enter current password'
+      label_new_1: 'New password'
+      label_new_2: 'Repeat new password'
+      submit: '💾 Update'
+    messages:
+      password_wrong: 'Current password is wrong.'
+      password_changed: 'Password wad changed. We have sent you an email with a confirmation link.'
   view:
     nick: 'Nick'
     stat:
