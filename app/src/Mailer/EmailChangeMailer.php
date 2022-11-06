@@ -5,14 +5,16 @@ namespace App\Mailer;
 
 use App\Entity\User;
 use App\Service\MicroPost\LocalesInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EmailChangeMailer implements EmailChangeMailerInterface
 {
+    use TemplatedEmailTrait;
+
     public const TEMPLATE_HTML_PATTERN = 'micro-post/email/change-email.%s.html.twig';
     public const TEMPLATE_TEXT_PATTERN = 'micro-post/email/change-email.%s.text.twig';
+    public const TEMPLATE_SUBJECT = 'email.change_email.subject';
 
     private $mailer;
     private $adminEmail;
@@ -29,17 +31,14 @@ class EmailChangeMailer implements EmailChangeMailerInterface
 
     public function send(User $user): bool
     {
-        $locale = $user->getPreferences()->getLocale() ?: $this->locales->getDefaultLocale();
-        $subject = $this->translator->trans('email.change_email.subject', [], null, $locale);
-        $templateHtml = sprintf(self::TEMPLATE_HTML_PATTERN, $locale);
-        $templateText = sprintf(self::TEMPLATE_TEXT_PATTERN, $locale);
-        $email = (new TemplatedEmail())
-            ->from($this->adminEmail)
-            ->to($user->getEmail())
-            ->subject($subject)
-            ->htmlTemplate($templateHtml)
-            ->textTemplate($templateText)
-            ->context(compact('user', 'locale'));
+        $email = $this->emailWithConfirmationUser(
+            $user,
+            $this->locales,
+            $this->adminEmail,
+            self::TEMPLATE_HTML_PATTERN,
+            self::TEMPLATE_TEXT_PATTERN,
+            self::TEMPLATE_SUBJECT
+        );
 
         $this->mailer->send($email);
 
