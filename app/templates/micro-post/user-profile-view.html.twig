@@ -35,7 +35,13 @@
             <div class="card">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        {{ 'my_profile.view.stat.post'|trans({'%count%': app.user.posts|length}) }}
+                        {% if app.user.posts|length %}
+                        <a href="{{ path('micro_post_by_user', {uuid: app.user.uuid}) }}">
+                            {% endif %}
+                            {{ 'my_profile.view.stat.post'|trans({'%count%': app.user.posts|length}) }}
+                            {% if app.user.posts|length %}
+                        </a>
+                        {% endif %}
                     </li>
                     <li class="list-group-item">
                         {{ 'my_profile.view.stat.followers'|trans({'%count%': app.user.followers|length}) }}
