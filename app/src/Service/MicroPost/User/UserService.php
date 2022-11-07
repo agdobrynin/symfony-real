@@ -66,13 +66,13 @@ class UserService implements UserServiceInterface
         $this->tokenStorage->setToken();
     }
 
-    public function changeEmail(User $user, string $newEmail): bool
+    public function changeEmail(User $user, string $emailFromForm): bool
     {
         $isChangedEmail = false;
         $previousEmail = $this->entityManager->getUnitOfWork()->getOriginalEntityData($user)['email'];
 
-        if ($previousEmail !== $newEmail) {
-            $user->setEmail($newEmail);
+        if ($previousEmail !== $emailFromForm) {
+            $user->setEmail($emailFromForm);
             $user->setIsActive(false);
             $user->setConfirmationToken($this->confirmationTokenGenerator->getRandomSecureToken());
             $isChangedEmail = true;

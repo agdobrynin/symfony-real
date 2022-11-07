@@ -14,5 +14,5 @@ interface UserServiceInterface
      */
     public function changePassword(User $user, string $currentPasswordPlain, string $newPasswordPlain): void;
 
-    public function changeEmail(User $user, string $newEmail): bool;
+    public function changeEmail(User $user, string $emailFromForm): bool;
 }
