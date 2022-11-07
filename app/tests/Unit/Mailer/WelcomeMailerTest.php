@@ -6,7 +6,7 @@ namespace App\Tests\Unit\Mailer;
 use App\Entity\User;
 use App\Entity\UserPreferences;
 use App\Mailer\WelcomeMailer;
-use App\Service\MicroPost\LocalesInterface;
+use App\Service\MicroPost\Locales;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
@@ -48,10 +48,10 @@ class WelcomeMailerTest extends TestCase
         $translator
             ->expects($this->once())
             ->method("trans")
-            ->with('email.registration.subject', [], null, $this->user->getPreferences()->getLocale())
+            ->with(WelcomeMailer::TEMPLATE_SUBJECT, [], null, $this->user->getPreferences()->getLocale())
             ->willReturn($subject);
 
-        $locales = self::createMock(LocalesInterface::class);
+        $locales = self::createMock(Locales::class);
 
         $welcomeMailer = new WelcomeMailer($mailer, $adminEmail, $translator, $locales);
         $welcomeMailer->send($this->user);

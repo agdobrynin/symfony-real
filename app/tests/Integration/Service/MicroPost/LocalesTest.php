@@ -10,9 +10,6 @@ class LocalesTest extends KernelTestCase
 {
     public function testLocales(): void
     {
-        $kernel = self::bootKernel();
-        $this->assertSame('test', $kernel->getEnvironment());
-
         $locales = static::getContainer()->get(Locales::class);
         $this->assertInstanceOf(Locales::class, $locales);
 

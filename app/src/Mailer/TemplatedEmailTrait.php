@@ -4,18 +4,18 @@ declare(strict_types=1);
 namespace App\Mailer;
 
 use App\Entity\User;
-use App\Service\MicroPost\Locales;
+use App\Service\MicroPost\LocalesInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 
 trait TemplatedEmailTrait
 {
     protected function emailWithConfirmationUser(
-        User    $user,
-        Locales $locales,
-        string  $mailFrom,
-        string  $htmlTemplatePattern,
-        string  $textTemplatePattern,
-        string  $subject
+        User             $user,
+        LocalesInterface $locales,
+        string           $mailFrom,
+        string           $htmlTemplatePattern,
+        string           $textTemplatePattern,
+        string           $subject
     ): TemplatedEmail
     {
         $locale = $user->getPreferences()->getLocale() ?: $locales->getDefaultLocale();
