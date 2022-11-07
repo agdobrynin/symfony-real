@@ -34,7 +34,7 @@ class WelcomeMailerTest extends TestCase
         $templateText = sprintf(WelcomeMailer::TEMPLATE_TEXT_PATTERN, $this->user->getPreferences()->getLocale());
 
         $mailer = self::createMock(MailerInterface::class);
-        $mailer->expects($this->once())
+        $mailer->expects(self::once())
             ->method('send')
             ->with(self::callback(function (TemplatedEmail $item) use ($subject, $templateText, $templateHtml, $adminEmail) {
                 return $item->getSubject() === $subject
@@ -46,7 +46,7 @@ class WelcomeMailerTest extends TestCase
 
         $translator = self::createMock(TranslatorInterface::class);
         $translator
-            ->expects($this->once())
+            ->expects(self::once())
             ->method("trans")
             ->with(WelcomeMailer::TEMPLATE_SUBJECT, [], null, $this->user->getPreferences()->getLocale())
             ->willReturn($subject);
