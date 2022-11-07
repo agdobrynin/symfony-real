@@ -9,17 +9,15 @@ use App\Form\ProfilePasswordFormType;
 use App\Helper\FlashType;
 use App\Mailer\EmailChangeMailerInterface;
 use App\Mailer\PasswordChangeMailerInterface;
-use App\Security\ConfirmationTokenGenerator;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MicroPost\User\Exception\UserWrongPasswordException;
+use App\Service\MicroPost\User\UserServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -29,24 +27,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ProfileController extends AbstractController
 {
     private $request;
-    private $entityManager;
+    private $userService;
     private $translator;
-    private $tokenStorage;
-    private $tokenGenerator;
 
-    public function __construct(
-        RequestStack               $requestStack,
-        EntityManagerInterface     $entityManager,
-        TranslatorInterface        $translator,
-        TokenStorageInterface      $tokenStorage,
-        ConfirmationTokenGenerator $tokenGenerator
-    )
+    public function __construct(RequestStack $requestStack, UserServiceInterface $userService, TranslatorInterface $translator)
     {
         $this->request = $requestStack->getCurrentRequest();
-        $this->entityManager = $entityManager;
+        $this->userService = $userService;
         $this->translator = $translator;
-        $this->tokenStorage = $tokenStorage;
-        $this->tokenGenerator = $tokenGenerator;
     }
 
     /**
@@ -61,23 +49,12 @@ class ProfileController extends AbstractController
         $form->handleRequest($this->request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // If user change email - user profile set isActive = false,
-            // logout and send email with confirmation token
-            $previousEmail = $this->entityManager->getUnitOfWork()
-                ->getOriginalEntityData($currentUser)['email'];
-
-            if ($previousEmail !== $currentUser->getEmail()) {
-                $currentUser->setIsActive(false);
-                $currentUser->setConfirmationToken($this->tokenGenerator->getRandomSecureToken());
-            }
-
             $currentUser->getPreferences()->setLocale($form->get('userLocale')->getData());
-            $this->entityManager->persist($currentUser);
-            $this->entityManager->flush();
+            $emailFromFrom = $form->get('email')->getData();
 
-            if ($previousEmail !== $currentUser->getEmail()) {
+            if ($this->userService->changeEmail($currentUser, $emailFromFrom)) {
                 $emailChangeMailer->send($currentUser);
-                $this->tokenStorage->setToken();
+
                 $message = $this->translator->trans('email.change_email.flush_message');
                 $this->addFlash(FlashType::SUCCESS, $message);
 
@@ -111,10 +88,7 @@ class ProfileController extends AbstractController
      * @Route("/password", name="micro_post_profile_password", methods={"get", "post"})
      * @return Response|RedirectResponse
      */
-    public function profilePassword(
-        UserPasswordHasherInterface   $userPasswordHasher,
-        PasswordChangeMailerInterface $passwordChangeMailer
-    )
+    public function profilePassword(PasswordChangeMailerInterface $passwordChangeMailer)
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -122,29 +96,20 @@ class ProfileController extends AbstractController
         $form->handleRequest($this->request);
 
         if ($form->isSubmitted()) {
-            $currentPasswordPlain = $form->get('password')->getData();
-
-            if (!$userPasswordHasher->isPasswordValid($user, $currentPasswordPlain)) {
-                $message = $this->translator->trans('my_profile.password.messages.password_wrong');
-                $form->get('password')->addError(new FormError($message));
-            } else if ($form->isValid()) {
+            try {
+                $currentPasswordPlain = $form->get('password')->getData();
                 $newPasswordPlain = $form->get('password_new')->getData();
-                $passwordHash = $userPasswordHasher->hashPassword($user, $newPasswordPlain);
 
-                $user->setPassword($passwordHash);
-                $user->setIsActive(false);
-                $user->setConfirmationToken($this->tokenGenerator->getRandomSecureToken());
-
-                $this->entityManager->persist($user);
-                $this->entityManager->flush();
-
+                $this->userService->changePassword($user, $currentPasswordPlain, $newPasswordPlain);
                 $passwordChangeMailer->send($user);
 
                 $message = $this->translator->trans('my_profile.password.messages.password_changed');
                 $this->addFlash(FlashType::SUCCESS, $message);
-                $this->tokenStorage->setToken();
 
                 return $this->redirectToRoute('micro_post_login');
+            } catch (UserWrongPasswordException $exception) {
+                $message = $this->translator->trans('my_profile.password.messages.password_wrong');
+                $form->get('password')->addError(new FormError($message));
             }
         }
 

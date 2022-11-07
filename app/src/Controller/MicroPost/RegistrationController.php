@@ -3,18 +3,14 @@
 namespace App\Controller\MicroPost;
 
 use App\Entity\User;
-use App\Entity\UserPreferences;
 use App\Form\RegistrationFormType;
 use App\Helper\FlashType;
-use App\Security\ConfirmationTokenGeneratorInterface;
-use App\Service\MicroPost\LocalesInterface;
+use App\Service\MicroPost\User\UserServiceInterface;
 use App\Service\MicroPost\WelcomeMessageEmailServiceInterface;
 use App\Service\WelcomeMessageInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class RegistrationController extends AbstractController
@@ -24,12 +20,9 @@ class RegistrationController extends AbstractController
      */
     public function register(
         Request                             $request,
-        UserPasswordHasherInterface         $userPasswordHasher,
-        EntityManagerInterface              $entityManager,
+        UserServiceInterface                $userService,
         WelcomeMessageInterface             $welcomeMessage,
-        WelcomeMessageEmailServiceInterface $emailService,
-        ConfirmationTokenGeneratorInterface $confirmationTokenGenerator,
-        LocalesInterface                    $locales
+        WelcomeMessageEmailServiceInterface $emailService
     ): Response
     {
         $user = new User();
@@ -37,19 +30,9 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
             $passwordPlain = $form->get('password')->getData();
-            $passwordHash = $userPasswordHasher->hashPassword($user, $passwordPlain);
-            $user->setPassword($passwordHash);
-            $user->setRoles(User::ROLE_DEFAULT);
-            $user->setConfirmationToken($confirmationTokenGenerator->getRandomSecureToken());
-
-            $locale = $form->get('locale')->getData() ?: $locales->getDefaultLocale();
-            $preferences = (new UserPreferences())->setLocale($locale);
-            $user->setPreferences($preferences);
-
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $locale = $form->get('locale')->getData();
+            $userService->new($user, $passwordPlain, $locale);
             $message = $welcomeMessage->welcomeMessage($user->getNick())->message;
             $message .= '. For activate your login check your mailbox and click confirmation link!';
 
