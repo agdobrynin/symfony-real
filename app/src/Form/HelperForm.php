@@ -9,12 +9,12 @@ use function Symfony\Component\String\u;
 
 class HelperForm
 {
-    public static function getDataForChoiceType(LocalesInterface $locales): array
+    public static function getDataForChoiceType(LocalesInterface $locales, string $displayLocale = null): array
     {
         $choicesLocale = [];
 
         foreach ($locales->getLocales() as $locale) {
-            $choicesLocale[(string)u(Languages::getName($locale))->title()] = $locale;
+            $choicesLocale[(string)u(Languages::getName($locale, $displayLocale))->title()] = $locale;
         }
 
         return $choicesLocale;
