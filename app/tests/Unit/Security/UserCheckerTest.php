@@ -10,10 +10,17 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusExce
 
 class UserCheckerTest extends TestCase
 {
+
+    public function getUsers(): \Generator
+    {
+        yield [(new User())->setIsActive(false)];
+        yield [(new User())->setIsActive(true)];
+    }
+
     /**
      * @dataProvider getUsers
      */
-    public function testUserCheckerIsNotActive(User $user): void
+    public function testCheckPreAuth(User $user): void
     {
         $em = self::createMock(EntityManagerInterface::class);
 
@@ -28,9 +35,18 @@ class UserCheckerTest extends TestCase
         $userChecker->checkPreAuth($user);
     }
 
-    public function getUsers(): \Generator
+    public function testCheckPostAuth(): void
     {
-        yield [(new User())->setIsActive(false)];
-        yield [(new User())->setIsActive(true)];
+        $user = new User();
+        $em = self::createMock(EntityManagerInterface::class);
+        $em->expects(self::once())->method('persist');
+        $em->expects(self::once())->method('flush');
+
+        self::assertNull($user->getLastLoginTime());
+
+        (new UserChecker($em))->checkPostAuth($user);
+
+        self::assertNotNull($user->getLastLoginTime());
+        self::assertInstanceOf(\DateTimeInterface::class, $user->getLastLoginTime());
     }
 }
