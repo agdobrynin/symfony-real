@@ -10,7 +10,6 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusExce
 
 class UserCheckerTest extends TestCase
 {
-
     public function getUsers(): \Generator
     {
         yield [(new User())->setIsActive(false)];
