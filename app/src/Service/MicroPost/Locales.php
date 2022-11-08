@@ -9,7 +9,7 @@ class Locales implements LocalesInterface
 
     public function __construct(string $appSupportedLocales)
     {
-        $this->appSupportedLocales = explode('|', $appSupportedLocales);
+        $this->appSupportedLocales = array_filter(array_values(explode('|', $appSupportedLocales)));
 
         if (!$this->appSupportedLocales) {
             throw new \LogicException('Can not parsing support locales');
