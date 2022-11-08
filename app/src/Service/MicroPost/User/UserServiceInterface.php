@@ -12,7 +12,7 @@ interface UserServiceInterface
     /**
      * @throws UserWrongPasswordException When current password is wrong.
      */
-    public function changePassword(User $user, string $currentPasswordPlain, string $newPasswordPlain): void;
+    public function changePasswordAndResetAuthToken(User $user, string $currentPasswordPlain, string $newPasswordPlain): void;
 
-    public function changeEmail(User $user, string $emailFromForm): bool;
+    public function changeEmailAndResetAuthToken(User $user, string $newEmail): void;
 }

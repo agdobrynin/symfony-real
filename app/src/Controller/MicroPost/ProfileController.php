@@ -10,6 +10,7 @@ use App\Helper\FlashType;
 use App\Mailer\EmailChangeMailerInterface;
 use App\Mailer\PasswordChangeMailerInterface;
 use App\Service\MicroPost\User\Exception\UserWrongPasswordException;
+use App\Service\MicroPost\User\GetOriginalEntityDataInterface;
 use App\Service\MicroPost\User\UserServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,7 +42,7 @@ class ProfileController extends AbstractController
      * @Route("/edit", name="micro_post_profile_edit", methods={"get", "post"})
      * @return RedirectResponse|Response
      */
-    public function profileEdit(EmailChangeMailerInterface $emailChangeMailer)
+    public function profileEdit(EmailChangeMailerInterface $emailChangeMailer, GetOriginalEntityDataInterface $originalEntityData)
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
@@ -51,8 +52,10 @@ class ProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $currentUser->getPreferences()->setLocale($form->get('userLocale')->getData());
             $emailFromFrom = $form->get('email')->getData();
+            $originalEmail = $originalEntityData->getOriginalValue($currentUser, 'email');
 
-            if ($this->userService->changeEmail($currentUser, $emailFromFrom)) {
+            if ($originalEmail !== $emailFromFrom) {
+                $this->userService->changeEmailAndResetAuthToken($currentUser, $emailFromFrom);
                 $emailChangeMailer->send($currentUser);
 
                 $message = $this->translator->trans('email.change_email.flush_message');
@@ -100,7 +103,7 @@ class ProfileController extends AbstractController
                 $currentPasswordPlain = $form->get('password')->getData();
                 $newPasswordPlain = $form->get('password_new')->getData();
 
-                $this->userService->changePassword($user, $currentPasswordPlain, $newPasswordPlain);
+                $this->userService->changePasswordAndResetAuthToken($user, $currentPasswordPlain, $newPasswordPlain);
                 $passwordChangeMailer->send($user);
 
                 $message = $this->translator->trans('my_profile.password.messages.password_changed');

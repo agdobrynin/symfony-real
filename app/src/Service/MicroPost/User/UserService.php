@@ -41,6 +41,7 @@ class UserService implements UserServiceInterface
         $passwordHash = $this->userPasswordHasher->hashPassword($user, $passwordPlain);
         $user->setPassword($passwordHash);
         $user->setRoles(User::ROLE_DEFAULT);
+        $user->setIsActive(false);
         $user->setConfirmationToken($this->confirmationTokenGenerator->getRandomSecureToken());
 
         $locale = $userLocale ?: $this->locales->getDefaultLocale();
@@ -51,7 +52,7 @@ class UserService implements UserServiceInterface
         $this->entityManager->flush();
     }
 
-    public function changePassword(User $user, string $currentPasswordPlain, string $newPasswordPlain): void
+    public function changePasswordAndResetAuthToken(User $user, string $currentPasswordPlain, string $newPasswordPlain): void
     {
         if (!$this->userPasswordHasher->isPasswordValid($user, $currentPasswordPlain)) {
             throw new UserWrongPasswordException();
@@ -66,22 +67,13 @@ class UserService implements UserServiceInterface
         $this->tokenStorage->setToken();
     }
 
-    public function changeEmail(User $user, string $emailFromForm): bool
+    public function changeEmailAndResetAuthToken(User $user, string $newEmail): void
     {
-        $isChangedEmail = false;
-        $previousEmail = $this->entityManager->getUnitOfWork()->getOriginalEntityData($user)['email'];
-
-        if ($previousEmail !== $emailFromForm) {
-            $user->setEmail($emailFromForm);
-            $user->setIsActive(false);
-            $user->setConfirmationToken($this->confirmationTokenGenerator->getRandomSecureToken());
-            $isChangedEmail = true;
-            $this->tokenStorage->setToken();
-        }
-
+        $user->setEmail($newEmail);
+        $user->setIsActive(false);
+        $user->setConfirmationToken($this->confirmationTokenGenerator->getRandomSecureToken());
+        $this->tokenStorage->setToken();
         $this->entityManager->persist($user);
         $this->entityManager->flush();
-
-        return $isChangedEmail;
     }
 }
