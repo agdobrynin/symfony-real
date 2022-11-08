@@ -26,16 +26,11 @@ class PostStoreTest extends KernelTestCase
         self::$postStore = new PostStore($requestStack, 2);
     }
 
-    public static function tearDownAfterClass(): void
-    {
-        self::$postStore->destroy();
-    }
-
     public function testConstructor(): void
     {
         $postStore = new PostStore(self::$requestStack, 2);
 
-        self::assertInstanceOf(PostStore::class, $postStore);
+        self::assertCount(0, $postStore->list(1));
     }
 
     public function testAddGetPost(): void
