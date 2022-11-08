@@ -6,6 +6,7 @@ use App\Repository\NotificationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @codeCoverageIgnore
  * @ORM\Entity(repositoryClass=NotificationRepository::class)
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="dicsr", type="string")

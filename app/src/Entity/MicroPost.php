@@ -12,6 +12,7 @@ use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @codeCoverageIgnore
  * @ORM\Entity(repositoryClass=MicroPostRepository::class)
  * @ORM\HasLifecycleCallbacks()
  */

@@ -6,6 +6,7 @@ use App\Repository\LikeUnlikeNotificationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @codeCoverageIgnore
  * @ORM\Entity(repositoryClass=LikeUnlikeNotificationRepository::class)
  */
 abstract class LikeUnlikeNotification extends ByUserNotification

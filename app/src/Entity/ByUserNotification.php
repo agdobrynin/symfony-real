@@ -6,6 +6,7 @@ use App\Repository\ByUserNotificationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @codeCoverageIgnore
  * @ORM\Entity(repositoryClass=ByUserNotificationRepository::class)
  */
 abstract class ByUserNotification extends Notification

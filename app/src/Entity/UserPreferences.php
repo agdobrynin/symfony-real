@@ -6,6 +6,7 @@ use App\Repository\UserPreferencesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @codeCoverageIgnore
  * @ORM\Entity(repositoryClass=UserPreferencesRepository::class)
  */
 class UserPreferences
