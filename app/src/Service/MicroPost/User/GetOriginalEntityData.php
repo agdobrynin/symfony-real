@@ -5,6 +5,9 @@ namespace App\Service\MicroPost\User;
 
 use Doctrine\ORM\EntityManagerInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 class GetOriginalEntityData implements GetOriginalEntityDataInterface
 {
     private $entityManager;
