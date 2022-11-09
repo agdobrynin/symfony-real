@@ -7,8 +7,11 @@ use App\Entity\User;
 use App\Entity\UserPreferences;
 use App\Form\ProfileFormType;
 use App\Service\MicroPost\Locales;
+use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
+use Symfony\Component\PropertyAccess\Exception\InvalidArgumentException;
+use Symfony\Component\Validator\Validation;
 
 class ProfileFormTypeTest extends TypeTestCase
 {
@@ -23,15 +26,6 @@ class ProfileFormTypeTest extends TypeTestCase
         'email' => 'email@new.com',
         'userLocale' => 'en'
     ];
-
-    protected function getExtensions(): array
-    {
-        $locales = new Locales('ru|en');
-
-        return [
-            new PreloadedExtension([new ProfileFormType($locales)], []),
-        ];
-    }
 
     public function testProfileForm(): void
     {
@@ -55,5 +49,40 @@ class ProfileFormTypeTest extends TypeTestCase
         self::assertEquals(self::FORM_DATA['emoji'], $user->getEmoji());
         self::assertEquals(self::FORM_DATA['email'], $user->getEmail());
         self::assertEquals(self::FORM_DATA['userLocale'], $user->getPreferences()->getLocale());
+    }
+
+    public function testProfileFormBadEmailValidator(): void
+    {
+        $user = (new User())->setEmail('good@email.com')
+            ->setPreferences((new UserPreferences())->setLocale('ru'));
+
+        $form = $this->factory->create(ProfileFormType::class, $user);
+        $form->submit(['email' => 'bad-email-address']);
+        self::assertTrue($form->isSynchronized());
+        self::assertFalse($form->isValid());
+
+        self::assertStringContainsString('not a valid email', $form->get('email')->getErrors()[0]->getMessage());
+    }
+
+    public function testProfileFormBadEmailEmpty(): void
+    {
+        $user = (new User())->setEmail('good@email.com')
+            ->setPreferences((new UserPreferences())->setLocale('ru'));
+
+        // User entity throw exception
+        self::expectException(InvalidArgumentException::class);
+
+        $form = $this->factory->create(ProfileFormType::class, $user);
+        $form->submit(['email' => '']);
+    }
+
+    protected function getExtensions(): array
+    {
+        $locales = new Locales('ru|en');
+
+        return [
+            new ValidatorExtension(Validation::createValidator()),
+            new PreloadedExtension([new ProfileFormType($locales)], []),
+        ];
     }
 }
