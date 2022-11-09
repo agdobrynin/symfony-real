@@ -41,9 +41,16 @@ class ProfileFormTypeTest extends TypeTestCase
 
 
         $form = $this->factory->create(ProfileFormType::class, $user);
+
+        // preload data to from User entity.
+        self::assertEquals(self::USER_DATA['emoji'], $user->getEmoji());
+        self::assertEquals(self::USER_DATA['email'], $user->getEmail());
+        self::assertEquals(self::USER_DATA['userLocale'], $user->getPreferences()->getLocale());
+
         $form->submit(self::FORM_DATA);
         self::assertTrue($form->isSynchronized());
 
+        // updated data in User entity after form submit
         $user->getPreferences()->setLocale($form->get('userLocale')->getData());
         self::assertEquals(self::FORM_DATA['emoji'], $user->getEmoji());
         self::assertEquals(self::FORM_DATA['email'], $user->getEmail());
