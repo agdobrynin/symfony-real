@@ -12,6 +12,7 @@ use App\Mailer\PasswordChangeMailerInterface;
 use App\Service\MicroPost\User\Exception\UserWrongPasswordException;
 use App\Service\MicroPost\User\GetOriginalEntityDataInterface;
 use App\Service\MicroPost\User\UserServiceInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -42,7 +43,11 @@ class ProfileController extends AbstractController
      * @Route("/edit", name="micro_post_profile_edit", methods={"get", "post"})
      * @return RedirectResponse|Response
      */
-    public function profileEdit(EmailChangeMailerInterface $emailChangeMailer, GetOriginalEntityDataInterface $originalEntityData)
+    public function profileEdit(
+        EmailChangeMailerInterface     $emailChangeMailer,
+        GetOriginalEntityDataInterface $originalEntityData,
+        EntityManagerInterface         $entityManager
+    )
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
@@ -63,6 +68,9 @@ class ProfileController extends AbstractController
 
                 return $this->redirectToRoute('micro_post_login');
             }
+
+            $entityManager->persist($currentUser);
+            $entityManager->flush();
 
             $newLocale = $currentUser->getPreferences()->getLocale();
             $message = $this->translator->trans('my_profile.success_update', [], null, $newLocale);
