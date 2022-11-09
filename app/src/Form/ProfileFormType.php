@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProfileFormType extends AbstractType
 {
@@ -35,6 +37,10 @@ class ProfileFormType extends AbstractType
         ])
             ->add('email', EmailType::class, [
                 'priority' => 5,
+                'constraints' => [
+                    new NotBlank(),
+                    new Email(),
+                ]
             ])
             ->add('userLocale', ChoiceType::class, [
                 'required' => true,
