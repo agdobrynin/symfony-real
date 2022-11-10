@@ -36,15 +36,16 @@ class MicroPostVoter extends Voter
      */
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
-        if ($this->accessDecisionManager->decide($token, [User::ROLE_ADMIN])) {
-            return true;
+        /** @var User|UserInterface $user */
+        $user = $token->getUser();
+
+        // if the user is anonymous or not App\Entity\User , do not grant access
+        if (!$user instanceof User) {
+            return false;
         }
 
-        /** @var User $user */
-        $user = $token->getUser();
-        // if the user is anonymous, do not grant access
-        if (!$user instanceof UserInterface) {
-            return false;
+        if ($this->accessDecisionManager->decide($token, [User::ROLE_ADMIN])) {
+            return true;
         }
 
         // ... (check conditions and return true to grant permission) ...
