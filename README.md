@@ -1,7 +1,10 @@
-# symfony-real
-Для проекта нужен docker (docker desktop) а так же docker-compose
+# Курс "Learn PHP Symfony Hands-On Creating Real World Application" на платформе udemy.com
+
+[Сертификат об успешном прохождении курса.](https://www.udemy.com/certificate/UC-bdc0458e-d782-472a-844f-ff9b6fe794fb/)
 
 #### Структура директорий проекта:
+
+Для проекта нужен docker (docker desktop) а так же docker-compose
 
 ````
 |
