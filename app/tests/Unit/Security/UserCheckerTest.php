@@ -72,7 +72,7 @@ class UserCheckerTest extends TestCase
     {
         $user = new User();
         $em = self::createMock(EntityManagerInterface::class);
-        $em->expects(self::once())->method('persist');
+        $em->expects(self::once())->method('persist')->with($user);
         $em->expects(self::once())->method('flush');
 
         self::assertNull($user->getLastLoginTime());
