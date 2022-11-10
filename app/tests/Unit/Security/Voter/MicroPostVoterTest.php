@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace App\Tests\Unit\Security\Voter;
+
 use App\Entity\MicroPost;
 use App\Entity\User;
 use App\Security\Voter\MicroPostVoter;

@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Form;
 
-use App\Entity\User;
 use App\Form\ProfilePasswordFormType;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\Test\TypeTestCase;
 use Symfony\Component\Validator\Validation;
 
