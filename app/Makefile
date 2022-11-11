@@ -1,17 +1,25 @@
 SHELL := /bin/bash
 
-tests:
+tests-unit:
+	@echo "📦 Run Unit testsuite"
+	php bin/phpunit --testsuite=unit
+
+tests-integration:
+	@echo "🙈 Run Integration testsuite"
+	php bin/phpunit --testsuite=integration
+
+tests-functional: preload-test-env
+	@echo "🌐 Run Functional testsuite"
+	php bin/phpunit
+
+tests-all: preload-test-env
+	@echo "🌈 Run all testsuite"
+	php bin/phpunit tests/
+
+preload-test-env:
+	@echo "⚙ Run preparing environment for testing"
 	php bin/console doctrine:database:drop --force --env=test || true
 	php bin/console doctrine:database:create --env=test
 	php bin/console doctrine:migrations:migrate -n --env=test
 	php bin/console doctrine:fixtures:load -n --env=test
-	php bin/phpunit $@
-.PHONY: tests
-
-tests-unit:
-	php bin/phpunit --testsuite=unit
-.PHONY: tests-unit
-
-tests-integration:
-	php bin/phpunit --testsuite=integration
-.PHONY: tests-integration
+.PHONY: preload-test-env
