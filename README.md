@@ -89,21 +89,44 @@ http://localhost:1080/
 
 #### Запуск тестов
 
-⚠ Для запуска тестов можно выполнить команду
+В проекте реализовано тетирование 3х уровней - Unit тесты, Integration тесты, Functional тесты
+
+Для запуска всех тестов достаточно выполнить команду:
 
 ```shell
-docker-compose run --rm php sh -c "php bin/phpunit"
+docker-compose run --rm php sh -c 'make tests-all'
 ```
 
-или же зайти в контейнер _php_ выполнив команду
+для запуска только Unit тестов
+
+```shell
+docker-compose run --rm php sh -c 'make test-unit'
+```
+
+для запуска Integration тестов
+
+```shell
+docker-compose run --rm php sh -c 'make tests-integration'
+```
+
+для запуска Functional тестов
+
+```shell
+docker-compose run --rm php sh -c 'make tests-functional'
+```
+
+Так же в ходе разработки тестов может быть удобно выполнять тесты в контейнере **php**
+для этого необходимо зайти в запущенный контейнер
 
 ```shell
 docker-compose exec php bash
 ```
 
-и находясь в контейнере выполнить в командной строке
+и выполнять привычные команды PHPUnit уже в контейнере. Например запусить все тесты находясь в контейнере **php**
 
 ```shell
+make tests-all
+--- или же ---
 php bin/phpunit
 ```
 
