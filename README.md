@@ -43,7 +43,7 @@ cp app/.env-example app/.env
 
 собираем контенеры и стратуем docker
 ```shell
-docker-compose build &&  docker-compose up -d
+docker-compose up -d --build
 ```
 Собрать фронт часть проекта:
 ```shell
