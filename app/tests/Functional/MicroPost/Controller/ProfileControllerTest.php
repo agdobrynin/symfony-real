@@ -18,6 +18,15 @@ class ProfileControllerTest extends WebTestCase
     protected const URL_PROFILE_PASSWORD = '/micro-post/en/profile/password';
     protected const URL_CONFIRM_LOGIN_PATTERN = '/micro-post/en/confirm/%s';
 
+    /** @var UserRepository */
+    protected $userRepository;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->userRepository = self::getContainer()->get(UserRepository::class);
+    }
+
     public function testProfileIsAnonymous(): void
     {
         self::ensureKernelShutdown();
@@ -30,7 +39,7 @@ class ProfileControllerTest extends WebTestCase
 
     public function testProfileAuthUserFormData(): void
     {
-        $user = $this->getAuthUser('admin');
+        $user = $this->userRepository->findOneBy(['login' => 'admin']);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -47,7 +56,7 @@ class ProfileControllerTest extends WebTestCase
 
     public function testProfileAuthUserEditDataWithoutEmail(): void
     {
-        $user = $this->getAuthUser('admin');
+        $user = $this->userRepository->findOneBy(['login' => 'admin']);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -63,15 +72,16 @@ class ProfileControllerTest extends WebTestCase
         $button = $crawler->filter('button[type="submit"][name$="[save]"]');
         $client->submitForm($button->attr("name"), $newData);
         self::assertResponseRedirects();
+        $client->followRedirect();
 
-        $updatedUser = $this->getAuthUser('admin');
-        self::assertEquals($newEmoji, $updatedUser->getEmoji());
-        self::assertEquals($newLocale, $updatedUser->getPreferences()->getLocale());
+        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        self::assertEquals($newEmoji, $user->getEmoji());
+        self::assertEquals($newLocale, $user->getPreferences()->getLocale());
     }
 
     public function testProfileAuthUserEditDataEmailOnly(): void
     {
-        $user = $this->getAuthUser('admin');
+        $user = $this->userRepository->findOneBy(['login' => 'admin']);
         self::assertTrue($user->getIsActive());
         self::assertNull($user->getConfirmationToken());
 
@@ -89,16 +99,16 @@ class ProfileControllerTest extends WebTestCase
         self::assertResponseRedirects();
 
         // Before change email address user deactivate, set confirmation token, send email with confirmation link
-        $updatedUser = $this->getAuthUser('admin');
-        self::assertEquals($newEmail, $updatedUser->getEmail());
-        $this->deactivateUserAndSendEmailWithConfirmToken($updatedUser);
+        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        self::assertEquals($newEmail, $user->getEmail());
+        $this->deactivateUserAndSendEmailWithConfirmToken($user);
 
         $this->checkRedirectToLoginPage($client->followRedirect());
     }
 
     public function testProfileAuthUserChangePasswordCurrentPasswordFail(): void
     {
-        $user = $this->getAuthUser('admin');
+        $user = $this->userRepository->findOneBy(['login' => 'admin']);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -122,7 +132,7 @@ class ProfileControllerTest extends WebTestCase
 
     public function testProfileAuthUserChangePasswordNewPasswordIsShortFail(): void
     {
-        $user = $this->getAuthUser('admin');
+        $user = $this->userRepository->findOneBy(['login' => 'admin']);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -148,7 +158,7 @@ class ProfileControllerTest extends WebTestCase
 
     public function testProfileAuthUserChangePasswordNewPasswordNotMatchFail(): void
     {
-        $user = $this->getAuthUser('admin');
+        $user = $this->userRepository->findOneBy(['login' => 'admin']);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -174,7 +184,7 @@ class ProfileControllerTest extends WebTestCase
 
     public function testProfileAuthUserChangePasswordNewPasswordSuccess(): void
     {
-        $user = $this->getAuthUser('admin');
+        $user = $this->userRepository->findOneBy(['login' => 'admin']);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -195,8 +205,8 @@ class ProfileControllerTest extends WebTestCase
         self::assertResponseRedirects();
 
         // Before change password the user deactivate, set confirmation token, send email with confirmation link
-        $updatedUser = $this->getAuthUser('admin');
-        $this->deactivateUserAndSendEmailWithConfirmToken($updatedUser);
+        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $this->deactivateUserAndSendEmailWithConfirmToken($user);
         $this->checkRedirectToLoginPage($client->followRedirect());
     }
 
@@ -258,13 +268,5 @@ class ProfileControllerTest extends WebTestCase
         $dto->newPasswordRetype = $crawler->filter('input[type="password"][name$="[password_new][second]"]')->first();
 
         return $dto;
-    }
-
-    protected function getAuthUser(string $login): User
-    {
-        /** @var UserRepository $userRepository */
-        $userRepository = self::getContainer()->get(UserRepository::class);
-        // ⚠ user admin defined in App\DataFixtures\AppFixtures
-        return $userRepository->findOneBy(['login' => $login]);
     }
 }
