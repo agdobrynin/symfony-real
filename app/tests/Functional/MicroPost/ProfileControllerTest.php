@@ -100,8 +100,14 @@ class ProfileControllerTest extends WebTestCase
         $confirmLink = sprintf(self::URL_CONFIRM_LOGIN_PATTERN, $updatedUser->getConfirmationToken());
         self::assertEmailHtmlBodyContains($email, $confirmLink);
         self::assertEmailTextBodyContains($email, $confirmLink);
+
+        $emailAsString = $email->toString();
         $headerMailToForRegExp = '/To\:.*' . preg_quote($updatedUser->getEmail()) . '/i';
-        self::assertMatchesRegularExpression($headerMailToForRegExp, $email->toString());
+        self::assertMatchesRegularExpression($headerMailToForRegExp, $emailAsString);
+
+        $adminEmail = self::getContainer()->getParameter('micropost.admin.email');
+        $headerMailFromForRegExp = '/From\:.*' . preg_quote($adminEmail) . '/i';
+        self::assertMatchesRegularExpression($headerMailFromForRegExp, $emailAsString);
 
         $crawlerLoginPage = $client->followRedirect();
         // redirect to login page.
