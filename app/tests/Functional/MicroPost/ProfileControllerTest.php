@@ -5,13 +5,17 @@ namespace App\Tests\Funtional\MicroPost\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
 class ProfileControllerTest extends WebTestCase
 {
+    use MailerAssertionsTrait;
+
     protected const URL_PROFILE_VIEW = '/micro-post/en/profile/view';
     protected const URL_PROFILE_EDIT = '/micro-post/en/profile/edit';
+    protected const URL_CONFIRM_LOGIN_PATTERN = '/micro-post/en/confirm/%s';
 
     public function testProfileIsAnonymous(): void
     {
@@ -86,10 +90,18 @@ class ProfileControllerTest extends WebTestCase
         $client->submitForm($button->attr("name"), $newData);
         self::assertResponseRedirects();
 
+        // Before change email address user deactivate, set confirmation token, send email with confirmation link
         $updatedUser = $this->getAuthUser('admin');
         self::assertEquals($newEmail, $updatedUser->getEmail());
         self::assertFalse($updatedUser->getIsActive());
         self::assertNotNull($updatedUser->getConfirmationToken());
+
+        $email = self::getMailerMessage();
+        $confirmLink = sprintf(self::URL_CONFIRM_LOGIN_PATTERN, $updatedUser->getConfirmationToken());
+        self::assertEmailHtmlBodyContains($email, $confirmLink);
+        self::assertEmailTextBodyContains($email, $confirmLink);
+        $headerMailToForRegExp = '/To\:.*' . preg_quote($updatedUser->getEmail()) . '/i';
+        self::assertMatchesRegularExpression($headerMailToForRegExp, $email->toString());
 
         $crawlerLoginPage = $client->followRedirect();
         // redirect to login page.
