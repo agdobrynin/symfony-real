@@ -250,10 +250,7 @@ class ProfileControllerTest extends WebTestCase
         $dto->emoji = $crawler->filter('input[name$="[emoji]"]')->first();
         $dto->email = $crawler->filter('input[name$="[email]"]')->first();
         $dto->userLocale = $crawler->filter('select[name$="[userLocale]"]')->first();
-        $dto->userLocaleSelected = $dto->userLocale->children('option')
-            ->reduce(function (Crawler $option) {
-                return $option->attr("selected");
-            });
+        $dto->userLocaleSelected = $dto->userLocale->filter('option[selected]');
 
         return $dto;
     }
