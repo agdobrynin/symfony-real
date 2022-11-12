@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class FollowerControllerTest extends WebTestCase
@@ -18,11 +19,14 @@ class FollowerControllerTest extends WebTestCase
      * @var UserRepository
      */
     protected $userRepository;
+    /** @var EntityManagerInterface */
+    protected $em;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->userRepository = self::getContainer()->get(UserRepository::class);
+        $this->em = self::getContainer()->get(EntityManagerInterface::class);
     }
 
     public function testFollowUserNotAuthUser(): void
@@ -58,8 +62,8 @@ class FollowerControllerTest extends WebTestCase
         self::assertResponseRedirects();
         $client->followRedirect();
 
-        $userFollow = $this->userRepository->findOneBy(['login' => 'admin']);
-        self::assertEquals(1, $userFollow->getFollowing()->count());
+        $this->em->refresh($userFollow);
+        self::assertTrue($userFollow->getFollowers()->contains($userFollower));
     }
 
     public function testUnfollowUserAuthUser(): void
@@ -85,8 +89,8 @@ class FollowerControllerTest extends WebTestCase
         self::assertResponseRedirects();
         $client->followRedirect();
 
-        $adminUser = $this->userRepository->findOneBy(['login' => 'admin']);
-        $bloggerUser = $this->userRepository->findOneBy(['login' => 'blogger']);
+        $this->em->refresh($adminUser);
+        $this->em->refresh($bloggerUser);
         self::assertFalse($adminUser->getFollowers()->contains($bloggerUser));
     }
 }
