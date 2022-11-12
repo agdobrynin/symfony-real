@@ -41,7 +41,7 @@ class FollowerController extends AbstractController
     }
 
     /**
-     * @Route("/unfollw/{uuid}", methods={"get"}, name="micro-post-unfollowing")
+     * @Route("/unfollow/{uuid}", methods={"get"}, name="micro-post-unfollowing")
      */
     public function unfollow(User $unfollowUser): RedirectResponse
     {
