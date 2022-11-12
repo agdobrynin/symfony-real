@@ -106,7 +106,7 @@ class ProfileController extends AbstractController
         $form = $this->createForm(ProfilePasswordFormType::class, $user);
         $form->handleRequest($this->request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $currentPasswordPlain = $form->get('password')->getData();
                 $newPasswordPlain = $form->get('password_new')->getData();
