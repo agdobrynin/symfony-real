@@ -66,15 +66,18 @@ class SecurityController extends AbstractController
     public function confirm(string $token, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
     {
         $user = $userRepository->findOneBy(['confirmationToken' => $token]);
+        $statusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
 
         if ($user instanceof User) {
             $user->setConfirmationToken(null);
             $user->setIsActive(true);
             $entityManager->persist($user);
             $entityManager->flush();
+            $statusCode = Response::HTTP_OK;
         }
 
-        return $this->render('micro-post/confirm.html.twig', compact('user'));
+        return $this->render('micro-post/confirm.html.twig', compact('user'))
+            ->setStatusCode($statusCode);
     }
 
     /**
