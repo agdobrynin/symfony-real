@@ -75,24 +75,30 @@ class MicroPostController extends AbstractController
         $microPost = new MicroPost();
         $form = $this->formMicroPost($microPost);
         $form->handleRequest($request);
+        $statusCode = Response::HTTP_OK;
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var MicroPost $microPost */
-            $microPost = $form->getData();
-            // Or inject TokenStorageInterface $tokenStorage and use it for fetch user
-            $microPost->setUser($this->getUser());
+        if ($form->isSubmitted()) {
+            if (!$form->isValid()) {
+                $statusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
+            } else {
+                /** @var MicroPost $microPost */
+                $microPost = $form->getData();
+                // Or inject TokenStorageInterface $tokenStorage and use it for fetch user
+                $microPost->setUser($this->getUser());
 
-            $this->em->persist($microPost);
-            $this->em->flush();
+                $this->em->persist($microPost);
+                $this->em->flush();
 
-            $partOfMessage = $this->translator->trans('micro-post.form_edit_add_del.message.add');
-            $message = $this->flashMessageWithPartOfContent($partOfMessage, $microPost);
-            $this->addFlash(FlashType::SUCCESS, $message);
+                $partOfMessage = $this->translator->trans('micro-post.form_edit_add_del.message.add');
+                $message = $this->flashMessageWithPartOfContent($partOfMessage, $microPost);
+                $this->addFlash(FlashType::SUCCESS, $message);
 
-            return $this->redirectToRoute('micro_post_by_user', ['uuid' => $this->getUser()->getUUid()]);
+                return $this->redirectToRoute('micro_post_by_user', ['uuid' => $this->getUser()->getUUid()]);
+            }
         }
 
-        return $this->renderForm('micro-post/add.html.twig', ['form' => $form]);
+        return $this->renderForm('micro-post/add.html.twig', ['form' => $form])
+            ->setStatusCode($statusCode);
     }
 
     /**
