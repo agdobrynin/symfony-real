@@ -8,7 +8,7 @@ up:
 	docker-compose up -d
 stop:
 	docker-compose stop
-container-exec:
+exec:
 	docker-compose exec $(name) bash
 front-prod:
 	docker-compose run --rm front sh -c "yarn install && yarn encore prod"
