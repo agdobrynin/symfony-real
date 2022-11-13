@@ -132,6 +132,20 @@ class MicroPostControllerMethodEditTest extends WebTestCase
         self::assertEquals($contentForPost, $microPostOfBlogger->getContent());
     }
 
+    public function testOpenEditPostFormNonExistPost(): void
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+
+        // ⚠ All fixtures users with login, microposts defined in App\DataFixtures\AppFixtures
+        $userBlogger = $this->userRepository->findOneBy(['login' => 'blogger']);
+        $microPostOfBlogger = new MicroPost();
+
+        $client->loginUser($userBlogger);
+        $client->request('GET', $this->getUrlToEdit($microPostOfBlogger));
+        self::assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+    }
+
     protected function getUrlToEdit(MicroPost $microPost): string
     {
         return sprintf(self::URL_POST_EDIT_PATTERN, $microPost->getUuid());
