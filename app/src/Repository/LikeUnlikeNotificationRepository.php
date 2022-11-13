@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * @codeCoverageIgnore
  * @extends ServiceEntityRepository<LikeUnlikeNotification>
  *
  * @method LikeUnlikeNotification|null find($id, $lockMode = null, $lockVersion = null)
