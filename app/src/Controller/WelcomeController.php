@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 class WelcomeController extends AbstractController
 {
     private $welcomeMessage;

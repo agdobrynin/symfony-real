@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * @codeCoverageIgnore
  * @Route("/blog")
  */
 class BlogPost extends AbstractController
