@@ -16,7 +16,7 @@ class ProfileControllerTest extends WebTestCase
     protected const URL_PROFILE_VIEW = '/micro-post/en/profile/view';
     protected const URL_PROFILE_EDIT = '/micro-post/en/profile/edit';
     protected const URL_PROFILE_PASSWORD = '/micro-post/en/profile/password';
-    protected const URL_CONFIRM_LOGIN_PATTERN = '/micro-post/en/confirm/%s';
+    protected const URL_CONFIRM_LOGIN_EMAIL_PATTERN = '/micro-post/%s/confirm/%s';
 
     /** @var UserRepository */
     protected $userRepository;
@@ -231,7 +231,9 @@ class ProfileControllerTest extends WebTestCase
         self::assertNotNull($user->getConfirmationToken());
 
         $email = self::getMailerMessage();
-        $confirmLink = sprintf(self::URL_CONFIRM_LOGIN_PATTERN, $user->getConfirmationToken());
+        $confirmLink = sprintf(
+            self::URL_CONFIRM_LOGIN_EMAIL_PATTERN,
+            $user->getPreferences()->getLocale(), $user->getConfirmationToken());
         self::assertEmailHtmlBodyContains($email, $confirmLink);
         self::assertEmailTextBodyContains($email, $confirmLink);
 

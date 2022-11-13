@@ -17,8 +17,8 @@ class LikeControllerTest extends WebTestCase
 
     protected const URL_LIKE_EN_POST_PATTERN = '/micro-post/en/like/%s';
     protected const URL_UNLIKE_EN_POST_PATTERN = '/micro-post/en/unlike/%s';
-    protected const URL_LINK_TO_POST_EN_PATTERN = '/micro-post/en/view/%s';
-    protected const URL_LINK_TO_USER_EN_PATTERN = '/micro-post/en/user/%s';
+    protected const URL_LINK_TO_POST_EMAIL_PATTERN = '/micro-post/%s/view/%s';
+    protected const URL_LINK_TO_USER_EMAIL_PATTERN = '/micro-post/%s/user/%s';
     protected const URL_REGISTER_EN = '/micro-post/en/register';
 
     /** @var MicroPostRepository */
@@ -75,8 +75,12 @@ class LikeControllerTest extends WebTestCase
 
         // After like post by user, we send email to post owner
         $email = self::getMailerMessage();
-        $linkToPost = sprintf(self::URL_LINK_TO_POST_EN_PATTERN, $microPost->getUuid());
-        $linkToUserWhoLike = sprintf(self::URL_LINK_TO_USER_EN_PATTERN, $userBlogger->getUuid());
+        $linkToPost = sprintf(
+            self::URL_LINK_TO_POST_EMAIL_PATTERN,
+            $microPost->getUser()->getPreferences()->getLocale(), $microPost->getUuid());
+        $linkToUserWhoLike = sprintf(
+            self::URL_LINK_TO_USER_EMAIL_PATTERN,
+            $microPost->getUser()->getPreferences()->getLocale(), $userBlogger->getUuid());
 
         self::assertEmailHtmlBodyContains($email, $linkToPost);
         self::assertEmailHtmlBodyContains($email, $linkToUserWhoLike);
