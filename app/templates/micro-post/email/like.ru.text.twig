@@ -2,7 +2,7 @@
 
 {{ post.content|slice(0, 150) }}...
 
-Чтать пост полностью {{ url('micro_post_view', {uuid: post.uuid, _locale: locale}) }}.
+Чтать пост полностью {{ url('micro_post_view', {uuid: post.uuid, _locale: locale}) }}
 Ссылка на профиль {{ likeByUser.nick }} тут {{ url('micro_post_by_user', {uuid: likeByUser.uuid, _locale: locale}) }}
 
 С уважением администратор Micro Post App.
