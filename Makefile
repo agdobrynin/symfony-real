@@ -14,6 +14,8 @@ stop:
 	@docker-compose stop
 exec:
 	@docker-compose exec $(name) bash
+exec-php:
+	@docker-compose exec php bash
 front-prod:
 	@docker-compose run --rm front sh -c "yarn install && yarn encore prod"
 front-watch:
