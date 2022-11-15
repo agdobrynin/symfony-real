@@ -1,5 +1,8 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    paths:
+        '%kernel.project_dir%/templates/micro-post': mp
+        '%kernel.project_dir%/templates': main
     form_themes: [ 'bootstrap_5_layout.html.twig' ]
     globals:
         supported_locales: '@App\Service\MicroPost\Locales'

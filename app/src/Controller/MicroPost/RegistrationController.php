@@ -42,7 +42,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('micro_post_list');
         }
 
-        return $this->renderForm('micro-post/register.html.twig', [
+        return $this->renderForm('@mp/register.html.twig', [
             'registrationForm' => $form,
         ]);
     }

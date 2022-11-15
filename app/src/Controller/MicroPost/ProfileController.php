@@ -82,7 +82,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('micro_post_profile_view', ['_locale' => $newLocale]);
         }
 
-        return $this->renderForm('micro-post/user-profile-edit.html.twig', [
+        return $this->renderForm('@mp/user-profile-edit.html.twig', [
             'profileForm' => $form,
         ]);
     }
@@ -92,7 +92,7 @@ class ProfileController extends AbstractController
      */
     public function profileView(): Response
     {
-        return $this->render('micro-post/user-profile-view.html.twig');
+        return $this->render('@mp/user-profile-view.html.twig');
     }
 
     /**
@@ -124,6 +124,6 @@ class ProfileController extends AbstractController
             }
         }
 
-        return $this->renderForm('micro-post/user-profile-password.html.twig', ['formPassword' => $form]);
+        return $this->renderForm('@mp/user-profile-password.html.twig', ['formPassword' => $form]);
     }
 }

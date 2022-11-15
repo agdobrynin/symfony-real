@@ -1,4 +1,4 @@
-{% extends 'micro-post/index.html.twig' %}
+{% extends '@mp/index.html.twig' %}
 
 {% block title %} {{ 'micro-post.menu.nav.profile.html_title'|trans({'%nick%': user.nick}) }}{% endblock %}
 
@@ -47,13 +47,13 @@
         </div>
     </div>
 
-    {% if microPosts.totalPages > 1 %}
-        {{ include ("micro-post/paginator.html.twig", {"pageCount": microPosts.totalPages, "pageCurrent": microPosts.page}) }}
+    {% if microPostWithPaginationDto.paginatorDto.totalPages > 1 %}
+        {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
     {% endif %}
-    {% for post in microPosts.posts %}
-        {{ include ("micro-post/post-item.html.twig", { post }) }}
+    {% for post in microPostWithPaginationDto.posts %}
+        {{ include ('@mp/post-item.html.twig', { post }) }}
     {% endfor %}
-    {% if microPosts.totalPages > 1 %}
-        {{ include ("micro-post/paginator.html.twig", {"pageCount": microPosts.totalPages, "pageCurrent": microPosts.page}) }}
+    {% if microPostWithPaginationDto.paginatorDto.totalPages > 1 %}
+        {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
     {% endif %}
 {% endblock %}
