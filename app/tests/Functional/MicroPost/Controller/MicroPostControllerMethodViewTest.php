@@ -78,7 +78,7 @@ class MicroPostControllerMethodViewTest extends WebTestCase
 
         $user = new User();
 
-        $crawler = $client->request('GET', sprintf(self::URL_POST_VIEW_BY_USER_PATTERN, $user->getUuid()));
+        $client->request('GET', sprintf(self::URL_POST_VIEW_BY_USER_PATTERN, $user->getUuid()));
         self::assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
     }
 
