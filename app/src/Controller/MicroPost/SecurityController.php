@@ -32,7 +32,7 @@ class SecurityController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         $form = $this->createForm(LoginFormType::class);
 
-        return $this->renderForm('micro-post/login.html.twig', [
+        return $this->renderForm('@mp/login.html.twig', [
             'error' => $error,
             'loginForm' => $form
         ]);
@@ -76,7 +76,7 @@ class SecurityController extends AbstractController
             $statusCode = Response::HTTP_OK;
         }
 
-        return $this->render('micro-post/confirm.html.twig', compact('user'))
+        return $this->render('@mp/confirm.html.twig', compact('user'))
             ->setStatusCode($statusCode);
     }
 

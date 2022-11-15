@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -29,7 +30,13 @@ class NotificationController extends AbstractController
      */
     public function setSeenAllNotification(): RedirectResponse
     {
-        $this->notificationRepository->setSeenAllNotificationByUser($this->getUser());
+        $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            throw new UnprocessableEntityHttpException('Set seen notification for ' . User::class . ' only.');
+        }
+
+        $this->notificationRepository->setSeenAllNotificationByUser($user);
 
         return $this->redirectToRoute('micro_post_list');
     }
@@ -44,6 +51,6 @@ class NotificationController extends AbstractController
             'user' => $this->getUser(),
         ], ['id' => 'desc']);
 
-        return $this->render('micro-post/user-notification.html.twig', compact('notifications'));
+        return $this->render('@mp/user-notification.html.twig', compact('notifications'));
     }
 }

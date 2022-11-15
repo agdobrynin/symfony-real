@@ -47,7 +47,13 @@
         </div>
     </div>
 
-    {% for post in posts %}
-        {{ include ("micro-post/post-item.html.twig", { post }) }}
+    {% if microPostWithPaginationDto.paginatorDto.totalPages > 1 %}
+        {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
+    {% endif %}
+    {% for post in microPostWithPaginationDto.posts %}
+        {{ include ('@mp/post-item.html.twig', { post }) }}
     {% endfor %}
+    {% if microPostWithPaginationDto.paginatorDto.totalPages > 1 %}
+        {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
+    {% endif %}
 {% endblock %}

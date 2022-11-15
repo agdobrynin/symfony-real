@@ -1,4 +1,4 @@
-{% extends "micro-post/index.html.twig" %}
+{% extends '@mp/index.html.twig' %}
 
 {% block title %}{{ post.getContent|slice(0, 50) }}...{% endblock %}
 
@@ -9,5 +9,5 @@
 
 
 {% block microPostContent %}
-    {{ include ("micro-post/post-item.html.twig", {post: post}) }}
+    {{ include ('@mp/post-item.html.twig', {post: post}) }}
 {% endblock %}

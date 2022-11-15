@@ -69,7 +69,7 @@ class MicroPostControllerMethodAddTest extends WebTestCase
 
         $crawler = $client->followRedirect();
 
-        $contentLastPostOnPage = $crawler->filter('main .card-body .card-text')->last()->text();
+        $contentLastPostOnPage = $crawler->filter('main .card-body .card-text')->first()->text();
         self::assertEquals($contentForPost, $contentLastPostOnPage);
 
         $this->em->refresh($user);

@@ -18,6 +18,6 @@ class BloggerController extends AbstractController
      */
     public function users(UserRepository $userRepository): Response
     {
-        return $this->render('micro-post/blogger-list.html.twig', ['bloggers' => $userRepository->findAll()]);
+        return $this->render('@mp/blogger-list.html.twig', ['bloggers' => $userRepository->findAll()]);
     }
 }

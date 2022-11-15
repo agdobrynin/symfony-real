@@ -1,0 +1,18 @@
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+            <span class="page-link">{{ 'micro-post.pagination.title'|trans }}</span>
+        </li>
+        {% set _route = app.request.get('_route') %}
+        {% set _route_params = app.request.get('_route_params') %}
+
+        {% for i in 1..paginatorDto.totalPages %}
+            {% if paginatorDto.page == i %}
+                <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">{{ i }}</a></li>
+            {% else %}
+                <li class="page-item"><a class="page-link"
+                                         href="{{ path(_route, _route_params) }}?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</nav>

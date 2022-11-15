@@ -9,7 +9,7 @@
 
 
 {% block microPostContent %}
-    {% if posts %}
+    {% if microPostWithPaginationDto.posts %}
         <div class="mb-5">
             {% if is_granted('ROLE_USER') %}
                 <h4 class="display-3">
@@ -18,9 +18,15 @@
                 <h4 class="display-3">{{ 'Last posts'|trans }}</h4>
             {% endif %}
         </div>
-        {% for post in posts %}
-            {{ include ("micro-post/post-item.html.twig", {post: post}) }}
+        {% if microPostWithPaginationDto.paginatorDto.totalPages > 1 %}
+            {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
+        {% endif %}
+        {% for post in microPostWithPaginationDto.posts %}
+            {{ include ('@mp/post-item.html.twig', {post: post}) }}
         {% endfor %}
+        {% if microPostWithPaginationDto.paginatorDto.totalPages > 1 %}
+            {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
+        {% endif %}
     {% else %}
         <p>{{ 'Your not have the following user, yet'|trans }}!</p>
         {% if followUser %}

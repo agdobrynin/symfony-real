@@ -3,12 +3,14 @@ declare(strict_types=1);
 
 namespace App\Controller\MicroPost;
 
+use App\Dto\Exception\PaginatorDtoException;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use App\Helper\FlashType;
 use App\Repository\MicroPostRepository;
 use App\Repository\UserRepository;
 use App\Security\Voter\MicroPostVoter;
+use App\Service\MicroPost\GetMicroPostsServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,6 +21,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -47,23 +50,32 @@ class MicroPostController extends AbstractController
     /**
      * @Route("/", name="micro_post_list", methods={"get"})
      */
-    public function index(): Response
+    public function index(Request $request, GetMicroPostsServiceInterface $getMicroPostsService): Response
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
         $followUser = [];
+        $page = (int)$request->get('page', 1);
 
         if ($this->getUser() instanceof User) {
-            $posts = $this->microPostRepository->findAllByUsers($currentUser->getFollowing());
+            try {
+                $microPostWithPaginationDto = $getMicroPostsService->findFollowingMicroPosts($currentUser, $page);
+            } catch (PaginatorDtoException $exception) {
+                throw new UnprocessableEntityHttpException($exception->getMessage());
+            }
 
-            if (0 === count($posts)) {
+            if (0 === count($microPostWithPaginationDto->getPosts())) {
                 $followUser = $this->userRepository->getUsersWhoHaveMoreThen5PostsExcludeUser($currentUser);
             }
         } else {
-            $posts = $this->microPostRepository->findBy([], ['date' => 'desc']);
+            try {
+                $microPostWithPaginationDto = $getMicroPostsService->findLastMicroPosts($page);
+            } catch (PaginatorDtoException $exception) {
+                throw new UnprocessableEntityHttpException($exception->getMessage());
+            }
         }
 
-        return $this->render('micro-post/list.html.twig', compact('posts', 'followUser'));
+        return $this->render('@mp/list.html.twig', compact('microPostWithPaginationDto', 'followUser'));
     }
 
     /**
@@ -174,18 +186,20 @@ class MicroPostController extends AbstractController
     /**
      * @Route("/user/{uuid}", name="micro_post_by_user")
      */
-    public function getPostByUser(?User $user = null): Response
+    public function getPostByUser(Request $request, GetMicroPostsServiceInterface $getMicroPostsService, ?User $user = null): Response
     {
         if (null === $user) {
             throw new NotFoundHttpException('User not found');
         }
 
-        $posts = $user->getPosts();
+        $page = (int)$request->get('page', 1);
+        try {
+            $microPostWithPaginationDto = $getMicroPostsService->findMicroPostsByUser($user, $page);
+        } catch (PaginatorDtoException $exception) {
+            throw new UnprocessableEntityHttpException($exception->getMessage());
+        }
 
-        return $this->render('micro-post/user-posts.html.twig', [
-            'posts' => $posts,
-            'user' => $user,
-        ]);
+        return $this->render('@mp/user-posts.html.twig', compact('microPostWithPaginationDto', 'user'));
     }
 
     private function formMicroPost(MicroPost $microPost): FormInterface

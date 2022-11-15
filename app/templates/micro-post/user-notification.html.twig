@@ -1,4 +1,4 @@
-{% extends 'micro-post/index.html.twig' %}
+{% extends '@mp/index.html.twig' %}
 
 {% block title %} Unread notification {% endblock %}
 
@@ -20,7 +20,7 @@
             <div class="row g-3">
                 {% for notification in notifications %}
                     <div class="col-md-6 col-sm-12 col-notification-item">
-                        {{ include('micro-post/user-notification-item.html.twig', { notification }) }}
+                        {{ include('@mp/user-notification-item.html.twig', { notification }) }}
                     </div>
                 {% endfor %}
             </div>
