@@ -18,8 +18,6 @@ micro-post:
         my-posts: 'My posts'
         profile: 'My profile'
         html_title: 'Posts from @%nick%'
-  pagination:
-    title: 'Pages'
   post-item:
     post-from: 'Post from user'
     post-from-prefix-date: 'at'
