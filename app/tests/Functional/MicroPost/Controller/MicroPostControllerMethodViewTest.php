@@ -24,12 +24,17 @@ class MicroPostControllerMethodViewTest extends WebTestCase
      * @var MicroPostRepository
      */
     private $microPostRepository;
+    /**
+     * @var int
+     */
+    private $pageSize;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->userRepository = self::getContainer()->get(UserRepository::class);
         $this->microPostRepository = self::getContainer()->get(MicroPostRepository::class);
+        $this->pageSize = self::getContainer()->getParameter('micropost.page.size');
     }
 
     public function testViewPostNonExist(): void
@@ -86,7 +91,11 @@ class MicroPostControllerMethodViewTest extends WebTestCase
         $crawler = $client->request('GET', sprintf(self::URL_POST_VIEW_BY_USER_PATTERN, $user->getUuid()));
         self::assertResponseIsSuccessful();
 
-        self::assertEquals($user->getPosts()->count(), $crawler->filter('main .post-item')->count());
+        // Page has pagination function, if all posts more the post per page set true value for expect value
+        $expectPostsCount = $user->getPosts()->count() > $this->pageSize ? $this->pageSize : $user->getPosts()->count();
+
+        self::assertEquals($expectPostsCount, $crawler->filter('main .post-item')->count());
+
         // request was sent as anonymous - button edit, delete not available on page.
         foreach ([self::URL_PART_POST_DEL, self::URL_PART_POST_EDIT] as $urlPart) {
             self::assertEquals(
@@ -102,7 +111,7 @@ class MicroPostControllerMethodViewTest extends WebTestCase
         // request was sent as anonymous - button edit, delete not available on page.
         foreach ([self::URL_PART_POST_DEL, self::URL_PART_POST_EDIT] as $urlPart) {
             self::assertEquals(
-                $user->getPosts()->count(),
+                $expectPostsCount,
                 $crawler->filter('main .post-item a[href*="' . $urlPart . '"]')->count()
             );
         }
