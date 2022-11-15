@@ -18,8 +18,6 @@ micro-post:
         my-posts: 'Мои посты'
         profile: 'Мои данные'
         html_title: 'Посты от @%nick%'
-  pagination:
-    title: 'Страницы'
   post-item:
     post-from: 'Пост пользователя'
     post-from-prefix-date: 'от'
