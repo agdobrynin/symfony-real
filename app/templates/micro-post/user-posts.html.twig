@@ -47,7 +47,13 @@
         </div>
     </div>
 
-    {% for post in posts %}
+    {% if microPosts.totalPages > 1 %}
+        {{ include ("micro-post/paginator.html.twig", {"pageCount": microPosts.totalPages, "pageCurrent": microPosts.page}) }}
+    {% endif %}
+    {% for post in microPosts.posts %}
         {{ include ("micro-post/post-item.html.twig", { post }) }}
     {% endfor %}
+    {% if microPosts.totalPages > 1 %}
+        {{ include ("micro-post/paginator.html.twig", {"pageCount": microPosts.totalPages, "pageCurrent": microPosts.page}) }}
+    {% endif %}
 {% endblock %}

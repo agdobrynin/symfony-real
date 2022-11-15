@@ -9,6 +9,7 @@ use App\Helper\FlashType;
 use App\Repository\MicroPostRepository;
 use App\Repository\UserRepository;
 use App\Security\Voter\MicroPostVoter;
+use App\Service\MicroPost\GetMicroPostsServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,23 +48,24 @@ class MicroPostController extends AbstractController
     /**
      * @Route("/", name="micro_post_list", methods={"get"})
      */
-    public function index(): Response
+    public function index(Request $request, GetMicroPostsServiceInterface $getMicroPostsService): Response
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
         $followUser = [];
+        $page = (int)$request->get('page', 1);
 
         if ($this->getUser() instanceof User) {
-            $posts = $this->microPostRepository->findAllByUsers($currentUser->getFollowing());
+            $microPosts = $getMicroPostsService->findFollowingMicroPosts($currentUser, $page);
 
-            if (0 === count($posts)) {
+            if (0 === count($microPosts->getPosts())) {
                 $followUser = $this->userRepository->getUsersWhoHaveMoreThen5PostsExcludeUser($currentUser);
             }
         } else {
-            $posts = $this->microPostRepository->findBy([], ['date' => 'desc']);
+            $microPosts = $getMicroPostsService->findLastMicroPosts($page);
         }
 
-        return $this->render('micro-post/list.html.twig', compact('posts', 'followUser'));
+        return $this->render('micro-post/list.html.twig', compact('microPosts', 'followUser'));
     }
 
     /**
@@ -174,16 +176,17 @@ class MicroPostController extends AbstractController
     /**
      * @Route("/user/{uuid}", name="micro_post_by_user")
      */
-    public function getPostByUser(?User $user = null): Response
+    public function getPostByUser(Request $request, GetMicroPostsServiceInterface $getMicroPostsService, ?User $user = null): Response
     {
         if (null === $user) {
             throw new NotFoundHttpException('User not found');
         }
 
-        $posts = $user->getPosts();
+        $page = (int)$request->get('page', 1);
+        $microPosts = $getMicroPostsService->findMicroPostsByUser($user, $page);
 
         return $this->render('micro-post/user-posts.html.twig', [
-            'posts' => $posts,
+            'microPosts' => $microPosts,
             'user' => $user,
         ]);
     }

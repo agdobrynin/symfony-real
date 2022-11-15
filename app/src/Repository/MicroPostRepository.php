@@ -44,39 +44,37 @@ class MicroPostRepository extends ServiceEntityRepository
     /**
      * @return MicroPost[]
      */
-    public function findAllByUsers(Collection $users): array
+    public function findAllByUsers(Collection $users, int $page, int $pageSize): array
     {
         return $this->createQueryBuilder('mp')
             ->select('mp')
             ->where('mp.user IN (:following)')
             ->setParameter(':following', $users)
             ->orderBy('mp.date', 'DESC')
+            ->setMaxResults($pageSize)
+            ->setFirstResult(($page - 1) * $pageSize)
             ->getQuery()
             ->getResult();
     }
 
-//    /**
-//     * @return MicroPost[] Returns an array of MicroPost objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function getCountByUsers(Collection $users): int
+    {
+        return (int)$this->createQueryBuilder('mp')
+            ->select('count(mp.uuid)')
+            ->where('mp.user IN (:following)')
+            ->setParameter(':following', $users)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
-//    public function findOneBySomeField($value): ?MicroPost
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function getAllCount(): int
+    {
+        return (int)$this->createQueryBuilder('mp')
+            ->select('count(mp.uuid)')->getQuery()->getSingleScalarResult();
+    }
+
+    public function getAllByPage(int $page, int $pageSize): array
+    {
+        return $this->findBy([], ['date' => 'desc'], $pageSize, ($page - 1) * $pageSize);
+    }
 }
