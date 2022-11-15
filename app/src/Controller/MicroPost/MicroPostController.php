@@ -109,7 +109,7 @@ class MicroPostController extends AbstractController
             }
         }
 
-        return $this->renderForm('micro-post/add.html.twig', ['form' => $form])
+        return $this->renderForm('@mp/add.html.twig', ['form' => $form])
             ->setStatusCode($statusCode);
     }
 
@@ -144,7 +144,7 @@ class MicroPostController extends AbstractController
             return $this->redirectToRoute('micro_post_view', ['uuid' => $microPost->getUUid()]);
         }
 
-        return $this->renderForm('micro-post/add.html.twig', ['form' => $form]);
+        return $this->renderForm('@mp/add.html.twig', ['form' => $form]);
     }
 
     /**
@@ -177,7 +177,7 @@ class MicroPostController extends AbstractController
     public function view(?MicroPost $microPost = null): Response
     {
         if ($microPost) {
-            return $this->render('micro-post/view.html.twig', ['post' => $microPost]);
+            return $this->render('@mp/view.html.twig', ['post' => $microPost]);
         }
 
         throw new NotFoundHttpException($this->translator->trans('micro-post.form_edit_add_del.message.not_found'));
