@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MicroPost\Controller;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -18,7 +19,7 @@ class MicroPostControllerMethodAddTest extends WebTestCase
      */
     private $userRepository;
     /**
-     * @var EntityManagerInterface
+     * @var ObjectManager
      */
     private $em;
     /**
@@ -26,12 +27,19 @@ class MicroPostControllerMethodAddTest extends WebTestCase
      */
     private $faker;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->userRepository = self::getContainer()->get(UserRepository::class);
-        $this->em = self::getContainer()->get(EntityManagerInterface::class);
+        $this->em = self::getContainer()->get('doctrine')->getManager();
+        $this->userRepository = $this->em->getRepository(User::class);
         $this->faker = Factory::create();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->em->close();
+        $this->em = null;
     }
 
     public function testOpenNewFormNotAuthUser(): void

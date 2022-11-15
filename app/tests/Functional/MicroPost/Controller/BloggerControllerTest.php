@@ -3,12 +3,31 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MicroPost\Controller;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class BloggerControllerTest extends WebTestCase
 {
     protected const URL_BLOGGERS_VIEW = '/micro-post/en/bloggers';
+    /**
+     * @var ObjectManager
+     */
+    private $em;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->em = self::getContainer()->get('doctrine')->getManager();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->em->close();
+        $this->em = null;
+    }
 
     public function testBloggerPage(): void
     {
@@ -18,8 +37,9 @@ class BloggerControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
 
         /** @var UserRepository $userRepository */
-        $userRepository = self::getContainer()->get(UserRepository::class);
+        $userRepository = $this->em->getRepository(User::class);
         $bloggers = $userRepository->findAll();
+
         foreach ($bloggers as $index => $blogger) {
             $card = $crawler->filter('.blogger-item')->eq($index);
 
