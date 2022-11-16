@@ -59,6 +59,9 @@ class SecurityControllerTest extends WebTestCase
         $user = $this->userRepository->findOneBy(['login' => 'admin']);
         $newUserLocale = 'ru';
         $user->getPreferences()->setLocale($newUserLocale);
+        $this->em->persist($user);
+        $this->em->flush();
+
         $client->loginUser($user);
 
         $client->request('GET', self::URL_SUCCESS_AUTH_EN_LOCALE);
