@@ -5,26 +5,19 @@ namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\MicroPost;
 use App\Entity\User;
-use App\Repository\MicroPostRepository;
-use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class MicroPostControllerMethodDelTest extends WebTestCase
 {
     protected const URL_POST_DEL_PATTERN = '/micro-post/en/del/%s';
-    /**
-     * @var UserRepository
-     */
+    /** @var \App\Repository\UserRepository */
     private $userRepository;
-    /**
-     * @var MicroPostRepository
-     */
+    /** @var \App\Repository\MicroPostRepository */
     private $microPostRepository;
     /**
-     * @var ObjectManager
+     * @var \Doctrine\Persistence\ObjectManager
      */
     private $em;
 

@@ -4,19 +4,17 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\MicroPost;
-use App\Repository\MicroPostRepository;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
 class MicroPostControllerMethodIndexTest extends WebTestCase
 {
     /**
-     * @var ObjectManager
+     * @var \Doctrine\Persistence\ObjectManager
      */
     private $em;
     /**
-     * @var MicroPostRepository
+     * @var \App\Repository\MicroPostRepository
      */
     private $microPostRepository;
     /**

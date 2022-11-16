@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class FollowerControllerTest extends WebTestCase
@@ -17,10 +15,10 @@ class FollowerControllerTest extends WebTestCase
     /**
      * ⚠ user defined in App\DataFixtures\AppFixtures
      *
-     * @var UserRepository
+     * @var \App\Repository\UserRepository
      */
     protected $userRepository;
-    /** @var ObjectManager */
+    /** @var \Doctrine\Persistence\ObjectManager */
     protected $em;
 
     protected function setUp(): void

@@ -5,9 +5,6 @@ namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\MicroPost;
 use App\Entity\User;
-use App\Repository\MicroPostRepository;
-use App\Repository\UserRepository;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,11 +19,11 @@ class LikeControllerTest extends WebTestCase
     protected const URL_LINK_TO_USER_EMAIL_PATTERN = '/micro-post/%s/user/%s';
     protected const URL_REGISTER_EN = '/micro-post/en/register';
 
-    /** @var MicroPostRepository */
+    /** @var \App\Repository\MicroPostRepository */
     protected $microPostRepository;
-    /** @var UserRepository */
+    /** @var \App\Repository\UserRepository */
     protected $userRepository;
-    /** @var ObjectManager */
+    /** @var \Doctrine\Persistence\ObjectManager */
     protected $em;
 
     protected function setUp(): void
@@ -52,7 +49,7 @@ class LikeControllerTest extends WebTestCase
         $userAdmin = $this->userRepository->findOneBy(['login' => 'admin']);
         $microPost = $this->microPostRepository->findOneBy(['user' => $userAdmin]);
 
-        $client->request('GET', sprintf(self::URL_LIKE_EN_POST_PATTERN, $microPost->getUuid()));
+        $client->xmlHttpRequest('GET', sprintf(self::URL_LIKE_EN_POST_PATTERN, $microPost->getUuid()));
         $response = $client->getResponse();
 
         self::assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
@@ -73,7 +70,7 @@ class LikeControllerTest extends WebTestCase
         self::assertCount(0, $microPost->getLikedBy());
 
         $client->loginUser($userBlogger);
-        $client->request('GET', sprintf(self::URL_LIKE_EN_POST_PATTERN, $microPost->getUuid()));
+        $client->xmlHttpRequest('GET', sprintf(self::URL_LIKE_EN_POST_PATTERN, $microPost->getUuid()));
         self::assertResponseIsSuccessful();
 
         $this->em->refresh($microPost);
@@ -123,7 +120,7 @@ class LikeControllerTest extends WebTestCase
         self::assertTrue($microPost->getLikedBy()->contains($userBlogger));
 
         $client->loginUser($userBlogger);
-        $client->request('GET', sprintf(self::URL_UNLIKE_EN_POST_PATTERN, $microPost->getUuid()));
+        $client->xmlHttpRequest('GET', sprintf(self::URL_UNLIKE_EN_POST_PATTERN, $microPost->getUuid()));
         self::assertResponseIsSuccessful();
 
         $this->em->refresh($microPost);

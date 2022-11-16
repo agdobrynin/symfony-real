@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Security\ConfirmationTokenGenerator;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -17,11 +15,9 @@ class SecurityControllerTest extends WebTestCase
     protected const URL_CONFIRM_EN_LOCALE_PATTERN = '/micro-post/en/confirm/%s';
     protected const URL_LOGIN_EN_LOCALE = '/micro-post/en/login';
 
-    /** @var UserRepository */
+    /** @var \App\Repository\UserRepository */
     protected $userRepository;
-    /**
-     * @var ObjectManager
-     */
+    /** @var \Doctrine\Persistence\ObjectManager */
     private $em;
 
     protected function setUp(): void

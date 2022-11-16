@@ -4,16 +4,12 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class BloggerControllerTest extends WebTestCase
 {
     protected const URL_BLOGGERS_VIEW = '/micro-post/en/bloggers';
-    /**
-     * @var ObjectManager
-     */
+    /** @var \Doctrine\Persistence\ObjectManager */
     private $em;
 
     protected function setUp(): void
@@ -36,7 +32,7 @@ class BloggerControllerTest extends WebTestCase
         $crawler = $client->request('GET', self::URL_BLOGGERS_VIEW);
         self::assertResponseIsSuccessful();
 
-        /** @var UserRepository $userRepository */
+        /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->em->getRepository(User::class);
         $bloggers = $userRepository->findAll();
 

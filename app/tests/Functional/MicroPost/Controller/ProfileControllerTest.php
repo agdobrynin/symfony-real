@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -19,10 +17,10 @@ class ProfileControllerTest extends WebTestCase
     protected const URL_PROFILE_PASSWORD = '/micro-post/en/profile/password';
     protected const URL_CONFIRM_LOGIN_EMAIL_PATTERN = '/micro-post/%s/confirm/%s';
 
-    /** @var UserRepository */
+    /** @var \App\Repository\UserRepository */
     protected $userRepository;
     /**
-     * @var ObjectManager
+     * @var \Doctrine\Persistence\ObjectManager
      */
     private $em;
 

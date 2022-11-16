@@ -5,10 +5,7 @@ namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\MicroPost;
 use App\Entity\User;
-use App\Repository\MicroPostRepository;
-use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,17 +13,11 @@ use Symfony\Component\HttpFoundation\Response;
 class MicroPostControllerMethodEditTest extends WebTestCase
 {
     protected const URL_POST_EDIT_PATTERN = '/micro-post/en/edit/%s';
-    /**
-     * @var UserRepository
-     */
+    /** @var \App\Repository\UserRepository */
     private $userRepository;
-    /**
-     * @var MicroPostRepository
-     */
+    /** @var \App\Repository\MicroPostRepository */
     private $microPostRepository;
-    /**
-     * @var ObjectManager
-     */
+    /** @var \Doctrine\Persistence\ObjectManager */
     private $em;
     /**
      * @var \Faker\Generator

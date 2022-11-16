@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
-use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -15,11 +13,11 @@ class MicroPostControllerMethodAddTest extends WebTestCase
 {
     protected const URL_POST_ADD = '/micro-post/en/add';
     /**
-     * @var UserRepository
+     * @var \App\Repository\UserRepository
      */
     private $userRepository;
     /**
-     * @var ObjectManager
+     * @var \Doctrine\Persistence\ObjectManager
      */
     private $em;
     /**

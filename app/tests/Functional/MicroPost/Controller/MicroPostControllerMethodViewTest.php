@@ -5,9 +5,6 @@ namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\MicroPost;
 use App\Entity\User;
-use App\Repository\MicroPostRepository;
-use App\Repository\UserRepository;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,11 +15,11 @@ class MicroPostControllerMethodViewTest extends WebTestCase
     protected const URL_PART_POST_EDIT = '/micro-post/en/edit/';
     protected const URL_PART_POST_DEL = '/micro-post/en/del/';
     /**
-     * @var UserRepository
+     * @var \App\Repository\UserRepository
      */
     private $userRepository;
     /**
-     * @var MicroPostRepository
+     * @var \App\Repository\MicroPostRepository
      */
     private $microPostRepository;
     /**
@@ -30,7 +27,7 @@ class MicroPostControllerMethodViewTest extends WebTestCase
      */
     private $pageSize;
     /**
-     * @var ObjectManager
+     * @var \Doctrine\Persistence\ObjectManager
      */
     private $em;
 
