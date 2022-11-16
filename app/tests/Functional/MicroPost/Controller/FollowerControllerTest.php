@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MicroPost\Controller;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class FollowerControllerTest extends WebTestCase
@@ -19,14 +20,21 @@ class FollowerControllerTest extends WebTestCase
      * @var UserRepository
      */
     protected $userRepository;
-    /** @var EntityManagerInterface */
+    /** @var ObjectManager */
     protected $em;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->userRepository = self::getContainer()->get(UserRepository::class);
-        $this->em = self::getContainer()->get(EntityManagerInterface::class);
+        $this->em = self::getContainer()->get('doctrine')->getManager();
+        $this->userRepository = $this->em->getRepository(User::class);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->em->close();
+        $this->em = null;
     }
 
     public function testFollowUserNotAuthUser(): void
@@ -51,7 +59,8 @@ class FollowerControllerTest extends WebTestCase
 
         $userFollow = $this->userRepository->findOneBy(['login' => 'admin']);
         $userFollow->getFollowers()->clear();
-        $this->userRepository->add($userFollow, true);
+        $this->em->persist($userFollow);
+        $this->em->flush();
 
         self::assertEquals(0, $userFollow->getFollowers()->count());
 
@@ -76,10 +85,11 @@ class FollowerControllerTest extends WebTestCase
 
         if (!$bloggerUser->getFollowing()->contains($adminUser)) {
             $bloggerUser->follow($adminUser);
-            $this->userRepository->add($bloggerUser, true);
+            $this->em->persist($bloggerUser);
+            $this->em->flush();
         }
 
-        $bloggerUser = $this->userRepository->findOneBy(['login' => 'blogger']);
+        $this->em->refresh($bloggerUser);
         self::assertTrue($bloggerUser->getFollowing()->contains($adminUser));
 
         $client->loginUser($bloggerUser);

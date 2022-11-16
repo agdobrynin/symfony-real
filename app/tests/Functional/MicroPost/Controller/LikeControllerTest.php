@@ -4,9 +4,10 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\MicroPost;
+use App\Entity\User;
 use App\Repository\MicroPostRepository;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,15 +26,22 @@ class LikeControllerTest extends WebTestCase
     protected $microPostRepository;
     /** @var UserRepository */
     protected $userRepository;
-    /** @var EntityManagerInterface */
+    /** @var ObjectManager */
     protected $em;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->microPostRepository = self::getContainer()->get(MicroPostRepository::class);
-        $this->userRepository = self::getContainer()->get(UserRepository::class);
-        $this->em = self::getContainer()->get(EntityManagerInterface::class);
+        $this->em = self::getContainer()->get('doctrine')->getManager();
+        $this->microPostRepository = $this->em->getRepository(MicroPost::class);
+        $this->userRepository = $this->em->getRepository(User::class);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->em->close();
+        $this->em = null;
     }
 
     public function testLikePostNotAuthUser(): void

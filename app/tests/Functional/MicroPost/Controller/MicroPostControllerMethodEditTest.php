@@ -8,7 +8,7 @@ use App\Entity\User;
 use App\Repository\MicroPostRepository;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +25,7 @@ class MicroPostControllerMethodEditTest extends WebTestCase
      */
     private $microPostRepository;
     /**
-     * @var EntityManagerInterface
+     * @var ObjectManager
      */
     private $em;
     /**
@@ -33,13 +33,20 @@ class MicroPostControllerMethodEditTest extends WebTestCase
      */
     private $faker;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->userRepository = self::getContainer()->get(UserRepository::class);
-        $this->microPostRepository = self::getContainer()->get(MicroPostRepository::class);
-        $this->em = self::getContainer()->get(EntityManagerInterface::class);
+        $this->em = self::getContainer()->get('doctrine')->getManager();
+        $this->userRepository = $this->em->getRepository(User::class);
+        $this->microPostRepository = $this->em->getRepository(MicroPost::class);
         $this->faker = Factory::create();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->em->close();
+        $this->em = null;
     }
 
     public function testOpenEditPostFormNotAuthUser(): void
