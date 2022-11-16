@@ -207,7 +207,7 @@ class MicroPostController extends AbstractController
         return $this->createFormBuilder($microPost)
             ->add('content', TextareaType::class, [
                 'label' => 'micro-post.form_edit_add_del.content',
-                'attr' => ['rows' => 5]
+                'attr' => ['rows' => 5, 'maxlength' => '280'] // TODO get maxlength from MicroPost entity
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'micro-post.form_edit_add_del.button_submit'
