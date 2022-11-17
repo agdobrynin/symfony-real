@@ -26,7 +26,7 @@ final class Version20221117140611 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
+        // $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE comment RENAME COLUMN create_at TO date');
     }
 }
