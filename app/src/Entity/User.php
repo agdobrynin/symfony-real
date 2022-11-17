@@ -97,17 +97,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $emoji;
 
     /**
-     * @ORM\OneToMany(targetEntity=MicroPost::class, mappedBy="user")
+     * @ORM\OneToMany(targetEntity=MicroPost::class, mappedBy="user", fetch="EXTRA_LAZY")
      */
     private $posts;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="following")
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="following", fetch="EXTRA_LAZY")
      */
     private $followers;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="followers")
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="followers", fetch="EXTRA_LAZY")
      * @ORM\JoinTable(
      *     name="user_following",
      *     joinColumns={
@@ -121,7 +121,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $following;
 
     /**
-     * @ORM\ManyToMany(targetEntity=MicroPost::class, mappedBy="likedBy")
+     * @ORM\ManyToMany(targetEntity=MicroPost::class, mappedBy="likedBy", fetch="EXTRA_LAZY")
      */
     private $postsLiked;
 
