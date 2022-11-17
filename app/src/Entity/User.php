@@ -145,6 +145,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $preferences;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user")
+     */
+    private $comments;
+
     public function __construct(?string $uuid = null)
     {
         $this->uuid = $uuid ? Uuid::fromString($uuid) : Uuid::v4();
@@ -153,6 +158,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->followers = new ArrayCollection();
         $this->postsLiked = new ArrayCollection();
         $this->isActive = false;
+        $this->comments = new ArrayCollection();
     }
 
     public function getUuid(): UuidV4
@@ -348,5 +354,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->preferences = $preferences;
 
         return $this;
+    }
+
+    public function getComments(): Collection
+    {
+        return $this->comments;
     }
 }
