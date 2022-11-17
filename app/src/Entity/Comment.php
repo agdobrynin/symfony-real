@@ -23,7 +23,7 @@ class Comment
     /**
      * @ORM\Column(type="datetime", nullable=false)
      */
-    private $date;
+    private $createAt;
 
     /**
      * @ORM\Column(type="string", length="200", nullable=false)
@@ -34,19 +34,20 @@ class Comment
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
-     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid", nullable=false)
+     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid", nullable=false, onDelete="CASCADE")
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=MicroPost::class, inversedBy="comments")
-     * @ORM\JoinColumn(name="post_uuid", referencedColumnName="uuid", nullable=false)
+     * @ORM\JoinColumn(name="post_uuid", referencedColumnName="uuid", nullable=false, onDelete="CASCADE")
      */
     private $post;
 
     public function __construct(?string $uuid = null)
     {
         $this->uuid = $uuid ? Uuid::fromString($uuid) : Uuid::v4();
+        $this->createAt = new \DateTime();
     }
 
     public function getUuid(): UuidV4
@@ -90,16 +91,8 @@ class Comment
         return $this;
     }
 
-    public function getDate(): \DateTimeInterface
+    public function getCreateAt(): \DateTimeInterface
     {
-        return $this->date;
-    }
-
-    /**
-     * @ORM\PreFlush
-     */
-    public function setDateAutomatically(): void
-    {
-        $this->date = new \DateTime();
+        return $this->createAt;
     }
 }
