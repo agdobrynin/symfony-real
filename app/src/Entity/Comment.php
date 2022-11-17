@@ -28,7 +28,7 @@ class Comment
     /**
      * @ORM\Column(type="string", length="200", nullable=false)
      * @Assert\NotBlank()
-     * @Assert\Length(min={10}, max={200})
+     * @Assert\Length(min="10", max="200")
      */
     private $content;
 

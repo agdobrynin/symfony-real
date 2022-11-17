@@ -10,4 +10,12 @@
 
 {% block microPostContent %}
     {{ include ('@mp/post-item.html.twig', {post: post}) }}
+    {% if app.user is is_user %}
+        {{ form(form) }}
+        {{ include('@mp/post-comments.html.twig', {commentsWithPaginatorDto}) }}
+    {% else %}
+        <p class="alert alert-info">
+            ⚠ Только авторизованые пользователи могут оставить комментарий.
+        </p>
+    {% endif %}
 {% endblock %}

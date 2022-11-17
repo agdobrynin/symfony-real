@@ -4,12 +4,15 @@ declare(strict_types=1);
 namespace App\Controller\MicroPost;
 
 use App\Dto\Exception\PaginatorDtoException;
+use App\Entity\Comment;
 use App\Entity\MicroPost;
 use App\Entity\User;
+use App\Form\CommentFormType;
 use App\Helper\FlashType;
 use App\Repository\MicroPostRepository;
 use App\Repository\UserRepository;
 use App\Security\Voter\MicroPostVoter;
+use App\Service\MicroPost\GetMicroPostCommentsServiceInterface;
 use App\Service\MicroPost\GetMicroPostsServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -172,12 +175,43 @@ class MicroPostController extends AbstractController
     }
 
     /**
-     * @Route("/view/{uuid}", name="micro_post_view", methods={"get"})
+     * @Route("/view/{uuid}", name="micro_post_view", methods={"get", "post"})
+     * @return Response|RedirectResponse
      */
-    public function view(?MicroPost $microPost = null): Response
+    public function view(Request $request, GetMicroPostCommentsServiceInterface $getMicroPostCommentsService, ?MicroPost $microPost = null)
     {
         if ($microPost) {
-            return $this->render('@mp/view.html.twig', ['post' => $microPost]);
+            $statusCode = Response::HTTP_OK;
+            $form = null;
+
+            if ($this->getUser() instanceof User) {
+                $comment = (new Comment())->setPost($microPost)->setUser($this->getUser());
+                $form = $this->createForm(CommentFormType::class, $comment);
+                $form->handleRequest($request);
+
+                if ($form->isSubmitted()) {
+                    if ($form->isValid()) {
+                        $this->em->persist($comment);
+                        $this->em->flush();
+                        // TODO translate it
+                        $this->addFlash(FlashType::SUCCESS, 'Спасибо! Ваш комментарий добавлен');
+
+                        return $this->redirectToRoute('micro_post_view', ['uuid' => $microPost->getUuid()]);
+                    } else {
+                        $statusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
+                    }
+                }
+            }
+
+            $page = (int)$request->get('page', 1);
+            $commentsWithPaginatorDto = $getMicroPostCommentsService->getComments($page, $microPost);
+
+            return $this->renderForm('@mp/view.html.twig', [
+                'post' => $microPost,
+                'form' => $form,
+                'commentsWithPaginatorDto' => $commentsWithPaginatorDto
+            ])
+                ->setStatusCode($statusCode);
         }
 
         throw new NotFoundHttpException($this->translator->trans('micro-post.form_edit_add_del.message.not_found'));

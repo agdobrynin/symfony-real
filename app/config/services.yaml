@@ -6,6 +6,7 @@
 parameters:
   post.list.page_size: "%env(int:POST_LIST_PAGE_SIZE)%"
   micropost.page.size: "%env(int:MICRO_POST_PAGE_SIZE)%"
+  micropost.comments.page.size: "%env(int:MICRO_POST_COMMENTS_PAGE_SIZE)%"
   welcome.message.machine: "%env(string:APP_MACHINE_NAME)%"
   micropost.admin.email: "%env(string:ADMIN_EMAIL)%"
   app.supported_locales: "en|ru"
@@ -68,9 +69,15 @@ services:
         - name: 'doctrine.event_subscriber'
           priority: 500
           connection: 'default'
+
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
       arguments:
         - '%env(DATABASE_URL)%'
+
     App\Service\MicroPost\GetMicroPostsService:
       arguments:
         $pageSize: '%micropost.page.size%'
+
+    App\Service\MicroPost\GetMicroPostCommentsService:
+      arguments:
+        $pageSize: '%micropost.comments.page.size%'
