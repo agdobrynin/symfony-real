@@ -23,7 +23,7 @@ micro-post:
   post-item:
     post-from: 'Пост пользователя'
     post-from-prefix-date: 'от'
-    view: 'Смотреть и комментировать'
+    view: 'Смотреть и комментировать <span class="badge text-bg-secondary">%count%</span>'
     edit: 'Рдактировать'
     del: 'Удалить'
     like: 'Супер'
