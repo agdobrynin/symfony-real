@@ -23,7 +23,7 @@ micro-post:
   post-item:
     post-from: 'Пост пользователя'
     post-from-prefix-date: 'от'
-    view: 'Подробнее'
+    view: 'Смотреть и комментировать'
     edit: 'Рдактировать'
     del: 'Удалить'
     like: 'Супер'

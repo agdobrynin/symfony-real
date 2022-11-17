@@ -23,7 +23,7 @@ micro-post:
   post-item:
     post-from: 'Post from user'
     post-from-prefix-date: 'at'
-    view: 'View more'
+    view: 'View & comment it'
     edit: 'Edit'
     del: 'Delete'
     like: 'Like'
