@@ -1,7 +1,9 @@
+SHELL := /bin/sh
+
 tests:
-	# Run different testcase. For example make tests test=all or make tests test=unit
+	# Run different testcase. For example make tests type=all or make tests type=unit
 	# for details param see file app/Makefile
-	@docker-compose -f docker-compose-test.yml run --rm php sh -c "make tests-$(test)"
+	@docker-compose -f docker-compose-test.yml run --rm php sh -c "make tests-$(type)"
 build:
 	@docker-compose build
 build-up:
