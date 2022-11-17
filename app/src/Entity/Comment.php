@@ -33,13 +33,13 @@ class Comment
     private $content;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
      * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid", nullable=false)
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\MicroPost", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity=MicroPost::class, inversedBy="comments")
      * @ORM\JoinColumn(name="post_uuid", referencedColumnName="uuid", nullable=false)
      */
     private $post;

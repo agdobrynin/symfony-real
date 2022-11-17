@@ -146,7 +146,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $preferences;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user")
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="user")
      */
     private $comments;
 
