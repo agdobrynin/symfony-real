@@ -65,7 +65,7 @@ class MicroPost
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="post", fetch="EXTRA_LAZY")
      * @ORM\JoinColumn(name="comment_uuid", referencedColumnName="uuid", nullable=false)
-     * @ORM\OrderBy({"date"="desc"})
+     * @ORM\OrderBy({"createAt"="desc"})
      */
     private $comments;
 
