@@ -2,18 +2,25 @@
     {{ include ('@mp/paginator.html.twig', {paginatorDto: commentsWithPaginatorDto.paginatorDto}) }}
 {% endif %}
 
-{% for comment in commentsWithPaginatorDto.comments %}
-    <div class="card mb-5 comment-item">
-        <div class="card-body">
-            <h6 class="card-subtitle mb-2 text-muted">
-                {{ comment.user.emoji }}@<a
-                        href="{{ path("micro_post_by_user", {uuid: comment.user.uuid}) }}">{{ comment.user.nick }}</a>
-                wrote the comment at {{ comment.createAt|format_datetime('medium', 'short') }}
-            </h6>
-            <p class="card-text">{{ comment.content }}</p>
-        </div>
+<div class="container">
+    <div class="row justify-content-md-center">
+        {% for comment in commentsWithPaginatorDto.comments %}
+            <div class="col-auto pb-4" style="width: 50%">
+                <div class="card mb-5 comment-item">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            {{ comment.user.emoji }}@<a
+                                    href="{{ path("micro_post_by_user", {uuid: comment.user.uuid}) }}">{{ comment.user.nick }}</a>
+                            wrote the comment at {{ comment.createAt|format_datetime('medium', 'short') }}
+                        </h6>
+                        <p class="card-text">{{ comment.content }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
-{% endfor %}
+</div>
+
 {% if commentsWithPaginatorDto.paginatorDto.totalPages > 1 %}
     {{ include ('@mp/paginator.html.twig', {paginatorDto: commentsWithPaginatorDto.paginatorDto}) }}
 {% endif %}
