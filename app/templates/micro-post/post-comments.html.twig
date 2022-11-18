@@ -5,14 +5,19 @@
 <div class="container">
     <div class="row justify-content-md-center">
         {% for comment in commentsWithPaginatorDto.comments %}
-            <div class="col-auto pb-4" style="width: 50%">
+            <div class="col-md-6 col-sm-12">
                 <div class="card mb-5 comment-item">
+                    <div class="card-header mb-2 text-muted">
+                        {{ 'micro-post.comments.comment.author_date'|trans(
+                            {
+                                '%emoji%': comment.user.emoji,
+                                '%nick%': comment.user.nick,
+                                '%date%': comment.createAt|format_datetime('medium', 'short'),
+                                '%url%': path('micro_post_by_user', {uuid: comment.user.uuid}),
+                            }
+                        )|raw }}
+                    </div>
                     <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-muted">
-                            {{ comment.user.emoji }}@<a
-                                    href="{{ path("micro_post_by_user", {uuid: comment.user.uuid}) }}">{{ comment.user.nick }}</a>
-                            wrote the comment at {{ comment.createAt|format_datetime('medium', 'short') }}
-                        </h6>
                         <p class="card-text">{{ comment.content }}</p>
                     </div>
                 </div>

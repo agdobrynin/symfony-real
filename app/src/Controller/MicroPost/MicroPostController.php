@@ -193,8 +193,8 @@ class MicroPostController extends AbstractController
                     if ($form->isValid()) {
                         $this->em->persist($comment);
                         $this->em->flush();
-                        // TODO translate it
-                        $this->addFlash(FlashType::SUCCESS, 'Спасибо! Ваш комментарий добавлен');
+
+                        $this->addFlash(FlashType::SUCCESS, $this->translator->trans('micro-post.comments.form.success_message'));
 
                         return $this->redirectToRoute('micro_post_view', ['uuid' => $microPost->getUuid()]);
                     } else {

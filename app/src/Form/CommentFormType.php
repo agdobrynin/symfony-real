@@ -27,11 +27,11 @@ class CommentFormType extends AbstractType
             ->fieldMappings['content']['length'] ?? 200;
 
         $builder->add('content', TextareaType::class, [
-            'label' => 'Comment',
+            'label' => 'micro-post.comments.form.label_content',
             'attr' => ['rows' => 3, 'maxlength' => $fieldContentLength]
         ])
             ->add('save', SubmitType::class, [
-                'label' => 'Send new comment'
+                'label' => 'micro-post.comments.form.btn_save'
             ]);
     }
 
