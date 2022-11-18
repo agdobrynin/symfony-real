@@ -9,18 +9,16 @@
                 <div class="col-auto pb-4">
                     <div class="card blogger-item" style="width: 15rem;">
                         <div class="card-header text-truncate overflow-hidden fs-5">
-                            {{ blogger.emoji }}@{{ blogger.nick }}
+                            {{ user_with_link_to_user_page(blogger)|raw }}
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item blogger-posts">{{ 'bloggers_list.title_post'|trans }}
-                                : {{ blogger.posts|length }}</li>
+                                : {{ blogger.posts.count }}</li>
                             <li class="list-group-item blogger-followers">{{ 'bloggers_list.title_followers'|trans }}
-                                : {{ blogger.followers|length }}</li>
+                                : {{ blogger.followers.count }}</li>
+                            <li class="list-group-item blogger-followers">{{ 'bloggers_list.title_comments'|trans }}
+                                : {{ blogger.comments.count }}</li>
                         </ul>
-                        <div class="card-footer">
-                            <a href="{{ path('micro_post_by_user', {uuid: blogger.uuid}) }}"
-                               class="card-link">{{ 'bloggers_list.title_profile'|trans }}</a>
-                        </div>
                     </div>
                 </div>
             {% else %}

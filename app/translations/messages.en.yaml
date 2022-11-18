@@ -41,7 +41,7 @@ micro-post:
   comments:
     comment_for_auth: '⚠ Only authorized users can leave a comment.'
     comment:
-      author_date: '%emoji%@<a href="%url%">%nick%</a> wrote the comment at %date%'
+      author_date: 'wrote the comment at %date%'
     form:
       label_content: 'Comment'
       btn_save: '🔊 Send'
@@ -120,6 +120,7 @@ email:
 bloggers_list:
   title_post: 'Posts'
   title_followers: 'Followers'
+  title_comments: 'Comments'
   title_profile: 'Profile'
   title_not_found: 'Bloggers not found'
 confirmation_login:

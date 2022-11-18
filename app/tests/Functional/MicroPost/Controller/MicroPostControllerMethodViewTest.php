@@ -75,7 +75,7 @@ class MicroPostControllerMethodViewTest extends WebTestCase
         $postUserOwner = $microPost->getUser();
         $cardBodyEl = $crawler->filter('main .card .card-body')->first();
         self::assertMatchesRegularExpression(
-            '/' . $postUserOwner->getEmoji() . '@.+' . preg_quote($postUserOwner->getNick()) . '/i',
+            '/' . $postUserOwner->getEmoji() . '@' . preg_quote($postUserOwner->getNick()) . '/i',
             $cardBodyEl->filter('.card-subtitle')->text()
         );
         self::assertStringContainsString($microPost->getContent(), $cardBodyEl->filter('.card-text')->text());

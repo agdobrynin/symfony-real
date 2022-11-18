@@ -2,8 +2,7 @@
     <div class="card-body">
         <h6 class="card-subtitle mb-2 text-muted">
             {{ 'micro-post.post-item.post-from'|trans }}
-            {{ post.user.emoji }}@<a href="{{ path("micro_post_by_user", {uuid: post.user.uuid}) }}">
-                {{ post.user.nick }}</a> {{ 'micro-post.post-item.post-from-prefix-date'|trans }}
+            {{ user_with_link_to_user_page(post.user)|raw }} {{ 'micro-post.post-item.post-from-prefix-date'|trans }}
             {{ post.getDate|format_datetime('medium', 'short') }}
         </h6>
         <p class="card-text">{{ post.getContent }}</p>
