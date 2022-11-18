@@ -46,6 +46,12 @@ micro-post:
       label_content: 'Comment'
       btn_save: '🔊 Send'
       success_message: 'Thank you! Your comment has been added.'
+    del:
+      title: 'Delete'
+      confirm_message: 'Delete comment?'
+      cant_del_message: 'Only the owner or administrator can delete a comment'
+      success_message: 'Comment successfully deleted. %content_part%'
+    not_found: 'Comment not found'
 registration_form:
   title: 'Registration'
   form:

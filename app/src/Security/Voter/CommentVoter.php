@@ -3,16 +3,16 @@ declare(strict_types=1);
 
 namespace App\Security\Voter;
 
-use App\Entity\MicroPost;
+use App\Entity\Comment;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class MicroPostVoter extends Voter
+class CommentVoter extends Voter
 {
-    public const MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN = 'MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN';
+    public const COMMENT_DEL_OWNER_OR_ADMIN = 'COMMENT_DEL_OWNER_OR_ADMIN';
 
     private $accessDecisionManager;
 
@@ -24,13 +24,13 @@ class MicroPostVoter extends Voter
     protected function supports(string $attribute, $subject): bool
     {
         // https://symfony.com/doc/current/security/voters.html
-        return self::MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN === $attribute
-            && $subject instanceof MicroPost;
+        return self::COMMENT_DEL_OWNER_OR_ADMIN === $attribute
+            && $subject instanceof Comment;
     }
 
     /**
      * @param string $attribute
-     * @param MicroPost $subject
+     * @param Comment $subject
      * @param TokenInterface $token
      * @return bool
      */

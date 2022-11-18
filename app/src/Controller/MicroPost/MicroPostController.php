@@ -126,7 +126,7 @@ class MicroPostController extends AbstractController
         }
 
         $this->denyAccessUnlessGranted(
-            MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN,
+            MicroPostVoter::MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN,
             $microPost,
             $this->translator->trans('micro-post.form_edit_add_del.message.edit_owner')
         );
@@ -160,7 +160,7 @@ class MicroPostController extends AbstractController
         }
 
         $this->denyAccessUnlessGranted(
-            MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN,
+            MicroPostVoter::MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN,
             $microPost,
             $this->translator->trans('micro-post.form_edit_add_del.message.del_owner')
         );

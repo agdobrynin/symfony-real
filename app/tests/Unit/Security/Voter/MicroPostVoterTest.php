@@ -28,7 +28,7 @@ class MicroPostVoterTest extends TestCase
             ->willReturn(true);
 
         $vote = (new MicroPostVoter($accessDecisionManager))
-            ->vote($token, $this->createMicroPost($userAdmin), [MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN]);
+            ->vote($token, $this->createMicroPost($userAdmin), [MicroPostVoter::MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN]);
 
         self::assertEquals(VoterInterface::ACCESS_GRANTED, $vote);
     }
@@ -47,7 +47,7 @@ class MicroPostVoterTest extends TestCase
             ->willReturn(false);
 
         $vote = (new MicroPostVoter($accessDecisionManager))
-            ->vote($token, $this->createMicroPost($user), [MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN]);
+            ->vote($token, $this->createMicroPost($user), [MicroPostVoter::MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN]);
 
         self::assertEquals(VoterInterface::ACCESS_GRANTED, $vote);
     }
@@ -68,7 +68,7 @@ class MicroPostVoterTest extends TestCase
             ->willReturn(false);
 
         $vote = (new MicroPostVoter($accessDecisionManager))
-            ->vote($token, $this->createMicroPost($userPostOwner), [MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN]);
+            ->vote($token, $this->createMicroPost($userPostOwner), [MicroPostVoter::MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN]);
 
         self::assertEquals(VoterInterface::ACCESS_DENIED, $vote);
     }
@@ -122,7 +122,7 @@ class MicroPostVoterTest extends TestCase
         $userPostOwner->setRoles([User::ROLE_USER]);
 
         $vote = (new MicroPostVoter($accessDecisionManager))
-            ->vote($token, $this->createMicroPost($userPostOwner), [MicroPostVoter::EDIT_DEL_OWNER_OR_ADMIN]);
+            ->vote($token, $this->createMicroPost($userPostOwner), [MicroPostVoter::MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN]);
 
         self::assertEquals(VoterInterface::ACCESS_DENIED, $vote);
     }
