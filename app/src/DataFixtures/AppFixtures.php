@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
+use App\Entity\Comment;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use App\Entity\UserPreferences;
@@ -14,6 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    private const MICRO_POST_MAX = 20;
     private const PASSWORD = 'qwerty';
     private $userPasswordHasher;
     /** @var UserFixtureDto[] */
@@ -34,13 +36,14 @@ class AppFixtures extends Fixture
     {
         $this->loadUsers($manager);
         $this->loadMicroPost($manager);
+        $this->loadComments($manager);
     }
 
     private function loadMicroPost(ObjectManager $manager): void
     {
         $faker = Factory::create('ru_RU');
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < self::MICRO_POST_MAX; $i++) {
             $microPost = new MicroPost();
             $microPost->setDate($faker->dateTimeBetween('-60 day', 'now'))
                 ->setContent($faker->realTextBetween(120, 250));
@@ -49,6 +52,27 @@ class AppFixtures extends Fixture
             $microPost->setUser($referenceUser);
 
             $manager->persist($microPost);
+            $this->setReference('microPost_' . $i, $microPost);
+        }
+
+        $manager->flush();
+    }
+
+    private function loadComments(ObjectManager $manager): void
+    {
+        $faker = Factory::create('ru_RU');
+
+        for ($i = 0; $i < self::MICRO_POST_MAX; $i++) {
+            $maxComments = rand(0, 15);
+
+            for ($j = 0; $j < $maxComments; $j++) {
+                $comment = (new Comment())
+                    ->setContent($faker->text(200))
+                    ->setPost($this->getReference('microPost_' . $i))
+                    ->setUser($this->getReference($this->randUserLogin()));
+
+                $manager->persist($comment);
+            }
         }
 
         $manager->flush();

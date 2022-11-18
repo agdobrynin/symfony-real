@@ -62,10 +62,18 @@ class MicroPost
      */
     private $date;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="post", fetch="EXTRA_LAZY")
+     * @ORM\JoinColumn(name="comment_uuid", referencedColumnName="uuid", nullable=false)
+     * @ORM\OrderBy({"createAt"="desc"})
+     */
+    private $comments;
+
     public function __construct(?string $uuid = null)
     {
         $this->uuid = $uuid ? Uuid::fromString($uuid) : Uuid::v4();
         $this->likedBy = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getUuid(): UuidV4
@@ -128,6 +136,20 @@ class MicroPost
     {
         if (!$this->likedBy->contains($user)) {
             $this->likedBy->add($user);
+        }
+
+        return $this;
+    }
+
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function setComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
         }
 
         return $this;

@@ -1,0 +1,31 @@
+{% if commentsWithPaginatorDto.paginatorDto.totalPages > 1 %}
+    {{ include ('@mp/paginator.html.twig', {paginatorDto: commentsWithPaginatorDto.paginatorDto}) }}
+{% endif %}
+
+<div class="container">
+    <div class="row justify-content-md-center">
+        {% for comment in commentsWithPaginatorDto.comments %}
+            <div class="col-md-6 col-sm-12">
+                <div class="card mb-5 comment-item">
+                    <div class="card-header mb-2 text-muted">
+                        {{ 'micro-post.comments.comment.author_date'|trans(
+                            {
+                                '%emoji%': comment.user.emoji,
+                                '%nick%': comment.user.nick,
+                                '%date%': comment.createAt|format_datetime('medium', 'short'),
+                                '%url%': path('micro_post_by_user', {uuid: comment.user.uuid}),
+                            }
+                        )|raw }}
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ comment.content }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% if commentsWithPaginatorDto.paginatorDto.totalPages > 1 %}
+    {{ include ('@mp/paginator.html.twig', {paginatorDto: commentsWithPaginatorDto.paginatorDto}) }}
+{% endif %}

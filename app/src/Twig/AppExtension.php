@@ -7,6 +7,7 @@ use App\Entity\FollowNotification;
 use App\Entity\LikeNotification;
 use App\Entity\UnfollowNotification;
 use App\Entity\UnlikeNotification;
+use App\Entity\User;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigTest;
@@ -16,10 +17,11 @@ class AppExtension extends AbstractExtension
     public function getTests(): array
     {
         return [
-            new TwigTest('is_notification_like', array($this, 'isNotificationLike')),
-            new TwigTest('is_notification_unlike', array($this, 'isNotificationUnlike')),
-            new TwigTest('is_notification_follow', array($this, 'isNotificationFollow')),
-            new TwigTest('is_notification_unfollow', array($this, 'isNotificationUnfollow')),
+            new TwigTest('is_notification_like', [$this, 'isNotificationLike']),
+            new TwigTest('is_notification_unlike', [$this, 'isNotificationUnlike']),
+            new TwigTest('is_notification_follow', [$this, 'isNotificationFollow']),
+            new TwigTest('is_notification_unfollow', [$this, 'isNotificationUnfollow']),
+            new TwigTest('is_user', [$this, 'isUser'])
         ];
     }
 
@@ -72,4 +74,10 @@ class AppExtension extends AbstractExtension
     {
         return $var instanceof UnfollowNotification;
     }
+
+    public function isUser($var): bool
+    {
+        return $var instanceof User;
+    }
+
 }

@@ -23,7 +23,7 @@ micro-post:
   post-item:
     post-from: 'Post from user'
     post-from-prefix-date: 'at'
-    view: 'View more'
+    view: 'View & comment it <span class="badge text-bg-secondary">%count%</span>'
     edit: 'Edit'
     del: 'Delete'
     like: 'Like'
@@ -38,6 +38,14 @@ micro-post:
       del_owner: 'Only the owner can delete this post'
       edit_owner: 'Only the owner can edit this post'
       not_found: 'Micro post not found'
+  comments:
+    comment_for_auth: '⚠ Only authorized users can leave a comment.'
+    comment:
+      author_date: '%emoji%@<a href="%url%">%nick%</a> wrote the comment at %date%'
+    form:
+      label_content: 'Comment'
+      btn_save: '🔊 Send'
+      success_message: 'Thank you! Your comment has been added.'
 registration_form:
   title: 'Registration'
   form:

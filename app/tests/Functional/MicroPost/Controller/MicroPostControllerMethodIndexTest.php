@@ -64,7 +64,7 @@ class MicroPostControllerMethodIndexTest extends WebTestCase
         self::assertEquals('2', $secondPageItem->text());
         // first page
         $firstPageItem = $this->getPaginatorItemByIndex($crawler, 0);
-        self::assertStringEndsWith('/?page=1', $firstPageItem->attr("href"));
+        self::assertStringContainsString('/?page=1', $firstPageItem->attr("href"));
         self::assertEquals('1', $firstPageItem->text());
     }
 
