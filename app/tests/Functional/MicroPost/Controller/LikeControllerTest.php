@@ -46,8 +46,7 @@ class LikeControllerTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
 
-        $userAdmin = $this->userRepository->findOneBy(['login' => 'admin']);
-        $microPost = $this->microPostRepository->findOneBy(['user' => $userAdmin]);
+        $microPost = $this->microPostRepository->findOneBy([]);
 
         $client->xmlHttpRequest('GET', sprintf(self::URL_LIKE_EN_POST_PATTERN, $microPost->getUuid()));
         $response = $client->getResponse();
