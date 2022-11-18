@@ -22,3 +22,5 @@ front-prod:
 	@docker-compose run --rm front sh -c "yarn install && yarn encore prod"
 front-watch:
 	@docker-compose run --rm front sh -c "yarn encore dev --watch"
+front-shell:
+	@docker-compose run --rm front sh

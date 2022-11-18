@@ -24,6 +24,7 @@ Encore
     .addEntry('app.form.emoji', './assets/app.form.emoji.js')
     .addEntry('app.likes', './assets/app.likes.js')
     .addEntry('app.notification', './assets/app.notification.js')
+    .addEntry('app.comment', './assets/app.comment.js')
     .addStyleEntry('style', './assets/styles/app.scss')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
