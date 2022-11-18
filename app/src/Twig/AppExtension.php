@@ -8,12 +8,24 @@ use App\Entity\LikeNotification;
 use App\Entity\UnfollowNotification;
 use App\Entity\UnlikeNotification;
 use App\Entity\User;
+use Symfony\Component\Routing\RouterInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 use Twig\TwigTest;
 
 class AppExtension extends AbstractExtension
 {
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    public function __construct(RouterInterface $router)
+    {
+        $this->router = $router;
+    }
+
     public function getTests(): array
     {
         return [
@@ -30,6 +42,20 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFilter('text_by_percent', [$this, 'textByPercent']),
         ];
+    }
+
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('user_with_link_to_user_page', [$this, 'userNickWithLinkToUserPage']),
+        ];
+    }
+
+    public function userNickWithLinkToUserPage(User $user): string
+    {
+        $pathToUserPage = $this->router->generate('micro_post_by_user', ['uuid' => $user->getUuid()]);
+
+        return sprintf('%s@<a href="%s">%s</a>', $user->getEmoji(), $pathToUserPage, $user->getNick());
     }
 
     public function textByPercent(string $text, int $percent = 50, int $minLength = 50): string

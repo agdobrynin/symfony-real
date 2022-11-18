@@ -32,17 +32,13 @@
         <div class="card-body">
             {{ 'micro-post.profile.followers'|trans({'%count%': user.followers|length, '%nick%': user.nick}) }}
             {% for follower in user.followers %}
-                <a class="badge rounded-pill text-bg-light"
-                   href="{{ path('micro_post_by_user', {uuid: follower.uuid}) }}"
-                >@{{ follower.nick }}</a>
+                {{ user_with_link_to_user_page(follower)|raw }}
             {% endfor %}
         </div>
         <div class="card-body">
             {{ 'micro-post.profile.following'|trans({'%count%': user.following|length, '%nick%': user.nick}) }}
             {% for following in user.following %}
-                <a class="badge rounded-pill text-bg-light"
-                   href="{{ path('micro_post_by_user', {uuid: following.uuid}) }}"
-                >@{{ following.nick }}</a>
+                {{ user_with_link_to_user_page(following)|raw }}
             {% endfor %}
         </div>
     </div>

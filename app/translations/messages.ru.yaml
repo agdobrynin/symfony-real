@@ -41,7 +41,7 @@ micro-post:
   comments:
     comment_for_auth: '⚠ Только авторизованные пользователи могут оставить комментарий.'
     comment:
-      author_date: '%emoji%@<a href="%url%">%nick%</a> написал комментарий %date%'
+      author_date: 'написал комментарий %date%'
     form:
       label_content: 'Напишите комментарий'
       btn_save: '🔊 Отправить'
@@ -132,6 +132,7 @@ email:
 bloggers_list:
   title_post: 'Постов'
   title_followers: 'Подписчиков'
+  title_comments: 'Комментариев'
   title_profile: 'Профиль'
   title_not_found: 'Блогеров не найдено'
 confirmation_login:

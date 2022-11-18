@@ -8,14 +8,8 @@
             <div class="col-md-6 col-sm-12">
                 <div class="card mb-5 comment-item">
                     <div class="card-header mb-2 text-muted">
-                        {{ 'micro-post.comments.comment.author_date'|trans(
-                            {
-                                '%emoji%': comment.user.emoji,
-                                '%nick%': comment.user.nick,
-                                '%date%': comment.createAt|format_datetime('medium', 'short'),
-                                '%url%': path('micro_post_by_user', {uuid: comment.user.uuid}),
-                            }
-                        )|raw }}
+                        {{ user_with_link_to_user_page(comment.user)|raw }}
+                        {{ 'micro-post.comments.comment.author_date'|trans({'%date%': comment.createAt|format_datetime('medium', 'short')}) }}
                     </div>
                     <div class="card-body">
                         <p class="card-text">{{ comment.content }}</p>
