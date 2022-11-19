@@ -25,7 +25,7 @@
                                data-title="⚠ {{ 'micro-post.comments.del.title'|trans|escape }}"
                                data-href="{{ path('micro_post_comment_del', {uuid: comment.uuid}) }}"
                                data-locale="{{ app.request.get('_locale', 'en') }}"
-                               data-message="{{ 'micro-post.comments.del.confirm_message'|trans|escape }}<br>{{ comment.content|slice(0,35) }}..."></a>
+                               data-message="{{ 'micro-post.comments.del.confirm_message'|trans|escape }}<br>{{ comment.content|striptags|escape|slice(0,35) }}..."></a>
                         </div>
                     {% endif %}
                 </div>
