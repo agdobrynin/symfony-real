@@ -14,7 +14,7 @@
     {% if app.user is is_user %}
         <div class="pb-5">{{ form(form) }}</div>
     {% else %}
-        <p class="alert alert-info">
+        <p class="comment-for-auth alert alert-info">
             {{ 'micro-post.comments.comment_for_auth'|trans }}
         </p>
     {% endif %}
