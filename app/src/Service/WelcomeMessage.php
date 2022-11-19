@@ -7,6 +7,9 @@ use App\Dto\WelcomeMessageDto;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 class WelcomeMessage implements WelcomeMessageInterface
 {
     private const MESSAGES_PREFIX = [
