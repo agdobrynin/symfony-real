@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace App\Dto;
 
-use App\Dto\Exception\PaginatorDtoException;
+use App\Dto\Exception\PaginatorDtoPageException;
+use App\Dto\Exception\PaginatorDtoPageSizeException;
 
 class PaginatorDto
 {
@@ -14,11 +15,11 @@ class PaginatorDto
     public function __construct(int $page, int $totalItems, int $pageSize)
     {
         if ($page < 1) {
-            throw new PaginatorDtoException(sprintf('Parameter "page" must be positive value. Got "%s"', $page));
+            throw new PaginatorDtoPageException(sprintf('Parameter "page" must be positive value. Got "%s"', $page));
         }
 
         if ($pageSize < 1) {
-            throw new PaginatorDtoException(sprintf('Parameter "pageSize" must be positive value. Got "%s"', $pageSize));
+            throw new PaginatorDtoPageSizeException(sprintf('Parameter "pageSize" must be positive value. Got "%s"', $pageSize));
         }
 
         $this->pageSize = $pageSize;
@@ -26,7 +27,7 @@ class PaginatorDto
         $this->totalPages = (int)ceil($totalItems / $pageSize);
 
         if ($this->totalPages && $page > $this->totalPages) {
-            throw new PaginatorDtoException(
+            throw new PaginatorDtoPageException(
                 sprintf('Parameter "page" must be less or equal "%s".', $this->totalPages));
         }
 
