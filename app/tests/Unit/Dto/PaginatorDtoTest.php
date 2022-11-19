@@ -40,4 +40,3 @@ class PaginatorDtoTest extends TestCase
         self::assertEquals($data->expectFirstIndex, $dto->getFirstResultIndex());
     }
 }
-
