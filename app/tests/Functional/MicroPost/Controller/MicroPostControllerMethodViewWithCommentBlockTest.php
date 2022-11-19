@@ -7,6 +7,7 @@ use App\Entity\MicroPost;
 use App\Service\MicroPost\GetMicroPostCommentsService;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
 {
@@ -24,6 +25,10 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
      * @var int
      */
     private $commentPageSize;
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
 
     protected function setUp(): void
     {
@@ -31,6 +36,7 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
         $this->em = self::getContainer()->get('doctrine')->getManager();
         $this->microPostRepository = $this->em->getRepository(MicroPost::class);
         $this->commentPageSize = self::getContainer()->getParameter('micropost.comments.page.size');
+        $this->translator = self::getContainer()->get(TranslatorInterface::class);
     }
 
     protected function tearDown(): void
@@ -52,6 +58,9 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
 
         // Form for send comment must be not found because user request non auth.
         self::assertCount(0, $this->getCommentForm($crawler));
+        // Alert block with info text
+        $alertText = $this->translator->trans('micro-post.comments.comment_for_auth');
+        self::assertEquals($alertText, $crawler->filter('.comment-for-auth')->first()->text());
     }
 
     public function testCommentBlockShow(): void
