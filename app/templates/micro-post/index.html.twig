@@ -82,8 +82,9 @@
     <main role="main" class="container mt-5 pb-1">
         {% for label, messages in app.flashes() %}
             {% for message in messages %}
-                <div class="alert alert-{{ label }}">
-                    {{ message }}
+                <div class="alert alert-dismissible alert-{{ label }}" role="alert">
+                    <div>{{ message }}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endfor %}
