@@ -26,6 +26,9 @@ class AppExtension extends AbstractExtension
         $this->router = $router;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getTests(): array
     {
         return [
@@ -37,6 +40,9 @@ class AppExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getFilters(): array
     {
         return [
@@ -44,6 +50,9 @@ class AppExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getFunctions(): array
     {
         return [
