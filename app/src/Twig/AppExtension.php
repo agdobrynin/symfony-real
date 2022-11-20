@@ -51,9 +51,15 @@ class AppExtension extends AbstractExtension
         ];
     }
 
-    public function userNickWithLinkToUserPage(User $user): string
+    public function userNickWithLinkToUserPage(User $user, ?string $locale = null): string
     {
-        $pathToUserPage = $this->router->generate('micro_post_by_user', ['uuid' => $user->getUuid()]);
+        $dataForRoute = ['uuid' => $user->getUuid()];
+
+        if ($locale) {
+            $dataForRoute['_locale'] = $locale;
+        }
+
+        $pathToUserPage = $this->router->generate('micro_post_by_user', $dataForRoute);
 
         return sprintf('%s@<a href="%s">%s</a>', $user->getEmoji(), $pathToUserPage, $user->getNick());
     }
