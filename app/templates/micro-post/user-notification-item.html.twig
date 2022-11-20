@@ -16,12 +16,13 @@
     {% set alert_text = 'notification_page.message.unfollow'|trans({'%date%': dateFormated}) %}
 {% endif %}
 <div class="alert {{ alert_css }}">
-    <a class="alert-link fw-normal" href="{{ path('micro_post_by_user', {uuid: notification.byUser.uuid}) }}">
+    <a class="alert-link fw-normal notify-by-user"
+       href="{{ path('micro_post_by_user', {uuid: notification.byUser.uuid}) }}">
         {{ notification.byUser.emoji }}@{{ notification.byUser.nick }}</a>
     {{ alert_text }}
     {% if  notification.post is defined %}
         <p class="pt-2">
-            <a class="alert-link fw-normal"
+            <a class="alert-link fw-normal  notify-for-post"
                href="{{ path('micro_post_view', {uuid: notification.post.uuid}) }}">{{ notification.post.content|slice(0, 50) }}
                 ...</a>
         </p>
