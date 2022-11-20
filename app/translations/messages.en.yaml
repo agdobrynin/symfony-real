@@ -96,6 +96,7 @@ my_profile:
       post: '{0,1}Published %count% post|]1,Inf]Published %count% posts'
       followers: '{0,1}Follow to you %count% blogger|]1,Inf]Follow to you %count% bloggers'
       following: '{0,1}You following to %count% blogger|]1,Inf]You following to %count% bloggers'
+      comments: '{0,1}You write %count% comment|]1,Inf]You write %count% comments'
   success_update: 'Your profile was updated'
 login_form:
   title: 'Please sign in'
