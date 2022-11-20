@@ -30,13 +30,13 @@
             </div>
         </div>
         <div class="card-body">
-            {{ 'micro-post.profile.followers'|trans({'%count%': user.followers|length, '%nick%': user.nick}) }}
+            {{ 'micro-post.profile.followers'|trans({'%count%': user.followers.count, '%nick%': user.nick}) }}
             {% for follower in user.followers %}
                 {{ user_with_link_to_user_page(follower)|raw }}
             {% endfor %}
         </div>
         <div class="card-body">
-            {{ 'micro-post.profile.following'|trans({'%count%': user.following|length, '%nick%': user.nick}) }}
+            {{ 'micro-post.profile.following'|trans({'%count%': user.following.count, '%nick%': user.nick}) }}
             {% for following in user.following %}
                 {{ user_with_link_to_user_page(following)|raw }}
             {% endfor %}

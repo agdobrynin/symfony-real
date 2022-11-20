@@ -36,7 +36,7 @@
                     <a href="{{ path('micro_post_by_user', {uuid: blogger.uuid}) }}"
                        class="list-group-item d-flex justify-content-between align-items-center">
                         {{ blogger.emoji }}@{{ blogger.nick }}
-                        <sup class="m-3">{{ 'micro-post.post-from-following.posts'|trans({'%count%': blogger.posts|length}) }}</sup>
+                        <sup class="m-3">{{ 'micro-post.post-from-following.posts'|trans({'%count%': blogger.posts.count}) }}</sup>
                     </a>
                 {% endfor %}
             </ul>
