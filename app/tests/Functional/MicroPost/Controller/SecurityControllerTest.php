@@ -11,9 +11,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class SecurityControllerTest extends WebTestCase
 {
     protected const URL_SUCCESS_AUTH_EN_LOCALE = '/micro-post/en/success_auth';
-    protected const URL_SUCCESS_AUTH_REDIRECT_RU_LOCALE_PATTERN = '/micro-post/%s/';
+    protected const URL_SUCCESS_AUTH_REDIRECT_WITH_LOCALE_PATTERN = '/micro-post/%s/';
     protected const URL_CONFIRM_EN_LOCALE_PATTERN = '/micro-post/en/confirm/%s';
     protected const URL_LOGIN_EN_LOCALE = '/micro-post/en/login';
+    protected const URL_LOGOUT_EN = '/micro-post/en/logout';
 
     /** @var \App\Repository\UserRepository */
     protected $userRepository;
@@ -64,8 +65,31 @@ class SecurityControllerTest extends WebTestCase
         self::assertResponseRedirects();
         $crawler = $client->followRedirect();
         // user has locale as 'ru' new url must be contain locale 'ru'.
-        $newUrl = sprintf(self::URL_SUCCESS_AUTH_REDIRECT_RU_LOCALE_PATTERN, $newUserLocale);
+        $newUrl = sprintf(self::URL_SUCCESS_AUTH_REDIRECT_WITH_LOCALE_PATTERN, $newUserLocale);
         self::assertStringEndsWith($newUrl, $crawler->getUri());
+    }
+
+    public function testLoginUserAccessLoginForm(): void
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $user = $this->userRepository->findOneBy([]);
+        $client->loginUser($user);
+
+        $client->request('GET', self::URL_LOGIN_EN_LOCALE);
+        self::assertResponseRedirects();
+        $expectUrl = sprintf(self::URL_SUCCESS_AUTH_REDIRECT_WITH_LOCALE_PATTERN, 'en');
+        self::assertEquals($expectUrl, $client->getResponse()->headers->get('location'));
+    }
+
+    public function testLogout(): void
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $user = $this->userRepository->findOneBy([]);
+        $client->loginUser($user);
+        $client->request('GET', self::URL_LOGOUT_EN);
+        self::assertResponseRedirects();
     }
 
     public function testConfirmTokenSuccess(): void
