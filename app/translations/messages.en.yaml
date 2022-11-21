@@ -130,6 +130,7 @@ bloggers_list:
   title_comments: 'Comments'
   title_profile: 'Profile'
   title_not_found: 'Bloggers not found'
+  title_follow: 'You following to the blogger'
 confirmation_login:
   page_title: 'Confirmation user registration'
   success: 'Congratulation your login is confirmed. Please go to <a href="%login_link%">login page</a>.'

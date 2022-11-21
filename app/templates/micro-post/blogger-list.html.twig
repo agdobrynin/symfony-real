@@ -9,6 +9,15 @@
                 <div class="col-auto pb-4">
                     <div class="card blogger-item" style="width: 15rem;">
                         <div class="card-header text-truncate overflow-hidden fs-5">
+                            {% if app.user and blogger.followers.contains(app.user) %}
+                                <span
+                                        class="float-start"
+                                        data-bs-toggle="popover"
+                                        data-bs-trigger="hover focus"
+                                        data-bs-placement="bottom"
+                                        data-bs-content="{{ 'bloggers_list.title_follow'|trans }}"
+                                >⭐</span>&nbsp;
+                            {% endif %}
                             {{ user_with_link_to_user_page(blogger)|raw }}
                         </div>
                         <ul class="list-group list-group-flush">

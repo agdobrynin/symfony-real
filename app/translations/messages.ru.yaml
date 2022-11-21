@@ -142,6 +142,7 @@ bloggers_list:
   title_comments: 'Комментариев'
   title_profile: 'Профиль'
   title_not_found: 'Блогеров не найдено'
+  title_follow: 'Вы подписаны на этого блогера'
 confirmation_login:
   page_title: 'Подтверждение логина'
   success: 'Поздравляем Вы подтвердили свой логин. Пожалуйста перейдите на <a href="%login_link%">страницу авторизации</a>.'
