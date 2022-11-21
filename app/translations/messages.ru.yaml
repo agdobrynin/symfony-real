@@ -1,6 +1,8 @@
 micro-post:
   profile:
     followers: '{0}"%nick%" пока без подписчиков.|{1}У пользователя %nick% есть подписчик|]1,Inf[Подписчики "%nick%":'
+    followers_part: 'и ещё %count% подписчик | и ещё %count% подписчика | и ещё %count% подписчиков'
+    following_part: 'и ещё %count% блогер | и ещё %count%. блогеров | и ещё %count% блогера'
     following: '{0}"%nick%" пока ни на кого не подписан.|"%nick%" подписан на блогера:|]1,Inf["%nick%" подпсан на блоггеров:'
     unfollowing: 'Отписаться'
     follow: 'Подписаться'
