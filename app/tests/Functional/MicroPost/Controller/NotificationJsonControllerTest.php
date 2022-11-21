@@ -101,8 +101,10 @@ class NotificationJsonControllerTest extends WebTestCase
         $microPost->getLikedBy()->removeElement($user);
         $this->em->flush();
 
-        // set seen for all notifications in userNotifier
-        $this->notificationRepository->getCountUnseenNotificationByUser($userNotifier);
+        // delete all notifications for userNotifier
+        $this->notificationRepository->createQueryBuilder('n')
+            ->delete()->where('n.user = :user')->setParameter(':user', $userNotifier)
+            ->getQuery()->execute();
 
         // Add notification like
         $microPost->like($user);
