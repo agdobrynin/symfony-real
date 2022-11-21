@@ -12,6 +12,7 @@ use function Doctrine\ORM\QueryBuilder;
 
 class NotificationControllerTest extends WebTestCase
 {
+    protected const URL_LOGIN_FORM = '/micro-post/en/login';
     protected const URL_GET_UNSEEN_NOTIFY = '/micro-post/en/notification/all';
     protected const URL_SET_SEEN_ALL_NOTIFY = '/micro-post/en/notification/set-seen-all';
     /**
@@ -40,6 +41,16 @@ class NotificationControllerTest extends WebTestCase
         parent::tearDown();
         $this->em->close();
         $this->em = null;
+    }
+
+    public function testNotificationPageWithNonAuthUser(): void
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        // request with non auth user
+        $client->request('GET', self::URL_GET_UNSEEN_NOTIFY);
+        self::assertResponseRedirects();
+        self::assertStringEndsWith(self::URL_LOGIN_FORM, $client->getResponse()->headers->get('Location'));
     }
 
     public function testNotificationPageWithCards(): void
