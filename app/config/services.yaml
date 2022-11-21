@@ -8,7 +8,7 @@ parameters:
   micropost.page.size: "%env(int:MICRO_POST_PAGE_SIZE)%"
   micropost.comments.page.size: "%env(int:MICRO_POST_COMMENTS_PAGE_SIZE)%"
   micropost.first.of.followers: "%env(int:GET_FIRST_OF_FOLLOWERS)%"
-  micropost.first.of.following: "%env(int:GET_FIRST_OF_FOLLOWING)%"
+  micropost.first.of.followings: "%env(int:GET_FIRST_OF_FOLLOWINGS)%"
   welcome.message.machine: "%env(string:APP_MACHINE_NAME)%"
   micropost.admin.email: "%env(string:ADMIN_EMAIL)%"
   app.supported_locales: "en|ru"
@@ -83,7 +83,3 @@ services:
     App\Service\MicroPost\GetMicroPostCommentsService:
       arguments:
         $pageSize: '%micropost.comments.page.size%'
-    App\Service\MicroPost\User\GetFollowersFollowingOfUserService:
-      arguments:
-        $followersFirst: '%micropost.first.of.followers%'
-        $followingFirst: '%micropost.first.of.following%'

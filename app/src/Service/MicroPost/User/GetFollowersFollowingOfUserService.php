@@ -3,26 +3,18 @@ declare(strict_types=1);
 
 namespace App\Service\MicroPost\User;
 
-use App\Dto\FollowersFollowingPartOfCollectionDto;
 use App\Dto\PartOfCollectionDto;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\User;
 
 class GetFollowersFollowingOfUserService implements GetFollowersFollowingOfUserServiceInterface
 {
-    private $followersFirst;
-    private $followingFirst;
-
-    public function __construct(int $followersFirst, int $followingFirst)
+    public function getDtoFollowers(User $user, int $getFirstRecord): PartOfCollectionDto
     {
-        $this->followersFirst = $followersFirst;
-        $this->followingFirst = $followingFirst;
+        return new PartOfCollectionDto($user->getFollowers(), $getFirstRecord);
     }
 
-    public function getDto(Collection $followers, Collection $following): FollowersFollowingPartOfCollectionDto
+    public function getDtoFollowings(User $user, int $getFirstRecord): PartOfCollectionDto
     {
-        $partOfFollowers = new PartOfCollectionDto($followers, $this->followersFirst);
-        $partOfFollowing = new PartOfCollectionDto($following, $this->followingFirst);
-
-        return new FollowersFollowingPartOfCollectionDto($partOfFollowers, $partOfFollowing);
+        return new PartOfCollectionDto($user->getFollowing(), $getFirstRecord);
     }
 }

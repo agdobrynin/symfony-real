@@ -30,8 +30,6 @@
             </div>
         </div>
         <div class="card-body">
-            {% set followers = followersFollowingOfUser.followers %}
-
             {{ 'micro-post.profile.followers'|trans({'%count%': followers.total, '%nick%': user.nick}) }}
 
             {% for follower in followers.collection %}
@@ -44,15 +42,13 @@
 
         </div>
         <div class="card-body">
-            {% set following = followersFollowingOfUser.following %}
+            {{ 'micro-post.profile.following'|trans({'%count%': followings.total, '%nick%': user.nick}) }}
 
-            {{ 'micro-post.profile.following'|trans({'%count%': following.total, '%nick%': user.nick}) }}
-
-            {% for follow in following.collection %}
+            {% for follow in followings.collection %}
                 {{ user_with_link_to_user_page(follow)|raw }}
             {% endfor %}
-            {% if following.remainder %}
-                {{ 'micro-post.profile.followers_part'|trans({'%count%': following.remainder}) }}
+            {% if followings.remainder %}
+                {{ 'micro-post.profile.followers_part'|trans({'%count%': followings.remainder}) }}
             {% endif %}
         </div>
     </div>

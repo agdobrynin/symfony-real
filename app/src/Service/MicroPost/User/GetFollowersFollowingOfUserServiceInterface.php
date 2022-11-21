@@ -2,10 +2,12 @@
 
 namespace App\Service\MicroPost\User;
 
-use App\Dto\FollowersFollowingPartOfCollectionDto;
-use Doctrine\Common\Collections\Collection;
+use App\Dto\PartOfCollectionDto;
+use App\Entity\User;
 
 interface GetFollowersFollowingOfUserServiceInterface
 {
-    public function getDto(Collection $followers, Collection $following): FollowersFollowingPartOfCollectionDto;
+    public function getDtoFollowers(User $user, int $getFirstRecord): PartOfCollectionDto;
+
+    public function getDtoFollowings(User $user, int $getFirstRecord): PartOfCollectionDto;
 }
