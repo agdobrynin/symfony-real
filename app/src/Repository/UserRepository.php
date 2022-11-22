@@ -93,7 +93,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->createQueryBuilder('u')
             ->select('u')
-            ->orderBy('u.lastLoginTime', 'desc')
+            ->innerJoin('u.posts', 'mp')
+            ->groupBy('u.uuid')
+            ->orderBy('count(mp)', 'desc')
+            ->addOrderBy('u.lastLoginTime', 'desc')
             ->setMaxResults($paginatorDto->getPageSize())
             ->setFirstResult($paginatorDto->getFirstResultIndex())
             ->getQuery()
