@@ -4,8 +4,11 @@
 
 {% block microPostContent %}
     <div class="container">
+        {% if bloggersWithPaginator.paginatorDto.totalPages > 1 %}
+            {{ include ('@mp/paginator.html.twig', {paginatorDto: bloggersWithPaginator.paginatorDto}) }}
+        {% endif %}
         <div class="row justify-content-md-center">
-            {% for blogger in bloggers %}
+            {% for blogger in bloggersWithPaginator.bloggers %}
                 <div class="col-auto pb-4">
                     <div class="card blogger-item" style="width: 15rem;">
                         <div class="card-header text-truncate overflow-hidden fs-5">
@@ -34,5 +37,8 @@
                 <div class="col">{{ 'bloggers_list.title_not_found'|trans }}</div>
             {% endfor %}
         </div>
+        {% if bloggersWithPaginator.paginatorDto.totalPages > 1 %}
+            {{ include ('@mp/paginator.html.twig', {paginatorDto: bloggersWithPaginator.paginatorDto}) }}
+        {% endif %}
     </div>
 {% endblock %}
