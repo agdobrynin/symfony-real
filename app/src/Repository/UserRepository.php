@@ -78,7 +78,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
-    public function getCountAll(): int
+    public function getCountBloggersWithPosts(): int
     {
         return (int)$this->createQueryBuilder('u')
             ->select('count(u.uuid)')
@@ -89,7 +89,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     /**
      * @return User[]
      */
-    public function getByPaginator(PaginatorDto $paginatorDto): array
+    public function getBloggersWithPostsByPaginator(PaginatorDto $paginatorDto): array
     {
         return $this->createQueryBuilder('u')
             ->select('u')

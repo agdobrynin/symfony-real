@@ -28,7 +28,7 @@ class GetBloggersServiceTest extends TestCase
     public function testGetBloggersService(int $total, int $pageSize, int $page, ?string $expectException): void
     {
         $userRepository = self::createMock(UserRepository::class);
-        $userRepository->expects(self::once())->method('getCountAll')->willReturn($total);
+        $userRepository->expects(self::once())->method('getCountBloggersWithPosts')->willReturn($total);
 
         $userCollection = $this->getUserCollection($total);
         $slicedUserCollection = [];
@@ -39,7 +39,7 @@ class GetBloggersServiceTest extends TestCase
             $firstIndex = ($page - 1) * $pageSize;
             $slicedUserCollection = array_values($userCollection->slice($firstIndex, $pageSize));
 
-            $userRepository->expects(self::once())->method('getByPaginator')
+            $userRepository->expects(self::once())->method('getBloggersWithPostsByPaginator')
                 ->willReturn($slicedUserCollection);
         }
 

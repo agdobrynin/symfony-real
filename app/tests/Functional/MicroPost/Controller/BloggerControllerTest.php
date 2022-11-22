@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\User;
+use App\Service\MicroPost\GetBloggersServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class BloggerControllerTest extends WebTestCase
@@ -34,7 +35,9 @@ class BloggerControllerTest extends WebTestCase
 
         /** @var \App\Repository\UserRepository $userRepository */
         $userRepository = $this->em->getRepository(User::class);
-        $bloggers = $userRepository->findAll();
+        /** @var GetBloggersServiceInterface $srv */
+        $srv = self::getContainer()->get(GetBloggersServiceInterface::class);
+        $bloggers = $srv->getBloggers(1);
 
         foreach ($bloggers as $index => $blogger) {
             $card = $crawler->filter('.blogger-item')->eq($index);

@@ -20,9 +20,9 @@ class GetBloggersService implements GetBloggersServiceInterface
 
     public function getBloggers(int $page): BloggersWithPaginatorDto
     {
-        $totalItems = $this->userRepository->getCountAll();
+        $totalItems = $this->userRepository->getCountBloggersWithPosts();
         $paginatorDto = new PaginatorDto($page, $totalItems, $this->pageSize);
-        $bloggers = $this->userRepository->getByPaginator($paginatorDto);
+        $bloggers = $this->userRepository->getBloggersWithPostsByPaginator($paginatorDto);
 
         return new BloggersWithPaginatorDto($bloggers, $paginatorDto);
     }
