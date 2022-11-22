@@ -14,6 +14,7 @@ use App\Repository\UserRepository;
 use App\Security\Voter\MicroPostVoter;
 use App\Service\MicroPost\GetMicroPostCommentsServiceInterface;
 use App\Service\MicroPost\GetMicroPostsServiceInterface;
+use App\Service\MicroPost\User\GetFollowersFollowingOfUserServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -184,8 +185,10 @@ class MicroPostController extends AbstractController
             $statusCode = Response::HTTP_OK;
             $form = null;
 
-            if ($this->getUser() instanceof User) {
-                $comment = (new Comment())->setPost($microPost)->setUser($this->getUser());
+            $user = $this->getUser();
+
+            if ($user instanceof User) {
+                $comment = (new Comment())->setPost($microPost)->setUser($user);
                 $form = $this->createForm(CommentFormType::class, $comment);
                 $form->handleRequest($request);
 
@@ -220,20 +223,27 @@ class MicroPostController extends AbstractController
     /**
      * @Route("/user/{uuid}", name="micro_post_by_user")
      */
-    public function getPostByUser(Request $request, GetMicroPostsServiceInterface $getMicroPostsService, ?User $user = null): Response
+    public function getPostByUser(
+        Request                                     $request,
+        User                                        $user,
+        GetMicroPostsServiceInterface               $getMicroPostsService,
+        GetFollowersFollowingOfUserServiceInterface $getFollowersFollowingOfUserService
+    ): Response
     {
-        if (null === $user) {
-            throw new NotFoundHttpException('User not found');
-        }
 
         $page = (int)$request->get('page', 1);
+
         try {
             $microPostWithPaginationDto = $getMicroPostsService->findMicroPostsByUser($user, $page);
+            $followers = $getFollowersFollowingOfUserService->getDtoFollowers($user);
+            $followings = $getFollowersFollowingOfUserService->getDtoFollowings($user);
         } catch (PaginatorDtoException $exception) {
             throw new UnprocessableEntityHttpException($exception->getMessage());
         }
 
-        return $this->render('@mp/user-posts.html.twig', compact('microPostWithPaginationDto', 'user'));
+        $templateData = compact('microPostWithPaginationDto', 'user', 'followers', 'followings');
+
+        return $this->render('@mp/user-posts.html.twig', $templateData);
     }
 
     private function formMicroPost(MicroPost $microPost): FormInterface

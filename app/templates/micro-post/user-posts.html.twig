@@ -30,16 +30,26 @@
             </div>
         </div>
         <div class="card-body">
-            {{ 'micro-post.profile.followers'|trans({'%count%': user.followers.count, '%nick%': user.nick}) }}
-            {% for follower in user.followers %}
+            {{ 'micro-post.profile.followers'|trans({'%count%': followers.total, '%nick%': user.nick}) }}
+
+            {% for follower in followers.collection %}
                 {{ user_with_link_to_user_page(follower)|raw }}
             {% endfor %}
+
+            {% if followers.remainder %}
+                {{ 'micro-post.profile.followers_part'|trans({'%count%': followers.remainder}) }}
+            {% endif %}
+
         </div>
         <div class="card-body">
-            {{ 'micro-post.profile.following'|trans({'%count%': user.following.count, '%nick%': user.nick}) }}
-            {% for following in user.following %}
-                {{ user_with_link_to_user_page(following)|raw }}
+            {{ 'micro-post.profile.following'|trans({'%count%': followings.total, '%nick%': user.nick}) }}
+
+            {% for follow in followings.collection %}
+                {{ user_with_link_to_user_page(follow)|raw }}
             {% endfor %}
+            {% if followings.remainder %}
+                {{ 'micro-post.profile.followers_part'|trans({'%count%': followings.remainder}) }}
+            {% endif %}
         </div>
     </div>
 

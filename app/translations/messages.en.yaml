@@ -2,6 +2,8 @@ micro-post:
   profile:
     followers: '{0}"%nick%" don''t have any followers yet.|{1}The follower of %nick%|]1,Inf[Followers of "%nick%":'
     following: '{0}The user "%nick%" not following anyone yet.|{1}"%nick%" following to user:|]1,Inf["%nick%" following to users:'
+    followers_part: 'and one more blogger|and %count% more bloggers'
+    following_part: 'and one more blogger|and %count% more bloggers'
     unfollowing: 'Unfollowing'
     follow: 'Following'
   post-from-following:
