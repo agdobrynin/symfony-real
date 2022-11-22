@@ -8,13 +8,22 @@ use App\Entity\User;
 
 class GetFollowersFollowingOfUserService implements GetFollowersFollowingOfUserServiceInterface
 {
-    public function getDtoFollowers(User $user, int $getFirstRecord): PartOfCollectionDto
+    private $followersFirst;
+    private $followingsFirst;
+
+    public function __construct(int $followersFirst, int $followingsFirst)
     {
-        return new PartOfCollectionDto($user->getFollowers(), $getFirstRecord);
+        $this->followersFirst = $followersFirst;
+        $this->followingsFirst = $followingsFirst;
     }
 
-    public function getDtoFollowings(User $user, int $getFirstRecord): PartOfCollectionDto
+    public function getDtoFollowers(User $user): PartOfCollectionDto
     {
-        return new PartOfCollectionDto($user->getFollowing(), $getFirstRecord);
+        return new PartOfCollectionDto($user->getFollowers(), $this->followersFirst);
+    }
+
+    public function getDtoFollowings(User $user): PartOfCollectionDto
+    {
+        return new PartOfCollectionDto($user->getFollowing(), $this->followingsFirst);
     }
 }

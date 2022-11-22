@@ -7,7 +7,7 @@ use App\Entity\User;
 
 interface GetFollowersFollowingOfUserServiceInterface
 {
-    public function getDtoFollowers(User $user, int $getFirstRecord): PartOfCollectionDto;
+    public function getDtoFollowers(User $user): PartOfCollectionDto;
 
-    public function getDtoFollowings(User $user, int $getFirstRecord): PartOfCollectionDto;
+    public function getDtoFollowings(User $user): PartOfCollectionDto;
 }

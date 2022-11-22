@@ -235,8 +235,8 @@ class MicroPostController extends AbstractController
 
         try {
             $microPostWithPaginationDto = $getMicroPostsService->findMicroPostsByUser($user, $page);
-            $followers = $getFollowersFollowingOfUserService->getDtoFollowers($user, $this->getParameter('micropost.first.of.followers'));
-            $followings = $getFollowersFollowingOfUserService->getDtoFollowings($user, $this->getParameter('micropost.first.of.followings'));
+            $followers = $getFollowersFollowingOfUserService->getDtoFollowers($user);
+            $followings = $getFollowersFollowingOfUserService->getDtoFollowings($user);
         } catch (PaginatorDtoException $exception) {
             throw new UnprocessableEntityHttpException($exception->getMessage());
         }

@@ -83,3 +83,8 @@ services:
     App\Service\MicroPost\GetMicroPostCommentsService:
       arguments:
         $pageSize: '%micropost.comments.page.size%'
+
+    App\Service\MicroPost\User\GetFollowersFollowingOfUserService:
+      arguments:
+        $followersFirst: '%micropost.first.of.followers%'
+        $followingsFirst: '%micropost.first.of.followings%'
