@@ -11,8 +11,7 @@ class PartOfCollectionDtoTest extends TestCase
 {
     public function testEmptyCollection(): void
     {
-        $collection = new ArrayCollection();
-        $dto = new PartOfCollectionDto($collection, 10);
+        $dto = new PartOfCollectionDto($this->getCollection(0), 10);
 
         self::assertEquals(0, $dto->total);
         self::assertEquals(0, $dto->remainder);
@@ -21,13 +20,7 @@ class PartOfCollectionDtoTest extends TestCase
 
     public function testCollectionNoRemainder(): void
     {
-        $collection = new ArrayCollection();
-
-        for ($i = 0; $i < 10; $i++) {
-            $collection->add(random_bytes(4));
-        }
-
-        $dto = new PartOfCollectionDto($collection, 10);
+        $dto = new PartOfCollectionDto($this->getCollection(10), 10);
 
         self::assertEquals(10, $dto->total);
         self::assertEquals(0, $dto->remainder);
@@ -36,16 +29,21 @@ class PartOfCollectionDtoTest extends TestCase
 
     public function testCollectionWithRemainder(): void
     {
-        $collection = new ArrayCollection();
-
-        for ($i = 0; $i < 10; $i++) {
-            $collection->add(random_bytes(4));
-        }
-
-        $dto = new PartOfCollectionDto($collection, 3);
+        $dto = new PartOfCollectionDto($this->getCollection(10), 3);
 
         self::assertEquals(10, $dto->total);
         self::assertEquals(7, $dto->remainder);
         self::assertCount(3, $dto->collection);
+    }
+
+    protected function getCollection(int $count): ArrayCollection
+    {
+        $collection = new ArrayCollection();
+
+        for ($i = 0; $i < $count; $i++) {
+            $collection->add(random_bytes(4));
+        }
+
+        return $collection;
     }
 }
