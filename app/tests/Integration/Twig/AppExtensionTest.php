@@ -8,6 +8,7 @@ use App\Entity\LikeNotification;
 use App\Entity\UnfollowNotification;
 use App\Entity\UnlikeNotification;
 use App\Entity\User;
+use App\Security\Exception\LoginNotConfirmAccountStatusException;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Twig\Environment;
 use Twig\Error\RuntimeError;
@@ -110,6 +111,18 @@ class AppExtensionTest extends KernelTestCase
             '{{ "Loremipsum"|text_by_percent(150, 2) }}',
             'Lorem',
             RuntimeError::class
+        ];
+
+        yield [
+            ['error' => new LoginNotConfirmAccountStatusException()],
+            '{%if error is is_security_login_not_confirm %}OK{%endif%}',
+            'OK'
+        ];
+
+        yield [
+            ['error' => new \LogicException()],
+            '{%if error is is_security_login_not_confirm %}OK{%endif%}',
+            ''
         ];
     }
 }
