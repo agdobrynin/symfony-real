@@ -35,7 +35,7 @@ class SecurityController extends AbstractController
         return $this->renderForm('@mp/login.html.twig', [
             'error' => $error,
             'loginForm' => $form
-        ]);
+        ])->setStatusCode($error ? Response::HTTP_UNAUTHORIZED : Response::HTTP_OK);
     }
 
     /**
