@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\UserPreferences;
 use App\Security\ConfirmationTokenGenerator;
 use App\Service\MicroPost\LocalesInterface;
+use App\Service\MicroPost\User\Exception\SetConfirmationTokenForActiveUser;
 use App\Service\MicroPost\User\Exception\UserWrongPasswordException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -48,6 +49,17 @@ class UserService implements UserServiceInterface
         $preferences = (new UserPreferences())->setLocale($locale);
         $user->setPreferences($preferences);
 
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+    }
+
+    public function refreshConfirmToken(User $user): void
+    {
+        if ($user->getIsActive()) {
+            throw new SetConfirmationTokenForActiveUser();
+        }
+
+        $user->setConfirmationToken($this->confirmationTokenGenerator->getRandomSecureToken());
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }

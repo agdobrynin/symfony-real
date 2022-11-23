@@ -3,9 +3,13 @@
 namespace App\Controller\MicroPost;
 
 use App\Entity\User;
+use App\Form\ConfirmResendFormType;
 use App\Form\LoginFormType;
+use App\Helper\FlashType;
 use App\Repository\UserRepository;
 use App\Service\MicroPost\LocalesInterface;
+use App\Service\MicroPost\User\UserServiceInterface;
+use App\Service\MicroPost\WelcomeMessageEmailServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/micro-post/{_locale<%app.supported_locales%>}")
@@ -78,6 +83,45 @@ class SecurityController extends AbstractController
 
         return $this->render('@mp/confirm.html.twig', compact('user'))
             ->setStatusCode($statusCode);
+    }
+
+    /**
+     * @Route("/confirm_resend", name="micro_post_confirm_resend", methods={"get", "post"})
+     */
+    public function sendConfirmLink(
+        Request                             $request,
+        WelcomeMessageEmailServiceInterface $emailService,
+        UserRepository                      $userRepository,
+        TranslatorInterface                 $translator,
+        UserServiceInterface                $userService
+    )
+    {
+        $httpResponseStatus = Response::HTTP_OK;
+        $form = $this->createForm(ConfirmResendFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $userRepository->findOneBy([
+                'email' => $form->get('email')->getData(),
+                'isActive' => false,
+            ]);
+
+            if ($user) {
+                $userService->refreshConfirmToken($user);
+                $emailService->send($user);
+                $message = $translator->trans('confirm_token_resend.success');
+                $this->addFlash(FlashType::SUCCESS, $message);
+
+                return $this->redirectToRoute('micro_post_login');
+            } else {
+                $message = $translator->trans('confirm_token_resend.fail');
+                $this->addFlash(FlashType::DANGER, $message);
+                $httpResponseStatus = Response::HTTP_UNPROCESSABLE_ENTITY;
+            }
+        }
+
+        return $this->renderForm('@mp/confirm-resend.html.twig', compact('form'))
+            ->setStatusCode($httpResponseStatus);
     }
 
     /**

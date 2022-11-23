@@ -9,6 +9,11 @@
             <hr>
             {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% if error is is_security_login_not_confirm %}
+                    <div class="alert alert-warning">
+                        {{ 'login_form.error.confirm_resend'|trans({'%confirm_resend_link%': url('micro_post_confirm_resend')})|raw }}
+                    </div>
+                {% endif %}
             {% endif %}
 
             {{ form(loginForm) }}

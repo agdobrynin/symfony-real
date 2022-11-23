@@ -107,6 +107,8 @@ login_form:
       label: 'Login'
       password: 'Password'
       button: 'Sign up me'
+  error:
+    confirm_resend: 'If you did not receive an email with an activation link, you can <a href="%confirm_resend_link%">get the link again</a>'
 notification_page:
   message:
     unfollow: 'not follow to you 😥 at %date%'
@@ -137,3 +139,12 @@ confirmation_login:
   page_title: 'Confirmation user registration'
   success: 'Congratulation your login is confirmed. Please go to <a href="%login_link%">login page</a>.'
   wrong: 'Something is wrong! Please check your mailbox and find email with confirmation link.'
+confirm_token_resend:
+  page_title: 'Send confirm token again'
+  form:
+    title: 'Resend confirm token'
+    email:
+      help: 'Enter the email specified during registration'
+    submit: '📩 Send'
+  success: 'An activation link has been sent to your email'
+  fail: 'Specified parameters are not valid'
