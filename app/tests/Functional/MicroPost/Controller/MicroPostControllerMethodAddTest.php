@@ -55,7 +55,7 @@ class MicroPostControllerMethodAddTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
 
-        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $user = $this->userRepository->findOneBy([]);
         $client->loginUser($user);
 
         $crawler = $client->request('GET', self::URL_POST_ADD);
@@ -79,8 +79,7 @@ class MicroPostControllerMethodAddTest extends WebTestCase
         self::assertEquals($contentForPost, $contentLastPostOnPage);
 
         $this->em->refresh($user);
-        $post = $user->getPosts()->last();
-        self::assertEquals($contentForPost, $post->getContent());
+        self::assertEquals($contentForPost, $user->getPosts()->last()->getContent());
     }
 
     public function testNewFormAuthUserWithUnprocessableEntity(): void
