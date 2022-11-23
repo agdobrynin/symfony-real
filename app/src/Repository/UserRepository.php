@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Dto\PaginatorDto;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -73,6 +74,31 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->getUsersWhoHaveMoreThen5PostsQuery()
             ->andHaving('u != :user')
             ->setParameter(':user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getCountBloggersWithPosts(): int
+    {
+        return (int)$this->createQueryBuilder('u')
+            ->select('count(u.uuid)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @return User[]
+     */
+    public function getBloggersWithPostsByPaginator(PaginatorDto $paginatorDto): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u')
+            ->innerJoin('u.posts', 'mp')
+            ->groupBy('u.uuid')
+            ->orderBy('count(mp)', 'desc')
+            ->addOrderBy('u.lastLoginTime', 'desc')
+            ->setMaxResults($paginatorDto->getPageSize())
+            ->setFirstResult($paginatorDto->getFirstResultIndex())
             ->getQuery()
             ->getResult();
     }

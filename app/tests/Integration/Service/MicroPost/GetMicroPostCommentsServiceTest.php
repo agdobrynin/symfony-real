@@ -8,6 +8,7 @@ use App\Dto\Exception\PaginatorDtoPageSizeException;
 use App\Entity\Comment;
 use App\Entity\MicroPost;
 use App\Service\MicroPost\GetMicroPostCommentsService;
+use App\Service\MicroPost\GetMicroPostCommentsServiceInterface;
 use Closure;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -43,7 +44,7 @@ class GetMicroPostCommentsServiceTest extends KernelTestCase
 
     public function testGetMicroPostCommentsService(): void
     {
-        $srv = new GetMicroPostCommentsService($this->pageSize);
+        $srv = self::getContainer()->get(GetMicroPostCommentsServiceInterface::class);
         $microPost = $this->microPostRepository->findOneBy([]);
         $this->clearComments($microPost);
 
@@ -75,7 +76,7 @@ class GetMicroPostCommentsServiceTest extends KernelTestCase
 
     public function testWrongPage(): void
     {
-        $srv = new GetMicroPostCommentsService($this->pageSize);
+        $srv = self::getContainer()->get(GetMicroPostCommentsServiceInterface::class);
         $microPost = $this->microPostRepository->findOneBy([]);
         $this->clearComments($microPost);
 

@@ -106,4 +106,12 @@ class MicroPostRepository extends ServiceEntityRepository
 
         return $this->findBy([], ['date' => 'desc'], $paginatorDto->getPageSize(), $paginatorDto->getFirstResultIndex());
     }
+
+    public function getCountBloggersWithPosts()
+    {
+        $qb = $this->createQueryBuilder('mp');
+
+        return $qb->select($qb->expr()->countDistinct('mp.user'))
+            ->getQuery()->getSingleScalarResult();
+    }
 }

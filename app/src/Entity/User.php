@@ -103,6 +103,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\ManyToMany(targetEntity=User::class, mappedBy="following", fetch="EXTRA_LAZY")
+     * @ORM\OrderBy({"lastLoginTime": "desc"})
      */
     private $followers;
 
@@ -117,6 +118,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *          @ORM\JoinColumn(name="following_user_uuid", referencedColumnName="uuid")
      *     }
      * )
+     * @ORM\OrderBy({"lastLoginTime": "desc"})
      */
     private $following;
 
