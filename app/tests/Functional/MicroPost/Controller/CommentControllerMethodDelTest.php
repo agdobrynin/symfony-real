@@ -55,7 +55,7 @@ class CommentControllerMethodDelTest extends WebTestCase
         $requestByUser = $microPost->getUser();
 
         $commentOwner = $this->userRepository->createQueryBuilder('u')
-            ->where('u.roles NOT IN (:role)')->setParameter(':role', User::ROLE_ADMIN)
+            ->where('u.roles = :role')->setParameter(':role', User::ROLE_USER)
             ->andWhere('u != :user')->setParameter(':user', $requestByUser)
             ->setMaxResults(1)
             ->getQuery()
