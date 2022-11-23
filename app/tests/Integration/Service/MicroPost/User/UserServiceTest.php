@@ -121,4 +121,41 @@ class UserServiceTest extends KernelTestCase
         self::assertFalse($user->getIsActive());
         self::assertMatchesRegularExpression('/[a-z0-9]{20,}/', $user->getConfirmationToken());
     }
+
+    public function getDataSourceForRefreshConfirmToken(): \Generator
+    {
+        yield [
+            (new User())->setIsActive(false)
+                ->setPassword('abc')
+                ->setRoles(User::ROLE_DEFAULT)
+                ->setLogin('john')
+                ->setNick('John')
+                ->setEmail('john@ok.com')
+        ];
+
+        yield [
+            (new User())->setIsActive(true)
+                ->setPassword('abc')
+                ->setRoles(User::ROLE_DEFAULT)
+                ->setLogin('john1')
+                ->setNick('John 1')
+                ->setEmail('john1@ok.com')
+        ];
+    }
+
+    /**
+     * @dataProvider getDataSourceForRefreshConfirmToken
+     */
+    public function testRefreshConfirmToken(User $user): void
+    {
+        if ($user->getIsActive()) {
+            self::expectException(SetConfirmationTokenForActiveUser::class);
+        }
+
+        $srv = self::getContainer()->get(UserServiceInterface::class);
+        $srv->refreshConfirmToken($user);
+
+        self::assertFalse($user->getIsActive());
+        self::assertNotEmpty($user->getConfirmationToken());
+    }
 }
