@@ -5,6 +5,7 @@ namespace App\Tests\Unit\Service\MicroPost;
 
 use App\Dto\Exception\PaginatorDtoPageException;
 use App\Entity\User;
+use App\Repository\MicroPostRepository;
 use App\Repository\UserRepository;
 use App\Service\MicroPost\GetBloggersService;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -28,7 +29,11 @@ class GetBloggersServiceTest extends TestCase
     public function testGetBloggersService(int $total, int $pageSize, int $page, ?string $expectException): void
     {
         $userRepository = self::createMock(UserRepository::class);
-        $userRepository->expects(self::once())->method('getCountBloggersWithPosts')->willReturn($total);
+        $microPostRepository = self::createMock(MicroPostRepository::class);
+
+        $microPostRepository->expects(self::once())
+            ->method('getCountBloggersWithPosts')
+            ->willReturn($total);
 
         $userCollection = $this->getUserCollection($total);
         $slicedUserCollection = [];
@@ -43,7 +48,7 @@ class GetBloggersServiceTest extends TestCase
                 ->willReturn($slicedUserCollection);
         }
 
-        $srv = new GetBloggersService($pageSize, $userRepository);
+        $srv = new GetBloggersService($pageSize, $userRepository, $microPostRepository);
 
         $dto = $srv->getBloggers($page);
         self::assertSame($slicedUserCollection, $dto->getBloggers());
