@@ -3,52 +3,49 @@
 namespace App\Tests\Integration\Service\MicroPost\User;
 
 use App\Entity\User;
-use App\Security\ConfirmationTokenGenerator;
-use App\Service\MicroPost\LocalesInterface;
+use App\Service\MicroPost\User\Exception\SetConfirmationTokenForActiveUser;
 use App\Service\MicroPost\User\Exception\UserWrongPasswordException;
-use App\Service\MicroPost\User\UserService;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MicroPost\User\UserServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class UserServiceTest extends KernelTestCase
 {
+    /** @var \Doctrine\Persistence\ObjectManager */
+    protected $em;
     /** @var UserPasswordHasherInterface */
-    private $passwordHasher;
-    private $confirmToken;
-    private $locales;
-    /**
-     * @var EntityManagerInterface|EntityManagerInterface&\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $entityManagerMock;
+    protected $hasher;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->passwordHasher = self::getContainer()->get(UserPasswordHasherInterface::class);
-        $this->confirmToken = self::getContainer()->get(ConfirmationTokenGenerator::class);
-        $this->locales = self::getContainer()->get(LocalesInterface::class);
+        parent::setUp();
+        $this->em = self::getContainer()->get('doctrine')->getManager();
+        $this->hasher = self::getContainer()->get(UserPasswordHasherInterface::class);
     }
 
-    public function assertPreConditions(): void
+    protected function tearDown(): void
     {
-        $this->entityManagerMock = self::createMock(EntityManagerInterface::class);
+        parent::tearDown();
+        $this->em->close();
+        $this->em = null;
     }
 
     public function testNewUser(): void
     {
-        $user = new User();
-        $this->entityManagerMock->expects(self::once())->method('persist')->with($user);
-        $this->entityManagerMock->expects(self::once())->method('flush');
+        /** @var UserServiceInterface $srv */
+        $srv = self::getContainer()->get(UserServiceInterface::class);
 
+        $user = (new User())
+            ->setLogin('user')
+            ->setEmail('user@domain.com')
+            ->setNick('User nick')
+            ->setIsActive(true)
+            ->setConfirmationToken(null);
         $userLocale = 'ru';
 
-        $tokenStorage = self::getMockBuilder(TokenStorage::class)->getMock();
-        $tokenStorage->expects(self::never())
-            ->method('setToken');
+        $srv->new($user, 'abcdfg', $userLocale);
 
-        (new UserService($this->passwordHasher, $this->confirmToken, $this->locales, $this->entityManagerMock, $tokenStorage))
-            ->new($user, 'pass', $userLocale);
+        $this->em->refresh($user);
 
         self::assertFalse($user->getIsActive());
         self::assertMatchesRegularExpression('/[a-z0-9]{20,}/', $user->getConfirmationToken());
@@ -56,47 +53,47 @@ class UserServiceTest extends KernelTestCase
         self::assertNotNull($user->getPassword());
     }
 
-    public function testChangePassword(): void
+    public function getSourceDataForChangePassword(): \Generator
     {
-        $user = (new User())->setIsActive(true);
-        $currentPassword = 'pass1';
-        $user->setPassword($this->passwordHasher->hashPassword($user, $currentPassword));
-        $newPassword = 'pass2';
+        $passwordCurrent = 'password';
 
-        self::assertTrue($user->getIsActive());
-        self::assertNotNull($user->getPassword());
-        self::assertNull($user->getConfirmationToken());
+        $user = (new User())
+            ->setLogin('user')
+            ->setNick('user nick')
+            ->setEmail('user@domain.com')
+            ->setIsActive(true)
+            ->setRoles(User::ROLE_DEFAULT);
 
-        $this->entityManagerMock->expects(self::once())->method('persist')->with($user);
-        $this->entityManagerMock->expects(self::once())->method('flush');
+        /** @var UserPasswordHasherInterface $hasher */
+        $hasher = self::getContainer()->get(UserPasswordHasherInterface::class);
+        $user->setPassword($hasher->hashPassword($user, $passwordCurrent));
 
-        $tokenStorage = self::getMockBuilder(TokenStorage::class)->getMock();
-        $tokenStorage->expects(self::once())
-            ->method('setToken')
-            ->with(null);
-
-        (new UserService($this->passwordHasher, $this->confirmToken, $this->locales, $this->entityManagerMock, $tokenStorage))
-            ->changePasswordAndResetAuthToken($user, $currentPassword, $newPassword);
-
-        self::assertFalse($user->getIsActive());
-        self::assertNotNull($user->getPassword());
-        self::assertMatchesRegularExpression('/[a-z0-9]{20,}/', $user->getConfirmationToken());
+        yield [$user, $passwordCurrent, 'password2', null];
+        yield [$user, 'wrong-password', 'password2', UserWrongPasswordException::class];
     }
 
-    public function testChangePasswordWrongCurrentPassword()
+    /**
+     * @dataProvider getSourceDataForChangePassword
+     */
+    public function testChangePassword(User $user, string $passwordCurrent, string $passwordNew, ?string $expectException): void
     {
-        $user = (new User())->setIsActive(true);
-        $user->setPassword($this->passwordHasher->hashPassword($user, 'pass1'));
+        /** @var UserServiceInterface $srv */
+        $srv = self::getContainer()->get(UserServiceInterface::class);
 
-        $this->entityManagerMock->expects(self::never())->method('persist')->with($user);
-        $this->entityManagerMock->expects(self::never())->method('flush')->with($user);
+        if ($expectException) {
+            self::expectException($expectException);
+        }
 
-        $tokenStorage = self::getMockBuilder(TokenStorage::class)->getMock();
+        $srv->changePasswordAndResetAuthToken($user, $passwordCurrent, $passwordNew);
 
-        self::expectException(UserWrongPasswordException::class);
+        $this->em->refresh($user);
 
-        (new UserService($this->passwordHasher, $this->confirmToken, $this->locales, $this->entityManagerMock, $tokenStorage))
-            ->changePasswordAndResetAuthToken($user, 'wrongPass', 'pass2');
+        // deactivate user
+        self::assertFalse($user->getIsActive());
+        // password was changed
+        self::assertTrue($this->hasher->isPasswordValid($user, $passwordNew));
+        // user has confirmation token value
+        self::assertMatchesRegularExpression('/[a-z0-9]{20,}/', $user->getConfirmationToken());
     }
 
     public function testChangeEmailSuccess(): void
@@ -105,23 +102,20 @@ class UserServiceTest extends KernelTestCase
         $newEmail = 'new@mail.com';
 
         $user = (new User())
+            ->setLogin('user')
+            ->setEmail($oldEmail)
+            ->setNick('User nick')
             ->setIsActive(true)
-            ->setEmail($oldEmail);
+            ->setRoles(User::ROLE_DEFAULT);
 
-        $this->entityManagerMock->expects(self::once())->method('persist')->with($user);
-        $this->entityManagerMock->expects(self::once())->method('flush');
+        $user->setPassword($this->hasher->hashPassword($user, 'password'));
 
-        $tokenStorage = self::getMockBuilder(TokenStorage::class)->getMock();
-        $tokenStorage->expects(self::once())
-            ->method('setToken')
-            ->with(null);
+        /** @var UserServiceInterface $srv */
+        $srv = self::getContainer()->get(UserServiceInterface::class);
 
-        self::assertEquals($oldEmail, $user->getEmail());
-        self::assertTrue($user->getIsActive());
-        self::assertNull($user->getConfirmationToken());
+        $srv->changeEmailAndResetAuthToken($user, $newEmail);
 
-        (new UserService($this->passwordHasher, $this->confirmToken, $this->locales, $this->entityManagerMock, $tokenStorage))
-            ->changeEmailAndResetAuthToken($user, $newEmail);
+        $this->em->refresh($user);
 
         self::assertEquals($newEmail, $user->getEmail());
         self::assertFalse($user->getIsActive());
