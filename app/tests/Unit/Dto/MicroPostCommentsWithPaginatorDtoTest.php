@@ -13,8 +13,8 @@ class MicroPostCommentsWithPaginatorDtoTest extends TestCase
 {
     public function sourceData(): \Generator
     {
-        yield [[new Comment()], new PaginatorDto(1, 1, 1), null];
-        yield [[new class {
+        yield 'success' => [[new Comment()], new PaginatorDto(1, 1, 1), null];
+        yield 'fail' => [[new class {
         }], new PaginatorDto(1, 1, 1), MicroPostCommentsWithPaginatorDtoException::class];
     }
 

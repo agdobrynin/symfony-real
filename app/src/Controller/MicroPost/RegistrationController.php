@@ -5,7 +5,7 @@ namespace App\Controller\MicroPost;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Helper\FlashType;
-use App\Service\MicroPost\User\UserServiceInterface;
+use App\Service\MicroPost\User\UserServiceNewUserInterface;
 use App\Service\MicroPost\WelcomeMessageEmailServiceInterface;
 use App\Service\WelcomeMessageInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +20,7 @@ class RegistrationController extends AbstractController
      */
     public function register(
         Request                             $request,
-        UserServiceInterface                $userService,
+        UserServiceNewUserInterface         $userService,
         WelcomeMessageInterface             $welcomeMessage,
         WelcomeMessageEmailServiceInterface $emailService
     ): Response
@@ -32,7 +32,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $passwordPlain = $form->get('password')->getData();
             $locale = $form->get('locale')->getData();
-            $userService->new($user, $passwordPlain, $locale);
+            $userService->addAndSetConfirmationToken($user, $passwordPlain, $locale);
             $message = $welcomeMessage->welcomeMessage($user->getNick())->message;
             $message .= '. For activate your login check your mailbox and click confirmation link!';
 

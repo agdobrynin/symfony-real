@@ -42,9 +42,9 @@ class UserCheckerTest extends TestCase
 
     public function getUsers(): \Generator
     {
-        yield [new User(), false];
-        yield [new User(), true];
-        yield [$this->getCustomUser(), null];
+        yield 'user is not active yet' => [new User(), false];
+        yield 'user is success pre auth' => [new User(), true];
+        yield 'custom user not support' => [$this->getCustomUser(), null];
     }
 
     /**

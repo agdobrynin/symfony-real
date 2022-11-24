@@ -8,7 +8,7 @@ use App\Form\LoginFormType;
 use App\Helper\FlashType;
 use App\Repository\UserRepository;
 use App\Service\MicroPost\LocalesInterface;
-use App\Service\MicroPost\User\UserServiceInterface;
+use App\Service\MicroPost\User\UserServiceRefreshConfirmToken;
 use App\Service\MicroPost\WelcomeMessageEmailServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -93,7 +93,7 @@ class SecurityController extends AbstractController
         WelcomeMessageEmailServiceInterface $emailService,
         UserRepository                      $userRepository,
         TranslatorInterface                 $translator,
-        UserServiceInterface                $userService
+        UserServiceRefreshConfirmToken $userService
     )
     {
         $httpResponseStatus = Response::HTTP_OK;
@@ -107,7 +107,7 @@ class SecurityController extends AbstractController
             ]);
 
             if ($user) {
-                $userService->refreshConfirmToken($user);
+                $userService->refresh($user);
                 $emailService->send($user);
                 $message = $translator->trans('confirm_token_resend.success');
                 $this->addFlash(FlashType::SUCCESS, $message);

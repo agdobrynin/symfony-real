@@ -13,8 +13,8 @@ class MicroPostWithPaginationDtoTest extends TestCase
 {
     public function sourceData(): \Generator
     {
-        yield [[new MicroPost()], new PaginatorDto(1, 1, 1), null];
-        yield [[new class {
+        yield 'success' => [[new MicroPost()], new PaginatorDto(1, 1, 1), null];
+        yield 'fail' => [[new class {
         }], new PaginatorDto(1, 1, 1), MicroPostWithPaginationDtoException::class];
     }
 

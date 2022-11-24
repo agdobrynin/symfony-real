@@ -6,15 +6,14 @@ namespace App\Tests\Unit\Service\MicroPost\User;
 use App\Entity\User;
 use App\Security\ConfirmationTokenGenerator;
 use App\Service\MicroPost\LocalesInterface;
-use App\Service\MicroPost\User\UserService;
+use App\Service\MicroPost\User\UserServiceNewUser;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class UserServiceMethodNewTest extends TestCase
+class UserServiceNewUserTest extends TestCase
 {
-    public function testNew(): void
+    public function testNewUser(): void
     {
         $passwordPlain = 'password';
         $passwordHashed = 'hashed-password';
@@ -39,11 +38,8 @@ class UserServiceMethodNewTest extends TestCase
         $em->expects(self::once())->method('persist')->with($user);
         $em->expects(self::once())->method('flush');
 
-        $tokenStorage = self::createMock(TokenStorageInterface::class);
-        $tokenStorage->expects(self::never())->method('getToken');
-
-        $src = new UserService($hasher, $confirmTokenGenerator, $locales, $em, $tokenStorage);
-        $src->new($user, $passwordPlain, null);
+        $srv = new UserServiceNewUser($hasher, $confirmTokenGenerator, $locales, $em);
+        $srv->addAndSetConfirmationToken($user, $passwordPlain, null);
 
         self::assertFalse($user->getIsActive());
         self::assertEquals($defaultLocale, $user->getPreferences()->getLocale());

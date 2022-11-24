@@ -13,8 +13,8 @@ class BloggersWithPaginatorDtoTest extends TestCase
 {
     public function sourceData(): \Generator
     {
-        yield [$this->getUserCollection(11), new PaginatorDto(1, 11, 10), null];
-        yield [[new class {
+        yield 'success' => [$this->getUserCollection(11), new PaginatorDto(1, 11, 10), null];
+        yield 'fail' => [[new class {
         }], new PaginatorDto(1, 1, 1), BloggersWithPaginatorDtoException::class];
     }
 
