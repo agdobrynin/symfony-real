@@ -58,17 +58,4 @@ class UserServiceChangePasswordTest extends TestCase
 
         $srv->changeAndResetAuthToken($user, $passwordCurrent, $passwordNew);
     }
-    /*
-    if (!$this->userPasswordHasher->isPasswordValid($user, $currentPasswordPlain)) {
-        throw new UserWrongPasswordException();
-    }
-
-    $passwordHash = $this->userPasswordHasher->hashPassword($user, $newPasswordPlain);
-    $user->setPassword($passwordHash);
-    $user->setIsActive(false);
-    $user->setConfirmationToken($this->confirmationTokenGenerator->getRandomSecureToken());
-    $this->entityManager->persist($user);
-    $this->entityManager->flush();
-    $this->tokenStorage->setToken();
-     */
 }
