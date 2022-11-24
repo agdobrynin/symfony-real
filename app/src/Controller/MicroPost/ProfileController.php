@@ -11,7 +11,8 @@ use App\Mailer\EmailChangeMailerInterface;
 use App\Mailer\PasswordChangeMailerInterface;
 use App\Service\MicroPost\User\Exception\UserWrongPasswordException;
 use App\Service\MicroPost\User\GetOriginalEntityDataInterface;
-use App\Service\MicroPost\User\UserServiceInterface;
+use App\Service\MicroPost\User\UserServiceChangeEmailInterface;
+use App\Service\MicroPost\User\UserServiceChangePasswordInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,13 +30,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ProfileController extends AbstractController
 {
     private $request;
-    private $userService;
     private $translator;
 
-    public function __construct(RequestStack $requestStack, UserServiceInterface $userService, TranslatorInterface $translator)
+    public function __construct(RequestStack $requestStack, TranslatorInterface $translator)
     {
         $this->request = $requestStack->getCurrentRequest();
-        $this->userService = $userService;
         $this->translator = $translator;
     }
 
@@ -44,9 +43,10 @@ class ProfileController extends AbstractController
      * @return RedirectResponse|Response
      */
     public function profileEdit(
-        EmailChangeMailerInterface     $emailChangeMailer,
-        GetOriginalEntityDataInterface $originalEntityData,
-        EntityManagerInterface         $entityManager
+        EmailChangeMailerInterface      $emailChangeMailer,
+        GetOriginalEntityDataInterface  $originalEntityData,
+        EntityManagerInterface          $entityManager,
+        UserServiceChangeEmailInterface $userService
     )
     {
         /** @var User $currentUser */
@@ -60,7 +60,7 @@ class ProfileController extends AbstractController
             $originalEmail = $originalEntityData->getOriginalValue($currentUser, 'email');
 
             if ($originalEmail !== $emailFromFrom) {
-                $this->userService->changeEmailAndResetAuthToken($currentUser, $emailFromFrom);
+                $userService->changeAndResetAuthToken($currentUser, $emailFromFrom);
                 $emailChangeMailer->send($currentUser);
 
                 $message = $this->translator->trans('email.change_email.flush_message');
@@ -99,7 +99,10 @@ class ProfileController extends AbstractController
      * @Route("/password", name="micro_post_profile_password", methods={"get", "post"})
      * @return Response|RedirectResponse
      */
-    public function profilePassword(PasswordChangeMailerInterface $passwordChangeMailer)
+    public function profilePassword(
+        PasswordChangeMailerInterface      $passwordChangeMailer,
+        UserServiceChangePasswordInterface $userServiceChangePassword
+    )
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -111,7 +114,7 @@ class ProfileController extends AbstractController
                 $currentPasswordPlain = $form->get('password')->getData();
                 $newPasswordPlain = $form->get('password_new')->getData();
 
-                $this->userService->changePasswordAndResetAuthToken($user, $currentPasswordPlain, $newPasswordPlain);
+                $userServiceChangePassword->changeAndResetAuthToken($user, $currentPasswordPlain, $newPasswordPlain);
                 $passwordChangeMailer->send($user);
 
                 $message = $this->translator->trans('my_profile.password.messages.password_changed');

@@ -16,11 +16,11 @@ class GetBloggersServiceTest extends TestCase
 {
     public function dataSource(): \Generator
     {
-        yield [15, 10, 1, null];
-        yield [15, 10, 2, null];
-        yield [1, 1, 2, PaginatorDtoPageException::class];
-        yield [0, 1, 1, null];
-        yield [0, 10, 0, PaginatorDtoPageException::class];
+        yield 'Success get bloggers for page 1' => [15, 10, 1, null];
+        yield 'Success get bloggers for page 2' => [15, 10, 2, null];
+        yield 'Wrong get bloggers for page  more then maximum pages' => [1, 1, 2, PaginatorDtoPageException::class];
+        yield 'Success get from empty bloggers array' => [0, 1, 1, null];
+        yield 'Wrong get bloggers for page  less then 1' => [0, 10, 0, PaginatorDtoPageException::class];
     }
 
     /**

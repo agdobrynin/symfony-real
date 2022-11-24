@@ -20,7 +20,7 @@ class VoterTest extends TestCase
     {
         $equalUser = (new User())->setRoles([User::ROLE_USER]);
         // MicroPost
-        yield [
+        yield 'Access granted to MicroPost for admin user' => [
             (new User())->setRoles([User::ROLE_ADMIN]), // checked user
             (new MicroPost())->setUser((new User())->setRoles([User::ROLE_USER])),
             MicroPostVoter::MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN,
@@ -28,7 +28,7 @@ class VoterTest extends TestCase
             MicroPostVoter::class,
         ];
 
-        yield [
+        yield 'Access granted to MicroPost for equal user' => [
             $equalUser, // checked user
             (new MicroPost())->setUser($equalUser),
             MicroPostVoter::MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN,
@@ -36,7 +36,7 @@ class VoterTest extends TestCase
             MicroPostVoter::class,
         ];
 
-        yield [
+        yield 'Access denied to MicroPost for not owner micro post' => [
             (new User())->setRoles([User::ROLE_USER]), // checked user
             (new MicroPost())->setUser((new User())->setRoles([User::ROLE_USER])),
             MicroPostVoter::MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN,
@@ -44,7 +44,7 @@ class VoterTest extends TestCase
             MicroPostVoter::class,
         ];
 
-        yield [
+        yield 'Access denied to MicroPost for non User class' => [
             $this->getCustomUser(), // check user
             (new MicroPost())->setUser((new User())->setRoles([User::ROLE_USER])),
             MicroPostVoter::MICRO_POST_EDIT_DEL_OWNER_OR_ADMIN,
@@ -52,7 +52,7 @@ class VoterTest extends TestCase
             MicroPostVoter::class,
         ];
         // Comment
-        yield [
+        yield 'Access denied to Comment for non User class' => [
             $this->getCustomUser(), // check user
             (new Comment())->setUser((new User())->setRoles([User::ROLE_USER])),
             CommentVoter::COMMENT_DEL_OWNER_OR_ADMIN,
@@ -60,7 +60,7 @@ class VoterTest extends TestCase
             CommentVoter::class,
         ];
 
-        yield [
+        yield 'Access denied to Comment for not owner' => [
             (new User())->setRoles([User::ROLE_USER]), // check user
             (new Comment())->setUser((new User())->setRoles([User::ROLE_USER])),
             CommentVoter::COMMENT_DEL_OWNER_OR_ADMIN,
@@ -68,7 +68,7 @@ class VoterTest extends TestCase
             CommentVoter::class,
         ];
 
-        yield [
+        yield 'Access granted to Comment for admin user' => [
             (new User())->setRoles([User::ROLE_ADMIN]), // check user
             (new Comment())->setUser((new User())->setRoles([User::ROLE_USER])),
             CommentVoter::COMMENT_DEL_OWNER_OR_ADMIN,
@@ -76,7 +76,7 @@ class VoterTest extends TestCase
             CommentVoter::class,
         ];
 
-        yield [
+        yield 'Access granted to Comment for comment owner' => [
             $equalUser, // check user
             (new Comment())->setUser($equalUser),
             CommentVoter::COMMENT_DEL_OWNER_OR_ADMIN,
