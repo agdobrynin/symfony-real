@@ -7,7 +7,10 @@ use App\Entity\MicroPost;
 use App\Service\MicroPost\GetMicroPostCommentsService;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\DomCrawler\Field\FormField;
+use Symfony\Component\DomCrawler\Form;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use function Symfony\Component\String\u;
 
 class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
 {
@@ -56,8 +59,8 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
         $crawler = $client->request('GET', sprintf(self::URL_POST_VIEW_PATTERN, $microPost->getUuid()));
         self::assertResponseIsSuccessful();
 
-        // Form for send comment must be not found because user request non auth.
-        self::assertCount(0, $this->getCommentForm($crawler));
+        self::assertNull($this->getFormComment($crawler));
+
         // Alert block with info text
         $alertText = $this->translator->trans('micro-post.comments.comment_for_auth');
         self::assertEquals($alertText, $crawler->filter('.comment-for-auth')->first()->text());
@@ -80,7 +83,7 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
         self::assertCount($crawler->filter('div.comment-item')->count(), $microPostCommentsWithPaginatorDto->getComments());
 
         // Form for send comment must be found
-        self::assertCount(1, $this->getCommentForm($crawler));
+        self::assertInstanceOf(Form::class, $this->getFormComment($crawler));
     }
 
     public function testCommentBlockAddWrong(): void
@@ -94,19 +97,20 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
         self::assertResponseIsSuccessful();
 
         // Form for send comment must be found
-        $formComment = $this->getCommentForm($crawler);
-        self::assertCount(1, $formComment);
+        $form = $this->getFormComment($crawler);
+        self::assertInstanceOf(Form::class, $form);
 
-        // Send wrong length comment
-        $form = $formComment->filter('button[name="comment_form[save]"]')->form([
-            $formComment->filter('textarea')->first()->attr('name') => 'short'
-        ]);
+        $data = $this->getFormData($form, 'short');
 
-        $crawler = $client->submit($form);
+        $crawler = $client->submit($form, $data);
         self::assertResponseIsUnprocessable();
-        $textAreaField = $this->getCommentForm($crawler)->filter('textarea.is-invalid');
-        self::assertCount(1, $textAreaField);
-        self::assertNotEmpty($textAreaField->nextAll()->first()->filter('.invalid-feedback')->text());
+
+        $cssSelectorTextarea = sprintf('form[name="%s"] textarea.is-invalid',
+            $this->getFormComment($crawler)->getName());
+
+        $textareaField = $crawler->filter($cssSelectorTextarea);
+        self::assertCount(1, $textareaField);
+        self::assertNotEmpty($textareaField->nextAll()->first()->filter('.invalid-feedback')->text());
     }
 
     public function testCommentBlockAddSuccess(): void
@@ -119,16 +123,16 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
         $crawler = $client->request('GET', sprintf(self::URL_POST_VIEW_PATTERN, $microPost->getUuid()));
         self::assertResponseIsSuccessful();
 
-        $formComment = $this->getCommentForm($crawler);
+        // Form for send comment must be found
+        $form = $this->getFormComment($crawler);
+        self::assertInstanceOf(Form::class, $form);
 
-        // Send comment
         $commentContentSend = 'Lorem ipsum dolor sit amet.';
-        $form = $formComment->filter('button[name="comment_form[save]"]')->form([
-            $formComment->filter('textarea')->first()->attr('name') => $commentContentSend
-        ]);
+        $data = $this->getFormData($form, $commentContentSend);
 
-        $client->submit($form);
+        $client->submit($form, $data);
         self::assertResponseRedirects();
+
         $crawler = $client->followRedirect();
 
         $firstCommentBlock = $crawler->filter('div.comment-item')->first();
@@ -139,8 +143,28 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
         self::assertStringContainsString($user->getEmoji() . '@' . $user->getNick(), $headerOfComment);
     }
 
-    protected function getCommentForm(Crawler $crawler)
+    protected function getFormCommentSubmitButtonEl(Crawler $crawler)
     {
-        return $crawler->filter('form[name="comment_form"]');
+        return $crawler->filter('form button[name$="[save]"]');
+    }
+
+    protected function getFormComment(Crawler $crawler): ?\Symfony\Component\DomCrawler\Form
+    {
+        try {
+            return $this->getFormCommentSubmitButtonEl($crawler)->form();
+        } catch (\InvalidArgumentException $exception) {
+            return null;
+        }
+    }
+
+    protected function getFormData(Form $form, string $content): array
+    {
+        return array_reduce($form->all(), static function (array $acc, FormField $field) use ($content): array {
+            if (u($field->getName())->endsWith('[content]')) {
+                $acc [$field->getName()] = $content;
+            }
+
+            return $acc;
+        }, []);
     }
 }
