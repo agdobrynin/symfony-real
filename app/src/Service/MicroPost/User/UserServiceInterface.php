@@ -3,14 +3,18 @@
 namespace App\Service\MicroPost\User;
 
 use App\Entity\User;
-use App\Service\MicroPost\User\Exception\UserWrongPasswordException;
 
 interface UserServiceInterface
 {
     public function new(User $user, string $passwordPlain, ?string $userLocale): void;
 
     /**
-     * @throws UserWrongPasswordException When current password is wrong.
+     * @throws \App\Service\MicroPost\User\Exception\SetConfirmationTokenForActiveUser If user is active.
+     */
+    public function refreshConfirmToken(User $user): void;
+
+    /**
+     * @throws \App\Service\MicroPost\User\Exception\UserWrongPasswordException When current password is wrong.
      */
     public function changePasswordAndResetAuthToken(User $user, string $currentPasswordPlain, string $newPasswordPlain): void;
 

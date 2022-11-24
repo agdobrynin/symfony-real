@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Security;
 
 use App\Entity\User;
+use App\Security\Exception\LoginNotConfirmAccountStatusException;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -27,7 +27,7 @@ class UserChecker implements UserCheckerInterface
         if (!$user->getIsActive()) {
             $message = 'Your user account is not confirm. Please look for an email in your inbox with a confirmation link.';
 
-            throw new CustomUserMessageAccountStatusException($message);
+            throw new LoginNotConfirmAccountStatusException($message);
         }
     }
 
