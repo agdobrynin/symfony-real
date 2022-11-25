@@ -5,13 +5,17 @@ namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\MicroPost;
 use App\Entity\User;
+use App\Tests\Functional\MicroPost\Controller\Utils\MicroPostFormTrait;
 use Doctrine\Common\Collections\Criteria;
 use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\HttpFoundation\Response;
 
 class MicroPostControllerMethodEditTest extends WebTestCase
 {
+    use MicroPostFormTrait;
+
     protected const URL_POST_EDIT_PATTERN = '/micro-post/en/edit/%s';
     /** @var \App\Repository\UserRepository */
     private $userRepository;
@@ -89,11 +93,9 @@ class MicroPostControllerMethodEditTest extends WebTestCase
         $crawler = $client->request('GET', $this->getUrlToEdit($microPostOfBlogger));
         self::assertResponseIsSuccessful();
 
-        $contentEl = $crawler->filter('textarea[name$="[content]"]');
         $contentForPost = $this->faker->realTextBetween(278, 280);
-        $form = $contentEl->closest('form')->form([
-            $contentEl->attr('name') => $contentForPost,
-        ]);
+        $form = self::getFormWithData($crawler, $contentForPost);
+        self::assertInstanceOf(Form::class, $form);
 
         $client->submit($form);
         self::assertResponseRedirects();
@@ -116,11 +118,9 @@ class MicroPostControllerMethodEditTest extends WebTestCase
         $crawler = $client->request('GET', $this->getUrlToEdit($microPostOfBlogger));
         self::assertResponseIsSuccessful();
 
-        $contentEl = $crawler->filter('textarea[name$="[content]"]');
         $contentForPost = $this->faker->realTextBetween(278, 280);
-        $form = $contentEl->closest('form')->form([
-            $contentEl->attr('name') => $contentForPost,
-        ]);
+        $form = self::getFormWithData($crawler, $contentForPost);
+        self::assertInstanceOf(Form::class, $form);
 
         $client->submit($form);
         self::assertResponseRedirects();

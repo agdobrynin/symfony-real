@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use function Symfony\Component\String\u;
 
-class SecurityControllerSendConfirmLink extends WebTestCase
+class SecurityControllerSendConfirmLinkTest extends WebTestCase
 {
     use MailerAssertionsTrait;
 

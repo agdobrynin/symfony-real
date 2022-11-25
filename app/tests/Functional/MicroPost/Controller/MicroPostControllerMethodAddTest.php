@@ -4,15 +4,17 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\User;
+use App\Tests\Functional\MicroPost\Controller\Utils\MicroPostFormTrait;
 use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\HttpFoundation\Response;
-use function Symfony\Component\String\u;
 
 class MicroPostControllerMethodAddTest extends WebTestCase
 {
+    use MicroPostFormTrait;
+
     protected const URL_POST_ADD = '/micro-post/en/add';
     /**
      * @var \App\Repository\UserRepository
@@ -64,7 +66,7 @@ class MicroPostControllerMethodAddTest extends WebTestCase
         self::assertResponseIsSuccessful();
 
         $contentForPost = $this->faker->realTextBetween(278, 280);
-        $form = $this->getFormWithData($crawler, $contentForPost);
+        $form = self::getFormWithData($crawler, $contentForPost);
         self::assertInstanceOf(Form::class, $form);
 
         $client->submit($form);
@@ -95,13 +97,13 @@ class MicroPostControllerMethodAddTest extends WebTestCase
 
         // test too large content
         $contentForPost = $this->faker->text(500);
-        $form = $this->getFormWithData($crawler, $contentForPost);
+        $form = self::getFormWithData($crawler, $contentForPost);
         self::assertInstanceOf(Form::class, $form);
         $crawler = $client->submit($form);
         $this->unprocessableEntity($client->getResponse()->getStatusCode(), $crawler);
 
         // Test for empty content
-        $form = $this->getFormWithData($crawler, '');
+        $form = self::getFormWithData($crawler, '');
         $crawler = $client->submit($form);
         $this->unprocessableEntity($client->getResponse()->getStatusCode(), $crawler);
     }
@@ -116,22 +118,5 @@ class MicroPostControllerMethodAddTest extends WebTestCase
         $hintEl = $contentEl->nextAll()->filter('div.invalid-feedback');
         self::assertCount(1, $hintEl);
         self::assertNotEmpty($hintEl->text());
-    }
-
-    protected function getFormWithData(Crawler $crawler, string $content): ?Form
-    {
-        try {
-            $form = $crawler->filter('form button[name$="[save]"]')->form();
-
-            foreach ($form->all() as $item) {
-                if (u($item->getName())->endsWith('[content]')) {
-                    $item->setValue($content);
-                }
-            }
-
-            return $form;
-        } catch (\InvalidArgumentException $exception) {
-            return null;
-        }
     }
 }
