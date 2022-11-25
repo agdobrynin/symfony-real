@@ -4,13 +4,17 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\User;
+use App\Tests\Functional\MicroPost\Controller\Utils\MicroPostFormTrait;
 use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\HttpFoundation\Response;
 
 class MicroPostControllerMethodAddTest extends WebTestCase
 {
+    use MicroPostFormTrait;
+
     protected const URL_POST_ADD = '/micro-post/en/add';
     /**
      * @var \App\Repository\UserRepository
@@ -61,11 +65,9 @@ class MicroPostControllerMethodAddTest extends WebTestCase
         $crawler = $client->request('GET', self::URL_POST_ADD);
         self::assertResponseIsSuccessful();
 
-        $contentEl = $crawler->filter('textarea[name$="[content]"]');
         $contentForPost = $this->faker->realTextBetween(278, 280);
-        $form = $contentEl->closest('form')->form([
-            $contentEl->attr('name') => $contentForPost,
-        ]);
+        $form = self::getFormWithData($crawler, $contentForPost);
+        self::assertInstanceOf(Form::class, $form);
 
         $client->submit($form);
         self::assertResponseRedirects();
@@ -91,20 +93,17 @@ class MicroPostControllerMethodAddTest extends WebTestCase
         $client->loginUser($user);
 
         $crawler = $client->request('GET', self::URL_POST_ADD);
-        $contentEl = $crawler->filter('textarea[name$="[content]"]');
-        // Is too long length of content MicroPost
-        $contentForPost = $this->faker->text(500);
-        $form = $contentEl->closest('form')->form([
-            $contentEl->attr('name') => $contentForPost,
-        ]);
+        self::assertResponseIsSuccessful();
 
+        // test too large content
+        $contentForPost = $this->faker->text(500);
+        $form = self::getFormWithData($crawler, $contentForPost);
+        self::assertInstanceOf(Form::class, $form);
         $crawler = $client->submit($form);
         $this->unprocessableEntity($client->getResponse()->getStatusCode(), $crawler);
 
         // Test for empty content
-        $form = $contentEl->closest('form')->form([
-            $contentEl->attr('name') => '',
-        ]);
+        $form = self::getFormWithData($crawler, '');
         $crawler = $client->submit($form);
         $this->unprocessableEntity($client->getResponse()->getStatusCode(), $crawler);
     }

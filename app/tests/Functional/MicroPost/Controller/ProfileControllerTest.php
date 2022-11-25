@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\User;
+use App\Tests\Functional\MicroPost\Controller\Utils\ProfileEditElementDto;
+use App\Tests\Functional\MicroPost\Controller\Utils\ProfilePasswordElementDto;
 use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
