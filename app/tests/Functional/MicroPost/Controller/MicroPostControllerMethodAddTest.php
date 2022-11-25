@@ -7,7 +7,9 @@ use App\Entity\User;
 use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\HttpFoundation\Response;
+use function Symfony\Component\String\u;
 
 class MicroPostControllerMethodAddTest extends WebTestCase
 {
@@ -61,11 +63,9 @@ class MicroPostControllerMethodAddTest extends WebTestCase
         $crawler = $client->request('GET', self::URL_POST_ADD);
         self::assertResponseIsSuccessful();
 
-        $contentEl = $crawler->filter('textarea[name$="[content]"]');
         $contentForPost = $this->faker->realTextBetween(278, 280);
-        $form = $contentEl->closest('form')->form([
-            $contentEl->attr('name') => $contentForPost,
-        ]);
+        $form = $this->getFormWithData($crawler, $contentForPost);
+        self::assertInstanceOf(Form::class, $form);
 
         $client->submit($form);
         self::assertResponseRedirects();
@@ -91,20 +91,17 @@ class MicroPostControllerMethodAddTest extends WebTestCase
         $client->loginUser($user);
 
         $crawler = $client->request('GET', self::URL_POST_ADD);
-        $contentEl = $crawler->filter('textarea[name$="[content]"]');
-        // Is too long length of content MicroPost
-        $contentForPost = $this->faker->text(500);
-        $form = $contentEl->closest('form')->form([
-            $contentEl->attr('name') => $contentForPost,
-        ]);
+        self::assertResponseIsSuccessful();
 
+        // test too large content
+        $contentForPost = $this->faker->text(500);
+        $form = $this->getFormWithData($crawler, $contentForPost);
+        self::assertInstanceOf(Form::class, $form);
         $crawler = $client->submit($form);
         $this->unprocessableEntity($client->getResponse()->getStatusCode(), $crawler);
 
         // Test for empty content
-        $form = $contentEl->closest('form')->form([
-            $contentEl->attr('name') => '',
-        ]);
+        $form = $this->getFormWithData($crawler, '');
         $crawler = $client->submit($form);
         $this->unprocessableEntity($client->getResponse()->getStatusCode(), $crawler);
     }
@@ -119,5 +116,22 @@ class MicroPostControllerMethodAddTest extends WebTestCase
         $hintEl = $contentEl->nextAll()->filter('div.invalid-feedback');
         self::assertCount(1, $hintEl);
         self::assertNotEmpty($hintEl->text());
+    }
+
+    protected function getFormWithData(Crawler $crawler, string $content): ?Form
+    {
+        try {
+            $form = $crawler->filter('form button[name$="[save]"]')->form();
+
+            foreach ($form->all() as $item) {
+                if (u($item->getName())->endsWith('[content]')) {
+                    $item->setValue($content);
+                }
+            }
+
+            return $form;
+        } catch (\InvalidArgumentException $exception) {
+            return null;
+        }
     }
 }
