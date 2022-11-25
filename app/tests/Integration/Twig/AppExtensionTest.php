@@ -9,7 +9,9 @@ use App\Entity\UnfollowNotification;
 use App\Entity\UnlikeNotification;
 use App\Entity\User;
 use App\Security\Exception\LoginNotConfirmAccountStatusException;
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Twig\Environment;
 use Twig\Error\RuntimeError;
 
@@ -120,8 +122,20 @@ class AppExtensionTest extends KernelTestCase
         ];
 
         yield 'Twig test is_security_login_not_confirm for class LogicException' => [
-            ['error' => new \LogicException()],
+            ['error' => new LogicException()],
             '{%if error is is_security_login_not_confirm %}OK{%endif%}',
+            ''
+        ];
+
+        yield 'Twig test is_security_bad_credentials for class BadCredentialsException' => [
+            ['error' => new BadCredentialsException()],
+            '{%if error is is_security_bad_credentials%}OK{%endif%}',
+            'OK'
+        ];
+
+        yield 'Twig test is_security_bad_credentials for class LogicException' => [
+            ['error' => new LogicException()],
+            '{%if error is is_security_bad_credentials%}OK{%endif%}',
             ''
         ];
     }
