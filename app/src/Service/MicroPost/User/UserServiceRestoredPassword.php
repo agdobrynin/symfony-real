@@ -26,9 +26,9 @@ class UserServiceRestoredPassword implements UserServiceRestoredPasswordInterfac
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function updateAndUnsetAuthToken(User $user, string $plainPassword, string $confirmToken): void
+    public function updateAndUnsetAuthToken(User $user, string $plainPassword, string $changePasswordToken): void
     {
-        if ($user->getChangePasswordToken() !== $confirmToken) {
+        if ($user->getChangePasswordToken() !== $changePasswordToken) {
             throw new PasswordTokenInvalidException();
         }
 

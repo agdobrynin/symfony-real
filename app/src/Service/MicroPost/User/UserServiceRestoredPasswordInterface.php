@@ -9,5 +9,5 @@ interface UserServiceRestoredPasswordInterface
     /**
      * @throws \App\Service\MicroPost\User\Exception\PasswordTokenInvalidException
      */
-    public function updateAndUnsetAuthToken(User $user, string $plainPassword, string $confirmToken): void;
+    public function updateAndUnsetAuthToken(User $user, string $plainPassword, string $changePasswordToken): void;
 }
