@@ -31,7 +31,7 @@ class WelcomeMailer implements WelcomeMailerInterface
 
     public function send(User $user): bool
     {
-        $email = $this->emailWithConfirmationUser(
+        $email = $this->emailWithUserData(
             $user,
             $this->locales,
             $this->adminEmail,

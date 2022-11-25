@@ -4,17 +4,18 @@ declare(strict_types=1);
 namespace App\Mailer;
 
 use App\Entity\User;
+use App\Mailer\Exception\ChangePasswordTokenException;
 use App\Service\MicroPost\LocalesInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class EmailChangeMailer implements EmailChangeMailerInterface
+class RestorePasswordMailer implements RestorePasswordMailerInterface
 {
     use TemplatedEmailTrait;
 
-    public const TEMPLATE_HTML_PATTERN = 'micro-post/email/change-email.%s.html.twig';
-    public const TEMPLATE_TEXT_PATTERN = 'micro-post/email/change-email.%s.text.twig';
-    public const TEMPLATE_SUBJECT = 'email.change_email.subject';
+    public const TEMPLATE_HTML_PATTERN = 'micro-post/email/restore-password.%s.html.twig';
+    public const TEMPLATE_TEXT_PATTERN = 'micro-post/email/restore-password.%s.text.twig';
+    public const TEMPLATE_SUBJECT = 'restore_password.email.subject';
 
     private $mailer;
     private $adminEmail;
@@ -31,6 +32,10 @@ class EmailChangeMailer implements EmailChangeMailerInterface
 
     public function send(User $user): bool
     {
+        if (null === $user->getChangePasswordToken()) {
+            throw new ChangePasswordTokenException();
+        }
+
         $email = $this->emailWithUserData(
             $user,
             $this->locales,

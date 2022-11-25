@@ -109,6 +109,7 @@ login_form:
       button: 'Sign up me'
   error:
     confirm_resend: 'If you did not receive an email with an activation link, you can <a href="%confirm_resend_link%">get the link again</a>'
+    restore_password: 'If you forgot your password, you can recover it using <a href="%link%">link</a>'
 notification_page:
   message:
     unfollow: 'not follow to you 😥 at %date%'
@@ -148,3 +149,22 @@ confirm_token_resend:
     submit: '📩 Send'
   success: 'An activation link has been sent to your email'
   fail: 'Specified parameters are not valid'
+restore_password:
+  page_title: 'Restore password'
+  form:
+    title: 'Restore password'
+    email:
+      help: 'Enter the email specified during registration'
+    submit: '🔑 Send link'
+  success: 'A link to change your password has been sent to your email'
+  fail: 'The specified parameters are not valid for password recovery'
+  email:
+    subject: 'Link for restore password'
+  form_change_password:
+    page_title: 'New password'
+    title: 'Enter new password for %nick%'
+    password:
+      label_1: 'Password'
+      label_2: 'Repeat password'
+    submit: '🔑 Update password'
+  password_changed: 'Password changed successfully. You can login with a new password'

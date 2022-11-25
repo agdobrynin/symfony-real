@@ -133,6 +133,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $confirmationToken;
 
     /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     */
+    private $changePasswordToken;
+
+    /**
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $lastLoginTime;
@@ -361,5 +366,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getComments(): Collection
     {
         return $this->comments;
+    }
+
+    public function getChangePasswordToken(): ?string
+    {
+        return $this->changePasswordToken;
+    }
+
+    public function setChangePasswordToken(?string $changePasswordToken): self
+    {
+        $this->changePasswordToken = $changePasswordToken;
+
+        return $this;
     }
 }

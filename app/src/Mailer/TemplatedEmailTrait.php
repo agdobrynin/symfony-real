@@ -9,7 +9,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 
 trait TemplatedEmailTrait
 {
-    protected function emailWithConfirmationUser(
+    protected function emailWithUserData(
         User             $user,
         LocalesInterface $locales,
         string           $mailFrom,
