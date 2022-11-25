@@ -17,7 +17,8 @@ class UserServiceRestorePasswordTokenTest extends TestCase
         $user = new User();
 
         $confirmTokenGenerator = self::createMock(ConfirmationTokenGenerator::class);
-        $confirmTokenGenerator->expects(self::once())->method('getRandomSecureToken');
+        $confirmTokenGenerator->expects(self::once())->method('getRandomSecureToken')
+            ->willReturn('abc-abc-abc');
 
         $em = self::createMock(EntityManagerInterface::class);
         $em->expects(self::once())->method('persist')->with($user);
@@ -30,5 +31,7 @@ class UserServiceRestorePasswordTokenTest extends TestCase
 
         $srv = new UserServiceRestorePasswordToken($confirmTokenGenerator, $em, $tokenStorage);
         $srv->refreshAndUnsetAuthToken($user);
+
+        self::assertEquals('abc-abc-abc', $user->getChangePasswordToken());
     }
 }
