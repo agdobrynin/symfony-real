@@ -52,7 +52,7 @@ class UserServiceRestoredPasswordTest extends TestCase
     ): void
     {
 
-        $expects = $expectException ? self::never() : self::any();
+        $expects = $expectException ? self::never() : self::atLeastOnce();
 
         $hasher = self::createMock(UserPasswordHasher::class);
         $hasher->expects($expects)->method('hashPassword')
