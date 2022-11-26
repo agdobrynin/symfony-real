@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MicroPost\Controller;
 
+use App\DataFixtures\AppFixtures;
 use App\Entity\User;
 use App\Security\ConfirmationTokenGenerator;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -53,7 +54,8 @@ class SecurityControllerTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
         /** @var User $user */
-        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $dto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $user = $this->userRepository->findOneBy(['login' => $dto->login]);
         $newUserLocale = 'ru';
         $user->getPreferences()->setLocale($newUserLocale);
         $this->em->persist($user);
@@ -97,7 +99,8 @@ class SecurityControllerTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
         /** @var User $user */
-        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $user = $this->userRepository->findOneBy(['login' => $adminDto->login]);
         $user->setIsActive(false);
         $confirmToken = (new ConfirmationTokenGenerator())->getRandomSecureToken();
         $user->setConfirmationToken($confirmToken);

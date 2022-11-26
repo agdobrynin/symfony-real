@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MicroPost\Controller;
 
+use App\DataFixtures\AppFixtures;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -94,7 +95,8 @@ class MicroPostControllerMethodViewTest extends WebTestCase
 
     public function testViewPostsByUser(): void
     {
-        $user = $this->userRepository->findOneBy(['login' => 'blogger']);
+        $userDto = AppFixtures::searchUserFixtureByProperty('isAdmin', false);
+        $user = $this->userRepository->findOneBy(['login' => $userDto->login]);
 
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -114,7 +116,8 @@ class MicroPostControllerMethodViewTest extends WebTestCase
             );
         }
         // make request as ADMIN - buttons del, edit at each post available.
-        $admin = $this->userRepository->findOneBy(['login' => 'admin']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $admin = $this->userRepository->findOneBy(['login' => $adminDto->login]);
         $client->loginUser($admin);
         $crawler = $client->request('GET', sprintf(self::URL_POST_VIEW_BY_USER_PATTERN, $user->getUuid()));
         self::assertResponseIsSuccessful();

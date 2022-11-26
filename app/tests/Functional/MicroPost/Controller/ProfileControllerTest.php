@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MicroPost\Controller;
 
+use App\DataFixtures\AppFixtures;
 use App\Entity\User;
 use App\Tests\Functional\MicroPost\Controller\Utils\ProfileEditElementDto;
 use App\Tests\Functional\MicroPost\Controller\Utils\ProfilePasswordElementDto;
@@ -52,7 +53,8 @@ class ProfileControllerTest extends WebTestCase
 
     public function testProfileAuthUserFormData(): void
     {
-        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $user = $this->userRepository->findOneBy(['login' => $adminDto->login]);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -69,7 +71,8 @@ class ProfileControllerTest extends WebTestCase
 
     public function testProfileAuthUserEditDataWithoutEmail(): void
     {
-        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $user = $this->userRepository->findOneBy(['login' => $adminDto->login]);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -87,14 +90,16 @@ class ProfileControllerTest extends WebTestCase
         self::assertResponseRedirects();
         $client->followRedirect();
 
-        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $user = $this->userRepository->findOneBy(['login' => $adminDto->login]);
         self::assertEquals($newEmoji, $user->getEmoji());
         self::assertEquals($newLocale, $user->getPreferences()->getLocale());
     }
 
     public function testProfileAuthUserEditDataEmailOnly(): void
     {
-        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $user = $this->userRepository->findOneBy(['login' => $adminDto->login]);
         self::assertTrue($user->getIsActive());
         self::assertNull($user->getConfirmationToken());
 
@@ -121,7 +126,8 @@ class ProfileControllerTest extends WebTestCase
 
     public function testProfileAuthUserChangePasswordCurrentPasswordFail(): void
     {
-        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $user = $this->userRepository->findOneBy(['login' => $adminDto->login]);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -145,7 +151,8 @@ class ProfileControllerTest extends WebTestCase
 
     public function testProfileAuthUserChangePasswordNewPasswordIsShortFail(): void
     {
-        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $user = $this->userRepository->findOneBy(['login' => $adminDto->login]);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -171,7 +178,8 @@ class ProfileControllerTest extends WebTestCase
 
     public function testProfileAuthUserChangePasswordNewPasswordNotMatchFail(): void
     {
-        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $user = $this->userRepository->findOneBy(['login' => $adminDto->login]);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -197,7 +205,8 @@ class ProfileControllerTest extends WebTestCase
 
     public function testProfileAuthUserChangePasswordNewPasswordSuccess(): void
     {
-        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $user = $this->userRepository->findOneBy(['login' => $adminDto->login]);
 
         self::ensureKernelShutdown();
         $client = self::createClient();

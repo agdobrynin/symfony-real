@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MicroPost\Controller;
 
+use App\DataFixtures\AppFixtures;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\MailerAssertionsTrait;
@@ -62,8 +63,10 @@ class LikeControllerTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
 
-        $userAdmin = $this->userRepository->findOneBy(['login' => 'admin']);
-        $userBlogger = $this->userRepository->findOneBy(['login' => 'blogger']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $userDto = AppFixtures::searchUserFixtureByProperty('isAdmin', false);
+        $userAdmin = $this->userRepository->findOneBy(['login' => $adminDto->login]);
+        $userBlogger = $this->userRepository->findOneBy(['login' => $userDto->login]);
 
         $microPost = $this->microPostRepository->findOneBy(['user' => $userAdmin]);
         self::assertCount(0, $microPost->getLikedBy());
@@ -107,8 +110,10 @@ class LikeControllerTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
 
-        $userAdmin = $this->userRepository->findOneBy(['login' => 'admin']);
-        $userBlogger = $this->userRepository->findOneBy(['login' => 'blogger']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $userAdmin = $this->userRepository->findOneBy(['login' => $adminDto->login]);
+        $userDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $userBlogger = $this->userRepository->findOneBy(['login' => $userDto->login]);
 
         $microPost = $this->microPostRepository->findOneBy(['user' => $userAdmin]);
         $microPost->like($userBlogger);

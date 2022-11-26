@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MicroPost\Controller;
 
+use App\DataFixtures\AppFixtures;
 use App\Entity\User;
 use App\Tests\Functional\MicroPost\Controller\Utils\MicroPostFormTrait;
 use Faker\Factory;
@@ -89,7 +90,8 @@ class MicroPostControllerMethodAddTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
 
-        $user = $this->userRepository->findOneBy(['login' => 'admin']);
+        $dto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $user = $this->userRepository->findOneBy(['login' => $dto->login]);
         $client->loginUser($user);
 
         $crawler = $client->request('GET', self::URL_POST_ADD);

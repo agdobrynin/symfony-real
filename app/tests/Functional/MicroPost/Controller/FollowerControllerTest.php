@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MicroPost\Controller;
 
+use App\DataFixtures\AppFixtures;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -39,7 +40,8 @@ class FollowerControllerTest extends WebTestCase
     {
         self::ensureKernelShutdown();
         $client = self::createClient();
-        $userFollower = $this->userRepository->findOneBy(['login' => 'blogger']);
+        $dto = AppFixtures::searchUserFixtureByProperty('isAdmin', false);
+        $userFollower = $this->userRepository->findOneBy(['login' => $dto->login]);
 
         $url = sprintf(self::URL_FOLLOW_EN_PATTERN, $userFollower->getUuid());
         $client->request('GET', $url);
@@ -53,9 +55,11 @@ class FollowerControllerTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = self::createClient();
         // ⚠ all users defined in \App\DataFixtures\AppFixtures
-        $userFollower = $this->userRepository->findOneBy(['login' => 'blogger']);
+        $userDto = AppFixtures::searchUserFixtureByProperty('isAdmin', false);
+        $userFollower = $this->userRepository->findOneBy(['login' => $userDto->login]);
 
-        $userFollow = $this->userRepository->findOneBy(['login' => 'admin']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $userFollow = $this->userRepository->findOneBy(['login' => $adminDto->login]);
         $userFollow->getFollowers()->clear();
         $this->em->persist($userFollow);
         $this->em->flush();
@@ -78,8 +82,10 @@ class FollowerControllerTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = self::createClient();
         // ⚠ all users defined in App\DataFixtures\AppFixtures
-        $bloggerUser = $this->userRepository->findOneBy(['login' => 'blogger']);
-        $adminUser = $this->userRepository->findOneBy(['login' => 'admin']);
+        $userDto = AppFixtures::searchUserFixtureByProperty('isAdmin', false);
+        $bloggerUser = $this->userRepository->findOneBy(['login' => $userDto->login]);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $adminUser = $this->userRepository->findOneBy(['login' => $adminDto->login]);
 
         if (!$bloggerUser->getFollowing()->contains($adminUser)) {
             $bloggerUser->follow($adminUser);

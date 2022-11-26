@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MicroPost\Controller;
 
+use App\DataFixtures\AppFixtures;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use Doctrine\Common\Collections\Criteria;
@@ -56,7 +57,8 @@ class MicroPostControllerMethodDelTest extends WebTestCase
         $client = static::createClient();
 
         // ⚠ All fixtures users with login, microposts defined in App\DataFixtures\AppFixtures
-        $userBlogger = $this->userRepository->findOneBy(['login' => 'blogger']);
+        $dto = AppFixtures::searchUserFixtureByProperty('isAdmin', false);
+        $userBlogger = $this->userRepository->findOneBy(['login' => $dto->login]);
         $microPostOfBlogger = $this->microPostRepository->findOneBy(['user' => $userBlogger]);
 
         // Find one user who has login not equal 'blogger' and roles not ROLE_ADMIN.
@@ -75,9 +77,11 @@ class MicroPostControllerMethodDelTest extends WebTestCase
         $client = static::createClient();
 
         // ⚠ All fixtures users with login, microposts defined in App\DataFixtures\AppFixtures
-        $userBlogger = $this->userRepository->findOneBy(['login' => 'blogger']);
+        $userDto = AppFixtures::searchUserFixtureByProperty('isAdmin', false);
+        $userBlogger = $this->userRepository->findOneBy(['login' => $userDto->login]);
         $microPostOfBlogger = $this->microPostRepository->findOneBy(['user' => $userBlogger]);
-        $userAdmin = $this->userRepository->findOneBy(['login' => 'admin']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $userAdmin = $this->userRepository->findOneBy(['login' => $adminDto->login]);
 
         $client->loginUser($userAdmin);
         $client->request('GET', $this->getUrlToDel($microPostOfBlogger));
@@ -92,7 +96,8 @@ class MicroPostControllerMethodDelTest extends WebTestCase
         $client = static::createClient();
 
         // ⚠ All fixtures users with login, microposts defined in App\DataFixtures\AppFixtures
-        $userBlogger = $this->userRepository->findOneBy(['login' => 'blogger']);
+        $userDto = AppFixtures::searchUserFixtureByProperty('isAdmin', false);
+        $userBlogger = $this->userRepository->findOneBy(['login' => $userDto->login]);
         $microPostOfBlogger = new MicroPost();
 
         $client->loginUser($userBlogger);

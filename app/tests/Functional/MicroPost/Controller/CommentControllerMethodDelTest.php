@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MicroPost\Controller;
 
+use App\DataFixtures\AppFixtures;
 use App\Entity\Comment;
 use App\Entity\MicroPost;
 use App\Entity\User;
@@ -106,8 +107,10 @@ class CommentControllerMethodDelTest extends WebTestCase
     public function testDelAdminSuccess(): void
     {
         $microPost = $this->microPostRepository->findOneBy([]);
-        $requestByUser = $this->userRepository->findOneBy(['login' => 'admin']);
-        $commentOwner = $this->userRepository->findOneBy(['login' => 'blogger']);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $requestByUser = $this->userRepository->findOneBy(['login' => $adminDto->login]);
+        $userDto = AppFixtures::searchUserFixtureByProperty('isAdmin', false);
+        $commentOwner = $this->userRepository->findOneBy(['login' => $userDto->login]);
 
         $comment = $this->makeComment($microPost, $commentOwner);
         self::assertTrue($microPost->getComments()->contains($comment));

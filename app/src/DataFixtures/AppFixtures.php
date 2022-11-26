@@ -42,6 +42,14 @@ class AppFixtures extends Fixture
         ];
     }
 
+    public static function searchUserFixtureByProperty(string $property, $searchValue): ?UserFixtureDto
+    {
+        $data = AppFixtures::getUserFixtures();
+        $index = array_search($searchValue, array_column($data, $property), true);
+
+        return $index === false ? null : $data[$index];
+    }
+
     public function load(ObjectManager $manager): void
     {
         $this->loadUsers($manager);
