@@ -25,11 +25,21 @@ class AppFixtures extends Fixture
     public function __construct(UserPasswordHasherInterface $userPasswordHasher, LocalesInterface $locales)
     {
         $this->userPasswordHasher = $userPasswordHasher;
-        $this->fixtureUsers[] = new UserFixtureDto('admin', 'Admin of App', '🛡', true);
-        $this->fixtureUsers[] = new UserFixtureDto('blogger', 'The best blogger', '🎭');
-        $this->fixtureUsers[] = new UserFixtureDto('superman', 'Ironman', '🚀');
-        $this->fixtureUsers[] = new UserFixtureDto('santa', 'Santa Claus', '🎅');
+        $this->fixtureUsers = self::getUserFixtures();
         $this->locales = $locales;
+    }
+
+    /**
+     * @return UserFixtureDto[]
+     */
+    public static function getUserFixtures(): array
+    {
+        return [
+            new UserFixtureDto('admin', 'Admin of App', '🛡', true),
+            new UserFixtureDto('blogger', 'The best blogger', '🎭'),
+            new UserFixtureDto('superman', 'Ironman', '🚀'),
+            new UserFixtureDto('santa', 'Santa Claus', '🎅'),
+        ];
     }
 
     public function load(ObjectManager $manager): void
