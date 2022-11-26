@@ -7,6 +7,7 @@ use App\Entity\Comment;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use App\Helper\FlashType;
+use App\Tests\Functional\MicroPost\Controller\Utils\UserRandom;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -52,7 +53,9 @@ class CommentControllerMethodDelTest extends WebTestCase
     public function testDelNotOwnerFail(): void
     {
         $microPost = $this->microPostRepository->findOneBy([]);
-        $requestByUser = $microPost->getUser();
+        $requestByUser = UserRandom::minimal();
+        $this->em->persist($requestByUser);
+        $this->em->flush();
 
         $commentOwner = $this->userRepository->createQueryBuilder('u')
             ->where('u.roles = :role')->setParameter(':role', User::ROLE_USER)
@@ -65,9 +68,11 @@ class CommentControllerMethodDelTest extends WebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
+
         // Delete comment by not owner comment and has role not User::ROLE_ADMIN
         $client->loginUser($requestByUser);
-        $client->request('GET', sprintf(self::URL_COMMENT_DEL_PATTERN, $comment->getUuid()));
+        $url = sprintf(self::URL_COMMENT_DEL_PATTERN, $comment->getUuid());
+        $client->request('GET', $url);
         self::assertEquals(Response::HTTP_FORBIDDEN, $client->getResponse()->getStatusCode());
     }
 
