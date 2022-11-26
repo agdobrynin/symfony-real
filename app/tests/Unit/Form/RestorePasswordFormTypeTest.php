@@ -10,26 +10,27 @@ use Symfony\Component\Validator\Validation;
 
 class RestorePasswordFormTypeTest extends TypeTestCase
 {
+    protected const FORM_ERRORS = [
+        'This value should not be blank.',
+        'This value is not a valid email address.',
+        'This value is too short. It should have 5 characters or more.',
+    ];
+
     public function getSourceData(): \Generator
     {
-        yield 'success' => [['email' => 'good@domain.com'], true, null];
+        yield 'success' => [['email' => 'good@domain.com'], true];
 
-        yield 'fail empty' => [['email' => ''], false, ['This value should not be blank.']];
+        yield 'fail empty' => [['email' => ''], false];
 
-        yield 'fail short and invalid email' => [['email' => 'a@a'], false,
-            [
-                'This value is not a valid email address.',
-                'This value is too short. It should have 5 characters or more.',
-            ]
-        ];
+        yield 'fail short and invalid email' => [['email' => 'a@a'], false];
 
-        yield 'fail invalid email' => [['email' => 'p@domain'], false, ['This value is not a valid email address.',]];
+        yield 'fail invalid email' => [['email' => 'p@domain'], false];
     }
 
     /**
      * @dataProvider getSourceData
      */
-    public function testForm(array $data, bool $isValid, ?array $errorsMessages): void
+    public function testForm(array $data, bool $isValid): void
     {
         $form = $this->factory->create(RestorePasswordFormType::class);
         $form->submit($data);
@@ -41,7 +42,7 @@ class RestorePasswordFormTypeTest extends TypeTestCase
         } else {
             self::assertFalse($form->isValid());
             foreach ($form->get('email')->getErrors() as $error) {
-                self::assertTrue(\in_array($error->getMessage(), $errorsMessages));
+                self::assertTrue(\in_array($error->getMessage(), self::FORM_ERRORS));
             }
         }
     }
