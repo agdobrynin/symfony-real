@@ -35,6 +35,8 @@ class UserChecker implements UserCheckerInterface
     {
         if ($user instanceof User) {
             $user->setLastLoginTime(new \DateTime());
+            // if user has token for restore password - unset token because user login successfully.
+            $user->setChangePasswordToken(null);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
         }

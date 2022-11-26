@@ -4,7 +4,7 @@ tests-unit:
 	@echo "📦 Run Unit testsuite"
 	@php bin/phpunit --testsuite=unit
 
-tests-integration:
+tests-integration: preload-test-env
 	@echo "🙈 Run Integration testsuite"
 	@php bin/phpunit --testsuite=integration
 

@@ -14,6 +14,11 @@
                         {{ 'login_form.error.confirm_resend'|trans({'%confirm_resend_link%': url('micro_post_confirm_resend')})|raw }}
                     </div>
                 {% endif %}
+                {% if error is is_security_bad_credentials %}
+                    <div class="alert alert-warning">
+                        {{ 'login_form.error.restore_password'|trans({'%link%': url('micro_post_restore_password_form')})|raw }}
+                    </div>
+                {% endif %}
             {% endif %}
 
             {{ form(loginForm) }}

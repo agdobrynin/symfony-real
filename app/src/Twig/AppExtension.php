@@ -10,6 +10,7 @@ use App\Entity\UnlikeNotification;
 use App\Entity\User;
 use App\Security\Exception\LoginNotConfirmAccountStatusException;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -38,7 +39,8 @@ class AppExtension extends AbstractExtension
             new TwigTest('is_notification_follow', [$this, 'isNotificationFollow']),
             new TwigTest('is_notification_unfollow', [$this, 'isNotificationUnfollow']),
             new TwigTest('is_user', [$this, 'isUser']),
-            new TwigTest('is_security_login_not_confirm', [$this, 'isSecurityLoginNotConfirm'])
+            new TwigTest('is_security_login_not_confirm', [$this, 'isSecurityLoginNotConfirm']),
+            new TwigTest('is_security_bad_credentials', [$this, 'isSecurityBadCredentials']),
         ];
     }
 
@@ -126,5 +128,10 @@ class AppExtension extends AbstractExtension
     public function isSecurityLoginNotConfirm($var): bool
     {
         return $var instanceof LoginNotConfirmAccountStatusException;
+    }
+
+    public function isSecurityBadCredentials($var): bool
+    {
+        return $var instanceof BadCredentialsException;
     }
 }

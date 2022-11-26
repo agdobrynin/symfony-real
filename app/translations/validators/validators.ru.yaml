@@ -10,3 +10,7 @@ my_profile:
 'There is already an account with this email 🔒': 'Ткаой email уже используется. Выберете другой email 🔒'
 'Nickname {{ value }} is already taken by someone.': 'Ткаой никнейм уже используется кем то.'
 'Not available symbols in login': 'Не поддерживаемые символы в логине'
+restore_password:
+  form_change_password:
+    password:
+      invalid_message: 'Новые пароли не совпадают, повторите ввод.'

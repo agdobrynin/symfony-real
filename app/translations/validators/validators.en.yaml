@@ -6,3 +6,7 @@ my_profile:
   form:
     password:
       invalid_message: 'The new password fields must match.'
+restore_password:
+  form_change_password:
+    password:
+      invalid_message: 'The new password fields must match.'

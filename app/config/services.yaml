@@ -93,3 +93,7 @@ services:
     App\Service\MicroPost\GetBloggersService:
       arguments:
         $pageSize: '%micropost.bloggers.page.size%'
+
+    App\Mailer\RestorePasswordMailer:
+      arguments:
+        $adminEmail: '%micropost.admin.email%'
