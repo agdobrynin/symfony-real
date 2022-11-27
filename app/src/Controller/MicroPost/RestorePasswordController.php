@@ -11,7 +11,6 @@ use App\Repository\UserRepository;
 use App\Service\MicroPost\User\UserServiceRestoredPasswordInterface;
 use App\Service\MicroPost\User\UserServiceRestorePasswordTokenInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,13 +52,11 @@ class RestorePasswordController extends AbstractController
             if ($user) {
                 $userServiceRestorePasswordToken->refreshAndUnsetAuthToken($user);
                 $restorePasswordMailer->send($user);
-                $this->addFlash(FlashType::SUCCESS, $this->translator->trans('restore_password.success'));
-
-                return $this->redirectToRoute('micro_post_list');
             }
 
-            $error = new FormError($this->translator->trans('restore_password.fail'));
-            $form->get('email')->addError($error);
+            $this->addFlash(FlashType::SUCCESS, $this->translator->trans('restore_password.success'));
+
+            return $this->redirectToRoute('micro_post_list');
         }
 
         return $this->renderForm('@mp/restore-password.html.twig', compact('form'));

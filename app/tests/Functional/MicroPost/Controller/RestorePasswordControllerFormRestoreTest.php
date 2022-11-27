@@ -56,16 +56,16 @@ class RestorePasswordControllerFormRestoreTest extends WebTestCase
         /** @var User $user */
         $user = $em->getRepository(User::class)->findOneBy([]);
 
-        yield 'Success: user exist' => [$user->getEmail(), false];
-        yield 'Fail: user not exist' => ['fail@domain.com', true];
-        yield 'Fail: email is empty' => ['', true];
-        yield 'Fail: email wrong' => ['abc-email', true];
+        yield 'Success: user exist' => [$user->getEmail(), true, true];
+        yield 'Fail: user not exist' => ['fail@domain.com', true, false];
+        yield 'Fail: email is empty' => ['', false, false];
+        yield 'Fail: email wrong' => ['abc-email', false, false];
     }
 
     /**
      * @dataProvider getSourceDataFormRestore
      */
-    public function testFormRestore(string $email, bool $isFail): void
+    public function testFormRestore(string $email, bool $isValidForm, bool $notifyByEmail): void
     {
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -84,7 +84,7 @@ class RestorePasswordControllerFormRestoreTest extends WebTestCase
 
         $client->submit($form);
 
-        if ($isFail) {
+        if (!$isValidForm) {
             self::assertResponseIsUnprocessable();
             $email = self::getMailerMessage();
             self::assertNull($email);
@@ -98,11 +98,16 @@ class RestorePasswordControllerFormRestoreTest extends WebTestCase
             self::assertTrue(\in_array($successMessage, $successFlash));
 
             $emailMessage = self::getMailerMessage();
-            $user = $this->userRepository->findOneBy(['email' => $email]);
-            $confirmLink = sprintf(self::URL_CONFIRMED_CHANGE_PASSWORD_PATTERN, $user->getPreferences()->getLocale(), $user->getChangePasswordToken());
 
-            self::assertEmailHtmlBodyContains($emailMessage, $confirmLink);
-            self::assertEmailTextBodyContains($emailMessage, $confirmLink);
+            if ($notifyByEmail) {
+                $user = $this->userRepository->findOneBy(['email' => $email]);
+                $confirmLink = sprintf(self::URL_CONFIRMED_CHANGE_PASSWORD_PATTERN, $user->getPreferences()->getLocale(), $user->getChangePasswordToken());
+
+                self::assertEmailHtmlBodyContains($emailMessage, $confirmLink);
+                self::assertEmailTextBodyContains($emailMessage, $confirmLink);
+            } else {
+                self::assertNull($emailMessage);
+            }
         }
     }
 }
