@@ -17,9 +17,11 @@
             {% endif %}
 
             {{ form(loginForm) }}
-            <div class="alert alert-warning">
-                {{ 'login_form.error.restore_password'|trans({'%link%': url('micro_post_restore_password_form')})|raw }}
-            </div>
+            {% if error is not is_security_login_not_confirm %}
+                <div class="alert alert-warning">
+                    {{ 'login_form.error.restore_password'|trans({'%link%': url('micro_post_restore_password_form')})|raw }}
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
