@@ -10,6 +10,7 @@ use App\Mailer\RestorePasswordMailerInterface;
 use App\Repository\UserRepository;
 use App\Service\MicroPost\User\UserServiceRestoredPasswordInterface;
 use App\Service\MicroPost\User\UserServiceRestorePasswordTokenInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,11 +25,13 @@ class RestorePasswordController extends AbstractController
 {
     private $userRepository;
     private $translator;
+    private $logger;
 
-    public function __construct(UserRepository $userRepository, TranslatorInterface $translator)
+    public function __construct(UserRepository $userRepository, TranslatorInterface $translator, LoggerInterface $logger)
     {
         $this->userRepository = $userRepository;
         $this->translator = $translator;
+        $this->logger = $logger;
     }
 
     /**
@@ -52,6 +55,9 @@ class RestorePasswordController extends AbstractController
             if ($user) {
                 $userServiceRestorePasswordToken->refreshAndUnsetAuthToken($user);
                 $restorePasswordMailer->send($user);
+            } else {
+                $message = sprintf('Change restore password token by unknown email "%s"', $email);
+                $this->logger->alert($message, [$request]);
             }
 
             $this->addFlash(FlashType::SUCCESS, $this->translator->trans('restore_password.success'));
@@ -73,6 +79,8 @@ class RestorePasswordController extends AbstractController
 
         if (null === $user) {
             $this->addFlash(FlashType::DANGER, $this->translator->trans('restore_password.fail'));
+            $message = sprintf('Unknown restore password token "%s"', $token);
+            $this->logger->alert($message, [$request]);
 
             return $this->redirectToRoute('micro_post_list');
         }
