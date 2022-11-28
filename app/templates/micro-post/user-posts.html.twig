@@ -48,7 +48,7 @@
                 {{ user_with_link_to_user_page(follow)|raw }}
             {% endfor %}
             {% if followings.remainder %}
-                {{ 'micro-post.profile.followers_part'|trans({'%count%': followings.remainder}) }}
+                {{ 'micro-post.profile.following_part'|trans({'%count%': followings.remainder}) }}
             {% endif %}
         </div>
     </div>
