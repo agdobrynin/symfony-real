@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -40,15 +41,41 @@ class CommentController extends AbstractController
             $this->translator->trans('micro-post.comments.del.cant_del_message')
         );
 
-        $this->em->remove($comment);
+        if (!$comment->isDeleted()) {
+            $this->em->remove($comment);
+            $this->em->flush();
+
+            $contentPart = mb_substr($comment->getContent(), 0, 30) . '...';
+            $this->addFlash(
+                FlashType::SUCCESS,
+                $this->translator->trans('micro-post.comments.del.success_message', ['%content_part%' => $contentPart])
+            );
+        } else {
+            $message = $this->translator->trans('micro-post.comments.del.is_deleted_message');
+
+            throw new NotFoundHttpException($message);
+        }
+
+        return $this->redirectToRoute('micro_post_view', ['uuid' => $comment->getPost()->getUuid()]);
+    }
+
+    /**
+     * @Route("/restore/{uuid}", methods={"get"}, name="micro_post_comment_restore")
+     * @IsGranted(User::ROLE_ADMIN)
+     */
+    public function restore(Comment $comment): RedirectResponse
+    {
+        $comment->setDeleteAt(null);
+        $this->em->persist($comment);
         $this->em->flush();
 
         $contentPart = mb_substr($comment->getContent(), 0, 30) . '...';
         $this->addFlash(
             FlashType::SUCCESS,
-            $this->translator->trans('micro-post.comments.del.success_message', ['%content_part%' => $contentPart])
+            $this->translator->trans('micro-post.comments.restore.success_message', ['%content_part%' => $contentPart])
         );
 
         return $this->redirectToRoute('micro_post_view', ['uuid' => $comment->getPost()->getUuid()]);
     }
+
 }

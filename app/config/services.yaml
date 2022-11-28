@@ -73,6 +73,12 @@ services:
           priority: 500
           connection: 'default'
 
+    App\EventSubscriber\DeleteCommentSubscriber:
+      tags:
+        - name: 'doctrine.event_subscriber'
+          priority: 100
+          connection: 'default'
+
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
       arguments:
         - '%env(DATABASE_URL)%'

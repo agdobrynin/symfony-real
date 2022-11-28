@@ -44,6 +44,11 @@ class Comment
      */
     private $post;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $deleteAt;
+
     public function __construct(?string $uuid = null)
     {
         $this->uuid = $uuid ? Uuid::fromString($uuid) : Uuid::v4();
@@ -94,5 +99,22 @@ class Comment
     public function getCreateAt(): \DateTimeInterface
     {
         return $this->createAt;
+    }
+
+    public function getDeleteAt(): ?\DateTimeInterface
+    {
+        return $this->deleteAt;
+    }
+
+    public function setDeleteAt(?\DateTimeInterface $deleteAt): self
+    {
+        $this->deleteAt = $deleteAt;
+
+        return $this;
+    }
+
+    public function isDeleted(): bool
+    {
+        return $this->deleteAt instanceof \DateTimeInterface;
     }
 }

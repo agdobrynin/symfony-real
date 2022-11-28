@@ -6,26 +6,41 @@
     <div class="row justify-content-md-center">
         {% for comment in commentsWithPaginatorDto.comments %}
             <div class="col-md-6 col-sm-12">
-                <div class="card mb-5 comment-item">
-                    <div class="card-header mb-2 text-muted">
+                {% if comment.isDeleted %}
+                    {% set cssClassDeletedForCard = 'border-danger' %}
+                    {% set cssClassDeletedForText = 'text-muted fw-lighter' %}
+                {% else %}
+                    {% set cssClassDeletedForCard = '' %}
+                    {% set cssClassDeletedForText = '' %}
+                {% endif %}
+                <div class="card mb-5 comment-item {{ cssClassDeletedForCard }}">
+                    <div class="card-header mb-2 text-muted {{ cssClassDeletedForText }}">
                         {{ user_with_link_to_user_page(comment.user)|raw }}
                         {{ 'micro-post.comments.comment.author_date'|trans({'%date%': comment.createAt|format_datetime('medium', 'short')}) }}
                     </div>
                     <div class="card-body">
-                        <p class="card-text">{{ comment.content }}</p>
+                        <p class="card-text {{ cssClassDeletedForText }}">{{ comment.content }}</p>
                     </div>
                     {% if is_granted('COMMENT_DEL_OWNER_OR_ADMIN', comment) %}
                         <div class="card-footer text-end">
-                            <a href="#"
-                               class="btn btn-close btn-sm btn-danger comment-delete border-0"
-                               data-bs-toggle="popover"
-                               data-bs-trigger="hover focus"
-                               data-bs-placement="top"
-                               data-bs-content="{{ 'micro-post.comments.del.title'|trans|escape }}"
-                               data-title="⚠ {{ 'micro-post.comments.del.title'|trans|escape }}"
-                               data-href="{{ path('micro_post_comment_del', {uuid: comment.uuid}) }}"
-                               data-locale="{{ app.request.get('_locale', 'en') }}"
-                               data-message="{{ 'micro-post.comments.del.confirm_message'|trans|escape }}<br>{{ comment.content|striptags|escape|slice(0,35) }}..."></a>
+                            {% if comment.isDeleted == false %}
+                                <a href="#"
+                                   class="btn btn-close btn-sm btn-danger comment-delete border-0"
+                                   data-bs-toggle="popover"
+                                   data-bs-trigger="hover focus"
+                                   data-bs-placement="top"
+                                   data-bs-content="{{ 'micro-post.comments.del.title'|trans|escape }}"
+                                   data-title="⚠ {{ 'micro-post.comments.del.title'|trans|escape }}"
+                                   data-href="{{ path('micro_post_comment_del', {uuid: comment.uuid}) }}"
+                                   data-locale="{{ app.request.get('_locale', 'en') }}"
+                                   data-message="{{ 'micro-post.comments.del.confirm_message'|trans|escape }}<br>{{ comment.content|striptags|escape|slice(0,35) }}..."></a>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_ADMIN') and comment.isDeleted %}
+                                <a href="{{ path('micro_post_comment_restore', {uuid: comment.uuid}) }}"
+                                   class="btn btn-sm btn-warning comment-restore"
+                                >{{ 'micro-post.comments.restore.title'|trans }}</a>
+                            {% endif %}
                         </div>
                     {% endif %}
                 </div>
