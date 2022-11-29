@@ -74,7 +74,7 @@ class CommentControllerMethodDelTest extends WebTestCase
         $client->loginUser($requestByUser);
         $url = sprintf(self::URL_COMMENT_DEL_PATTERN, $comment->getUuid());
         $client->request('GET', $url);
-        self::assertEquals(Response::HTTP_FORBIDDEN, $client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testDelOwnerSuccess(): void
@@ -131,7 +131,29 @@ class CommentControllerMethodDelTest extends WebTestCase
         $requestByUser = $this->userRepository->findOneBy([]);
         $client->loginUser($requestByUser);
         $client->request('GET', sprintf(self::URL_COMMENT_DEL_PATTERN, 'abc-abc-abc'));
-        self::assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testDelSoftDeleteComment(): void
+    {
+        $microPost = $this->microPostRepository->findOneBy([]);
+        $adminDto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $requestByUser = $this->userRepository->findOneBy(['login' => $adminDto->login]);
+        $commentOwner = $microPost->getUser();
+
+        $comment = $this->makeComment($microPost, $commentOwner);
+        $comment->setDeleteAt(new \DateTime());
+        $this->em->persist($comment);
+        $this->em->flush();
+
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($requestByUser);
+        $crawler = $client->request('GET', sprintf(self::URL_COMMENT_DEL_PATTERN, $comment->getUuid()));
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        
+        $errorMessage = $this->translator->trans('micro-post.comments.del.is_deleted_message', [], null, 'en');
+        self::assertStringContainsString($errorMessage, $crawler->html());
     }
 
     protected function makeComment(MicroPost $microPost, User $commentOwner): Comment
