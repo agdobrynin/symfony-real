@@ -8,7 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Events;
 
-class DeleteCommentSubscriber implements EventSubscriberInterface
+class SoftDeleteCommentSubscriber implements EventSubscriberInterface
 {
     public function getSubscribedEvents(): array
     {

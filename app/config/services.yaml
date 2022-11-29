@@ -73,7 +73,7 @@ services:
           priority: 500
           connection: 'default'
 
-    App\EventSubscriber\DeleteCommentSubscriber:
+    App\EventSubscriber\SoftDeleteCommentSubscriber:
       tags:
         - name: 'doctrine.event_subscriber'
           priority: 100
