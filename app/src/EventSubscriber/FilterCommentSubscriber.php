@@ -32,7 +32,10 @@ class FilterCommentSubscriber implements EventSubscriberInterface
     {
         $this->em->getFilters()->enable(SoftDeleteFilter::NAME);
 
-        if ($this->tokenStorage->getToken()) {
+        // For profile page always filter implement
+        $isExcludeRoute = 'micro_post_profile_view' === $event->getRequest()->attributes->get('_route');
+
+        if (!$isExcludeRoute && $this->tokenStorage->getToken()) {
             $user = $this->tokenStorage->getToken()->getUser();
 
             if ($user instanceof User && \in_array(User::ROLE_ADMIN, $user->getRoles())) {
