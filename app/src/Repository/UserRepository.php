@@ -8,8 +8,6 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
@@ -27,48 +25,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         parent::__construct($registry, User::class);
     }
 
-    public function add(User $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function remove(User $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    /**
-     * Used to upgrade (rehash) the user's password automatically over time.
-     */
-    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
-    {
-        if (!$user instanceof User) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
-        }
-
-        $user->setPassword($newHashedPassword);
-
-        $this->add($user, true);
-    }
-
-    /**
-     * @return User[]
-     */
-    public function getUsersWhoHaveMoreThen5Posts(): array
-    {
-        return $this->getUsersWhoHaveMoreThen5PostsQuery()
-            ->getQuery()
-            ->getResult();
-    }
-
     public function getUsersWhoHaveMoreThen5PostsExcludeUser(User $user): array
     {
         return $this->getUsersWhoHaveMoreThen5PostsQuery()
@@ -76,14 +32,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->setParameter(':user', $user)
             ->getQuery()
             ->getResult();
-    }
-
-    public function getCountBloggersWithPosts(): int
-    {
-        return (int)$this->createQueryBuilder('u')
-            ->select('count(u.uuid)')
-            ->getQuery()
-            ->getSingleScalarResult();
     }
 
     /**
