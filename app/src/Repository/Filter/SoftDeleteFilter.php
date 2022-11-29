@@ -16,9 +16,7 @@ class SoftDeleteFilter extends SQLFilter
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
         if ($targetEntity->hasField('deleteAt')) {
-            $date = (new \DateTime())->format('Y-m-d h:m:s');
-
-            return $targetTableAlias . '.delete_at < \'' . $date . '\' OR ' . $targetTableAlias . '.delete_at IS NULL';
+            return $targetTableAlias . '.delete_at IS NULL';
         }
 
         return '';
