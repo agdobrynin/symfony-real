@@ -28,6 +28,8 @@ micro-post:
     view: 'Смотреть и комментировать <span class="badge text-bg-secondary">%count%</span>'
     edit: 'Рдактировать'
     del: 'Удалить'
+    confirm:
+      title: 'Удалить пост?'
     like: 'Супер'
     unlike: 'Не супер'
   form_edit_add_del:
