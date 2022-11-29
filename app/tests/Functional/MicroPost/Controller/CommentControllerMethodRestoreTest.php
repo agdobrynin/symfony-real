@@ -19,20 +19,26 @@ class CommentControllerMethodRestoreTest extends WebTestCase
 {
     protected const URL_COMMENT_RESTORE_PATTERN = '/micro-post/en/comment/restore/%s';
 
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     private $em;
-    /**
-     * @var \Symfony\Contracts\Translation\TranslatorInterface
-     */
+    /** @var \Symfony\Contracts\Translation\TranslatorInterface */
     private $translator;
+    /** @var \App\Repository\UserRepository */
+    private $userRepository;
+    /** @var \App\Repository\MicroPostRepository */
+    private $microPostRepository;
+    /** @var \App\Repository\CommentRepository */
+    private $commentRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->em = self::getContainer()->get(EntityManagerInterface::class);
         $this->translator = self::getContainer()->get(TranslatorInterface::class);
+        $this->userRepository = $this->em->getRepository(User::class);
+        $this->microPostRepository = $this->em->getRepository(MicroPost::class);
+        $this->commentRepository = $this->em->getRepository(Comment::class);
+
     }
 
     protected function tearDown(): void
@@ -62,8 +68,8 @@ class CommentControllerMethodRestoreTest extends WebTestCase
      */
     public function testRestore(UserFixtureDto $dto): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['login' => $dto->login]);
-        $microPost = $this->em->getRepository(MicroPost::class)->findOneBy([]);
+        $user = $this->userRepository->findOneBy(['login' => $dto->login]);
+        $microPost = $this->microPostRepository->findOneBy([]);
 
         $content = 'Test content for comment';
         $comment = (new Comment())
@@ -93,7 +99,7 @@ class CommentControllerMethodRestoreTest extends WebTestCase
                 ->trans('micro-post.comments.restore.success_message', ['%content_part%' => $comment->getContent()]);
 
             self::assertStringStartsWith(mb_substr($successFlashMessage, 0, -3), $translateSuccessMessage);
-            $comment = $this->em->getRepository(Comment::class)->find($comment->getUuid());
+            $comment = $this->commentRepository->find($comment->getUuid());
             self::assertFalse($comment->isDeleted());
         } else {
             self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
