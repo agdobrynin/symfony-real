@@ -9,6 +9,7 @@ use App\Form\ProfilePasswordFormType;
 use App\Helper\FlashType;
 use App\Mailer\EmailChangeMailerInterface;
 use App\Mailer\PasswordChangeMailerInterface;
+use App\Repository\Filter\SoftDeleteFilter;
 use App\Service\MicroPost\User\Exception\UserWrongPasswordException;
 use App\Service\MicroPost\User\GetOriginalEntityDataInterface;
 use App\Service\MicroPost\User\UserServiceChangeEmailInterface;
@@ -90,8 +91,11 @@ class ProfileController extends AbstractController
     /**
      * @Route("/view", name="micro_post_profile_view", methods={"get"})
      */
-    public function profileView(): Response
+    public function profileView(EntityManagerInterface $entityManager): Response
     {
+        // always enable filter for comments
+        $entityManager->getFilters()->enable(SoftDeleteFilter::NAME);
+
         return $this->render('@mp/user-profile-view.html.twig');
     }
 
