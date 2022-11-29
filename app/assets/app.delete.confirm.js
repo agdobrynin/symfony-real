@@ -3,9 +3,11 @@ import bootbox from "bootbox";
 window.bootbox = bootbox;
 
 document.addEventListener("DOMContentLoaded", () => {
-    // confirm delete comment
+    // confirm delete comment, post
     document.addEventListener("click", (evt) => {
-        if (evt.target?.classList.contains("comment-delete")) {
+        const targetClass = evt.target?.classList || undefined;
+
+        if (targetClass.contains("comment-delete") || targetClass.contains("post-delete")) {
             evt.preventDefault();
 
             const {message, href, locale, title} = evt.target.dataset;
