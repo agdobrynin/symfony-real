@@ -7,6 +7,7 @@ use App\Dto\Exception\PaginatorDtoPageException;
 use App\Dto\Exception\PaginatorDtoPageSizeException;
 use App\Entity\Comment;
 use App\Entity\MicroPost;
+use App\Repository\CommentRepository;
 use App\Service\MicroPost\GetMicroPostCommentsService;
 use App\Service\MicroPost\GetMicroPostCommentsServiceInterface;
 use Closure;
@@ -91,12 +92,13 @@ class GetMicroPostCommentsServiceTest extends KernelTestCase
 
     protected function clearComments(MicroPost $microPost): void
     {
-        // Remove all exist comments.
-        foreach ($microPost->getComments() as $comment) {
-            $this->em->remove($comment);
-        }
-
-        $this->em->flush();
+        /** @var CommentRepository $repo */
+        $repo = $this->em->getRepository(Comment::class);
+        $repo->createQueryBuilder('c')->delete()
+            ->where('c.post = :micropost')
+            ->setParameter(':micropost', $microPost)
+            ->getQuery()
+            ->execute();
         $this->em->refresh($microPost);
     }
 
