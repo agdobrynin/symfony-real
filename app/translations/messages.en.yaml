@@ -30,6 +30,8 @@ micro-post:
     del: 'Delete'
     like: 'Like'
     unlike: 'Unlike'
+    confirm:
+      title: 'Delete post?'
   form_edit_add_del:
     content: 'Content'
     button_submit: '💾 Save'
