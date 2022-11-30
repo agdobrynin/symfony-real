@@ -143,6 +143,19 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
         self::assertStringContainsString($user->getEmoji() . '@' . $user->getNick(), $headerOfComment);
     }
 
+    public function testCommentBlockPaginationWrongPageGetPageFirst(): void
+    {
+        self::ensureKernelShutdown();
+        $microPost = $this->microPostRepository->findOneBy([]);
+
+        $client = static::createClient();
+        foreach ([-1, 0, 'abc', 10000] as $page) {
+            $uri = sprintf(self::URL_POST_VIEW_PATTERN, $microPost->getUuid()) . '?page=' . $page;
+            $client->request('GET', $uri);
+            self::assertResponseIsSuccessful();
+        }
+    }
+
     protected function getFormCommentSubmitButtonEl(Crawler $crawler)
     {
         return $crawler->filter('form button[name$="[save]"]');

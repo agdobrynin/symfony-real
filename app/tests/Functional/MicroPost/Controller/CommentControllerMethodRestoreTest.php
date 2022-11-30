@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CommentControllerMethodRestoreTest extends WebTestCase
@@ -104,5 +105,18 @@ class CommentControllerMethodRestoreTest extends WebTestCase
         } else {
             self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         }
+    }
+
+    public function testRestoreCommentForAdminWithNotFoundComment(): void
+    {
+        $dto = AppFixtures::searchUserFixtureByProperty('isAdmin', true);
+        $user = $this->userRepository->findOneBy(['login' => $dto->login]);
+
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $uri = sprintf(self::URL_COMMENT_RESTORE_PATTERN, UuidV4::v4()->toRfc4122());
+        $client->request('GET', $uri);
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }

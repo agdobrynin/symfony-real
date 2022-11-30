@@ -131,6 +131,19 @@ class MicroPostControllerMethodViewTest extends WebTestCase
 
     }
 
+    public function testViewPostsByUserWithWrongPageForPostPagination(): void
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $user = $this->userRepository->findOneBy([]);
+
+        foreach ([0, -1, 'abc', 10000] as $page) {
+            $uri = sprintf(self::URL_POST_VIEW_BY_USER_PATTERN, $user->getUuid()) . '?page=' . $page;
+            $client->request('GET', $uri);
+            self::assertResponseIsUnprocessable();
+        }
+    }
+
     protected function getUrlToView(MicroPost $microPost): string
     {
         return sprintf(self::URL_POST_VIEW_PATTERN, $microPost->getUuid());

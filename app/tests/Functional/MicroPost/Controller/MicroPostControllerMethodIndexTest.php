@@ -4,29 +4,27 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MicroPost\Controller;
 
 use App\Entity\MicroPost;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
 class MicroPostControllerMethodIndexTest extends WebTestCase
 {
-    /**
-     * @var \Doctrine\Persistence\ObjectManager
-     */
+    /** @var \Doctrine\Persistence\ObjectManager */
     private $em;
-    /**
-     * @var \App\Repository\MicroPostRepository
-     */
+    /** @var \App\Repository\MicroPostRepository */
     private $microPostRepository;
-    /**
-     * @var int
-     */
+    /** @var int */
     private $pageSize;
+    /** @var \App\Repository\UserRepository */
+    private $userRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->em = self::getContainer()->get('doctrine')->getManager();
         $this->microPostRepository = $this->em->getRepository(MicroPost::class);
+        $this->userRepository = $this->em->getRepository(User::class);
         $this->pageSize = self::getContainer()->getParameter('micropost.page.size');
     }
 
@@ -73,6 +71,20 @@ class MicroPostControllerMethodIndexTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
         $totalPage = $this->getTotalPage();
+
+        foreach ([($totalPage + 1), 0, -1, 'abc'] as $page) {
+            $client->request('GET', '/micro-post/ru/?page=' . $page);
+            self::assertResponseIsUnprocessable();
+        }
+    }
+
+    public function testAuthUserIndexWrongPage(): void
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $totalPage = $this->getTotalPage();
+        $user = $this->userRepository->findOneBy([]);
+        $client->loginUser($user);
 
         foreach ([($totalPage + 1), 0, -1, 'abc'] as $page) {
             $client->request('GET', '/micro-post/ru/?page=' . $page);
