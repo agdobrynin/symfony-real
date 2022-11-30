@@ -29,18 +29,22 @@
             {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
         {% endif %}
     {% else %}
-        <p>{{ 'Your not have the following user, yet'|trans }}!</p>
-        {% if followUser %}
-            <p>{{ 'You might find these users interesting'|trans }}:</p>
-            <ul class="list-group list-group-horizontal-md">
-                {% for blogger in followUser %}
-                    <a href="{{ path('micro_post_by_user', {uuid: blogger.uuid}) }}"
-                       class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ blogger.emoji }}@{{ blogger.nick }}
-                        <sup class="m-3">{{ 'micro-post.post-from-following.posts'|trans({'%count%': blogger.posts.count}) }}</sup>
-                    </a>
-                {% endfor %}
-            </ul>
+        {% if is_granted('ROLE_USER') and app.user.following.count %}
+            <p>{{ 'There are no published posts for your subscriptions'|trans }}</p>
+        {% else %}
+            <p>{{ 'Your not have the following user, yet'|trans }}!</p>
+            {% if followUser %}
+                <p>{{ 'You might find these users interesting'|trans }}:</p>
+                <ul class="list-group list-group-horizontal-md">
+                    {% for blogger in followUser %}
+                        <a href="{{ path('micro_post_by_user', {uuid: blogger.uuid}) }}"
+                           class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ blogger.emoji }}@{{ blogger.nick }}
+                            <sup class="m-3">{{ 'micro-post.post-from-following.posts'|trans({'%count%': blogger.posts.count}) }}</sup>
+                        </a>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         {% endif %}
     {% endif %}
 {% endblock %}
