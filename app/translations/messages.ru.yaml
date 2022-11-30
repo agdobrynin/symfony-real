@@ -55,11 +55,13 @@ micro-post:
       confirm_message: 'Удалить комментарий?'
       cant_del_message: 'Удалить комментарий может только владелец или администратор'
       success_message: 'Коментарий успешно удален. %content_part%'
-      is_deleted_message: 'Коментарий уже удален'
     restore:
       title: 'Восстановить'
       success_message: 'Коментарий успешно восстановлен. %content_part%'
     not_found: 'Комментарий не найден'
+    toolbar:
+      show_soft_deleted: 'Показывать удаленные комментарии'
+      hide_soft_deleted: 'Спрятать удаленные комментарии'
 Latest messages from subscribed users:
   'Последние публикации моих подписок'
 Last posts:
