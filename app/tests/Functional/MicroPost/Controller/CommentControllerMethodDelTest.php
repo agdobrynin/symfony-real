@@ -149,11 +149,8 @@ class CommentControllerMethodDelTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($requestByUser);
-        $crawler = $client->request('GET', sprintf(self::URL_COMMENT_DEL_PATTERN, $comment->getUuid()));
+        $client->request('GET', sprintf(self::URL_COMMENT_DEL_PATTERN, $comment->getUuid()));
         self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
-        
-        $errorMessage = $this->translator->trans('micro-post.comments.del.is_deleted_message', [], null, 'en');
-        self::assertStringContainsString($errorMessage, $crawler->html());
     }
 
     protected function makeComment(MicroPost $microPost, User $commentOwner): Comment

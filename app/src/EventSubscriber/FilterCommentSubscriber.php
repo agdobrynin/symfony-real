@@ -8,10 +8,13 @@ use App\Repository\Filter\SoftDeleteFilter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class FilterCommentSubscriber implements EventSubscriberInterface
 {
+    public const GET_PARAMETER_SOFT_DELETE_DISABLED = 'with-soft-deleted';
+
     private $tokenStorage;
     private $em;
 
@@ -24,21 +27,20 @@ class FilterCommentSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            RequestEvent::class => 'onRequest'
+            KernelEvents::REQUEST => 'onKernelRequest'
         ];
     }
 
-    public function onRequest(RequestEvent $event): void
+    public function onKernelRequest(RequestEvent $event): void
     {
         $this->em->getFilters()->enable(SoftDeleteFilter::NAME);
 
-        // For profile page always filter implement
-        $isExcludeRoute = 'micro_post_profile_view' === $event->getRequest()->attributes->get('_route');
-
-        if (!$isExcludeRoute && $this->tokenStorage->getToken()) {
+        if ($this->tokenStorage->getToken()) {
             $user = $this->tokenStorage->getToken()->getUser();
+            $isAdminRole = \in_array(User::ROLE_ADMIN, $user->getRoles());
+            $disableFilter = !is_null($event->getRequest()->get(self::GET_PARAMETER_SOFT_DELETE_DISABLED));
 
-            if ($user instanceof User && \in_array(User::ROLE_ADMIN, $user->getRoles())) {
+            if ($disableFilter && $user instanceof User && $isAdminRole) {
                 $this->em->getFilters()->disable(SoftDeleteFilter::NAME);
             }
         }

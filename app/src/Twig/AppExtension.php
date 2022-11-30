@@ -8,7 +8,10 @@ use App\Entity\LikeNotification;
 use App\Entity\UnfollowNotification;
 use App\Entity\UnlikeNotification;
 use App\Entity\User;
+use App\EventSubscriber\FilterCommentSubscriber;
 use App\Security\Exception\LoginNotConfirmAccountStatusException;
+use Symfony\Component\HttpFoundation\InputBag;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Twig\Extension\AbstractExtension;
@@ -18,14 +21,13 @@ use Twig\TwigTest;
 
 class AppExtension extends AbstractExtension
 {
-    /**
-     * @var RouterInterface
-     */
     private $router;
+    private $requestStack;
 
-    public function __construct(RouterInterface $router)
+    public function __construct(RouterInterface $router, RequestStack $requestStack)
     {
         $this->router = $router;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -61,6 +63,9 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFunction('user_with_link_to_user_page', [$this, 'userNickWithLinkToUserPage']),
+            new TwigFunction('current_url_switch_soft_deleted', [$this, 'currentUrlSwitchSoftDeleted']),
+            new TwigFunction('current_url_append_params', [$this, 'currentUrlAppendParams']),
+            new TwigFunction('has_soft_deleted_param', [$this, 'hasSoftDeletedParam']),
         ];
     }
 
@@ -133,5 +138,37 @@ class AppExtension extends AbstractExtension
     public function isSecurityBadCredentials($var): bool
     {
         return $var instanceof BadCredentialsException;
+    }
+
+    public function hasSoftDeletedParam(InputBag $inputBag): bool
+    {
+        return $inputBag->has(FilterCommentSubscriber::GET_PARAMETER_SOFT_DELETE_DISABLED);
+    }
+
+    public function currentUrlSwitchSoftDeleted(bool $enabled = false): string
+    {
+        $request = $this->requestStack->getCurrentRequest();
+
+        $currentRoute = $request->get('_route');
+        $routeParams = $request->get('_route_params');
+        $query = $request->query->all();
+
+        if ($enabled) {
+            $query[FilterCommentSubscriber::GET_PARAMETER_SOFT_DELETE_DISABLED] = 1;
+        } else {
+            unset($query[FilterCommentSubscriber::GET_PARAMETER_SOFT_DELETE_DISABLED]);
+        }
+
+        return $this->router->generate($currentRoute, array_merge($routeParams, $query));
+    }
+
+    public function currentUrlAppendParams(array $params): string
+    {
+        $request = $this->requestStack->getCurrentRequest();
+
+        $currentRoute = $request->get('_route');
+        $routeParams = $request->get('_route_params');
+
+        return $this->router->generate($currentRoute, array_merge($routeParams, $request->query->all(), $params));
     }
 }

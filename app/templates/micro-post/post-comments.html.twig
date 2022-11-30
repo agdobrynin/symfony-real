@@ -1,3 +1,13 @@
+{% if is_granted('ROLE_ADMIN') %}
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end rounded-3 border border-1 p-2 m-3 bg-light">
+        <div class="btn-group" role="group">
+            <a class="btn btn-outline-secondary btn-sm {% if has_soft_deleted_param(app.request.query) %}active{% endif %}"
+               href="{{ current_url_switch_soft_deleted(true) }}">{{ 'micro-post.comments.toolbar.show_soft_deleted'|trans }}</a>
+            <a class="btn btn-outline-secondary btn-sm {% if not has_soft_deleted_param(app.request.query) %}active{% endif %}"
+               href="{{ current_url_switch_soft_deleted(false) }}">{{ 'micro-post.comments.toolbar.hide_soft_deleted'|trans }}</a>
+        </div>
+    </div>
+{% endif %}
 {% if commentsWithPaginatorDto.paginatorDto.totalPages > 1 %}
     {{ include ('@mp/paginator.html.twig', {paginatorDto: commentsWithPaginatorDto.paginatorDto}) }}
 {% endif %}

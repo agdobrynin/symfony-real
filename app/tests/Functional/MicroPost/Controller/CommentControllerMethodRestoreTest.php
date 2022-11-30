@@ -102,7 +102,7 @@ class CommentControllerMethodRestoreTest extends WebTestCase
             $comment = $this->commentRepository->find($comment->getUuid());
             self::assertFalse($comment->isDeleted());
         } else {
-            self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+            self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         }
     }
 }

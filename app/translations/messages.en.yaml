@@ -53,11 +53,13 @@ micro-post:
       confirm_message: 'Delete comment?'
       cant_del_message: 'Only the owner or administrator can delete a comment'
       success_message: 'Comment successfully deleted. %content_part%'
-      is_deleted_message: 'Comment already deleted'
     restore:
       title: 'Restore'
       success_message: 'Comment successfully restored. %content_part%'
     not_found: 'Comment not found'
+    toolbar:
+      show_soft_deleted: 'Show deleted comments'
+      hide_soft_deleted: 'Hide deleted comments'
 registration_form:
   title: 'Registration'
   form:

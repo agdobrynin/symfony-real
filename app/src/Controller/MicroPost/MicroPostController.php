@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\MicroPost;
 
 use App\Dto\Exception\PaginatorDtoException;
+use App\Dto\Exception\PaginatorDtoPageException;
 use App\Entity\Comment;
 use App\Entity\MicroPost;
 use App\Entity\User;
@@ -198,8 +199,12 @@ class MicroPostController extends AbstractController
                         $this->em->flush();
 
                         $this->addFlash(FlashType::SUCCESS, $this->translator->trans('micro-post.comments.form.success_message'));
+                        $queryParams = $request->query->all();
+                        unset($queryParams['page']);
 
-                        return $this->redirectToRoute('micro_post_view', ['uuid' => $microPost->getUuid()]);
+                        $routeParams = array_merge($queryParams, ['uuid' => $microPost->getUuid()]);
+
+                        return $this->redirectToRoute('micro_post_view', $routeParams);
                     } else {
                         $statusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
                     }
@@ -207,7 +212,12 @@ class MicroPostController extends AbstractController
             }
 
             $page = (int)$request->get('page', 1);
-            $commentsWithPaginatorDto = $getMicroPostCommentsService->getComments($page, $microPost);
+
+            try {
+                $commentsWithPaginatorDto = $getMicroPostCommentsService->getComments($page, $microPost);
+            } catch (PaginatorDtoPageException $exception) {
+                $commentsWithPaginatorDto = $getMicroPostCommentsService->getComments(1, $microPost);
+            }
 
             return $this->renderForm('@mp/view.html.twig', [
                 'post' => $microPost,

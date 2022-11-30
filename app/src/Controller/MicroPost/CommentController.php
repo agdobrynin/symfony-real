@@ -6,6 +6,7 @@ namespace App\Controller\MicroPost;
 use App\Entity\Comment;
 use App\Entity\User;
 use App\Helper\FlashType;
+use App\Repository\Filter\SoftDeleteFilter;
 use App\Security\Voter\CommentVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -41,20 +42,14 @@ class CommentController extends AbstractController
             $this->translator->trans('micro-post.comments.del.cant_del_message')
         );
 
-        if (!$comment->isDeleted()) {
-            $this->em->remove($comment);
-            $this->em->flush();
+        $this->em->remove($comment);
+        $this->em->flush();
 
-            $contentPart = mb_substr($comment->getContent(), 0, 30) . '...';
-            $this->addFlash(
-                FlashType::SUCCESS,
-                $this->translator->trans('micro-post.comments.del.success_message', ['%content_part%' => $contentPart])
-            );
-        } else {
-            $message = $this->translator->trans('micro-post.comments.del.is_deleted_message');
-
-            throw new NotFoundHttpException($message);
-        }
+        $contentPart = mb_substr($comment->getContent(), 0, 30) . '...';
+        $this->addFlash(
+            FlashType::SUCCESS,
+            $this->translator->trans('micro-post.comments.del.success_message', ['%content_part%' => $contentPart])
+        );
 
         return $this->redirectToRoute('micro_post_view', ['uuid' => $comment->getPost()->getUuid()]);
     }
@@ -63,19 +58,27 @@ class CommentController extends AbstractController
      * @Route("/restore/{uuid}", methods={"get"}, name="micro_post_comment_restore")
      * @IsGranted(User::ROLE_ADMIN)
      */
-    public function restore(Comment $comment): RedirectResponse
+    public function restore(string $uuid): RedirectResponse
     {
-        $comment->setDeleteAt(null);
-        $this->em->persist($comment);
-        $this->em->flush();
+        $filters = $this->em->getFilters();
+        // See annotation IsGranted for this method only user with role ROLE_ADMIN
+        $filters->disable(SoftDeleteFilter::NAME);
 
-        $contentPart = mb_substr($comment->getContent(), 0, 30) . '...';
-        $this->addFlash(
-            FlashType::SUCCESS,
-            $this->translator->trans('micro-post.comments.restore.success_message', ['%content_part%' => $contentPart])
-        );
+        if ($comment = $this->em->getRepository(Comment::class)->find($uuid)) {
+            $comment->setDeleteAt(null);
+            $this->em->persist($comment);
+            $this->em->flush();
 
-        return $this->redirectToRoute('micro_post_view', ['uuid' => $comment->getPost()->getUuid()]);
+            $contentPart = mb_substr($comment->getContent(), 0, 30) . '...';
+            $this->addFlash(
+                FlashType::SUCCESS,
+                $this->translator->trans('micro-post.comments.restore.success_message', ['%content_part%' => $contentPart])
+            );
+
+            return $this->redirectToRoute('micro_post_view', ['uuid' => $comment->getPost()->getUuid()]);
+        }
+
+        throw new NotFoundHttpException();
     }
 
 }
