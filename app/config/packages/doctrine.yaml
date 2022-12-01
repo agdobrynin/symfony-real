@@ -18,6 +18,8 @@ doctrine:
         filters:
             soft_delete:
                 class: App\Repository\Filter\SoftDeleteFilter
+            soft_delete_only:
+                class: App\Repository\Filter\SoftDeleteOnlyFilter
 when@test:
     doctrine:
         dbal:

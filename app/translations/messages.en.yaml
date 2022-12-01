@@ -20,6 +20,7 @@ micro-post:
         my-posts: 'My posts'
         profile: 'My profile'
         html_title: 'Posts from @%nick%'
+        trash_bin: 'Deleted posts'
   pagination:
     title: 'Pages'
   post-item:
@@ -176,3 +177,10 @@ restore_password:
       label_2: 'Repeat password'
     submit: '🔑 Update password'
   password_changed: 'Password changed successfully. You can login with a new password'
+trash_bin:
+  page_title: 'Deleted posts'
+  is_empty: 'Deleted posts not found'
+  post_deleted: 'Post was deleted at %date%'
+  confirm:
+    restore_title: '⚠ Restore post?'
+    restore_button: '♻ Restore post'

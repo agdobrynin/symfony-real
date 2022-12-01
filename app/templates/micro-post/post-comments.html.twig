@@ -34,14 +34,13 @@
                     {% if is_granted('COMMENT_DEL_OWNER_OR_ADMIN', comment) %}
                         <div class="card-footer text-end">
                             {% if comment.isDeleted == false %}
-                                <a href="#"
-                                   class="btn btn-close btn-sm btn-danger comment-delete border-0"
+                                <a href="{{ path('micro_post_comment_del', {uuid: comment.uuid}) }}"
+                                   class="btn btn-close btn-sm btn-danger anchor-confirm comment-delete border-0"
                                    data-bs-toggle="popover"
                                    data-bs-trigger="hover focus"
                                    data-bs-placement="top"
                                    data-bs-content="{{ 'micro-post.comments.del.title'|trans|escape }}"
                                    data-title="⚠ {{ 'micro-post.comments.del.title'|trans|escape }}"
-                                   data-href="{{ path('micro_post_comment_del', {uuid: comment.uuid}) }}"
                                    data-locale="{{ app.request.get('_locale', 'en') }}"
                                    data-message="{{ 'micro-post.comments.del.confirm_message'|trans|escape }}<br>{{ comment.content|striptags|escape|slice(0,35) }}..."></a>
                             {% endif %}

@@ -22,11 +22,8 @@ class GetMicroPostsService implements GetMicroPostsServiceInterface
     public function findFollowingMicroPosts(User $user, int $page): MicroPostWithPaginationDto
     {
         $followingUsers = $user->getFollowing();
-
-        $paginationDto = $this->getPaginatorDto($page, function () use ($followingUsers) {
-            return $this->microPostRepository->getCountByUsers($followingUsers);
-        });
-
+        $totalItems = $this->microPostRepository->getCountByUsers($followingUsers);
+        $paginationDto = new PaginatorDto($page, $totalItems, $this->pageSize);
         $posts = $this->microPostRepository->findAllByUsersWithPaginator($followingUsers, $paginationDto);
 
         return new MicroPostWithPaginationDto($posts, $paginationDto);
@@ -34,30 +31,28 @@ class GetMicroPostsService implements GetMicroPostsServiceInterface
 
     public function findMicroPostsByUser(User $user, int $page): MicroPostWithPaginationDto
     {
-        $paginatorDto = $this->getPaginatorDto($page, function () use ($user) {
-            return $this->microPostRepository->getCountByUser($user);
-        });
-
+        $totalItems = $this->microPostRepository->getCountByUser($user);
+        $paginatorDto = new PaginatorDto($page, $totalItems, $this->pageSize);
         $posts = $this->microPostRepository->findByUserWithPaginator($user, $paginatorDto);
 
         return new MicroPostWithPaginationDto($posts, $paginatorDto);
     }
 
-    public function findLastMicroPosts(int $page): MicroPostWithPaginationDto
+    public function findLastMicroPostsOrderByDate(int $page): MicroPostWithPaginationDto
     {
-        $paginatorDto = $this->getPaginatorDto($page, function () {
-            return $this->microPostRepository->getAllCount();
-        });
-
-        $posts = $this->microPostRepository->getAllWithPaginator($paginatorDto);
+        $totalItems = $this->microPostRepository->getAllCount();
+        $paginatorDto = new PaginatorDto($page, $totalItems, $this->pageSize);
+        $posts = $this->microPostRepository->getAllWithPaginatorOrderByDate($paginatorDto);
 
         return new MicroPostWithPaginationDto($posts, $paginatorDto);
     }
 
-    protected function getPaginatorDto(int $page, \Closure $closure): PaginatorDto
+    public function findLastSoftDeletedMicroPostsOrderByDeleteAt(int $page): MicroPostWithPaginationDto
     {
-        $totalItems = $closure();
+        $totalItems = $this->microPostRepository->getAllCount();
+        $paginatorDto = new PaginatorDto($page, $totalItems, $this->pageSize);
+        $posts = $this->microPostRepository->getAllWithPaginatorOrderByDeleteAt($paginatorDto);
 
-        return new PaginatorDto($page, $totalItems, $this->pageSize);
+        return new MicroPostWithPaginationDto($posts, $paginatorDto);
     }
 }

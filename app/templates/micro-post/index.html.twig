@@ -55,6 +55,12 @@
                             <li><a class="dropdown-item"
                                    href="{{ path('micro_post_by_user', {uuid: app.User.uuid}) }}">📂 {{ 'micro-post.menu.nav.profile.my-posts'|trans }}</a>
                             </li>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <hr class="mt-1 mb-1">
+                                <li><a class="dropdown-item"
+                                       href="{{ path('micro_post_trash_bin_list') }}">🗑 {{ 'micro-post.menu.nav.profile.trash_bin'|trans }}</a>
+                                </li>
+                            {% endif %}
                         </ul>
                     </li>
                     <li class="nav-item"><a href="{{ path("micro_post_logout") }}" class="nav-link">
