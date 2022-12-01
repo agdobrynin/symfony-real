@@ -1,0 +1,50 @@
+{% extends '@mp/index.html.twig' %}
+
+{% block title %}{{ 'trash_bin.page_title'|trans }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('app.anchor.confirm') }}
+{% endblock %}
+
+{% block microPostContent %}
+    {% if microPostWithPaginationDto.posts %}
+        <div class="mb-5">
+            <h4 class="display-3">{{ 'trash_bin.page_title'|trans }}</h4>
+        </div>
+        {% if microPostWithPaginationDto.paginatorDto.totalPages > 1 %}
+            {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
+        {% endif %}
+
+        {% for post in microPostWithPaginationDto.posts %}
+            <div class="card mb-5 post-item">
+                <div class="card-header">
+                    <span class="text-danger">
+                        {{ 'trash_bin.post_deleted'|trans({'%date%': post.deleteAt|format_datetime('medium', 'short')}) }}
+                    </span>
+                </div>
+                <div class="card-header text-muted">
+                    {{ user_with_link_to_user_page(post.user)|raw }} {{ 'micro-post.post-item.post-from-prefix-date'|trans }}
+                    {{ post.date|format_datetime('medium', 'short') }}
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ post.getContent }}</p>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-outline-primary btn-sm anchor-confirm"
+                       href="{{ path('micro_post_trash_bin_restore', {uuid: post.uuid}) }}"
+                       data-title="{{ 'trash_bin.confirm.restore_title'|trans|escape }}"
+                       data-locale="{{ app.request.get('_locale', 'en') }}"
+                       data-message="{{ post.content|striptags|escape|slice(0,35) }}..."
+                    >{{ 'trash_bin.confirm.restore_button'|trans }}</a>
+                </div>
+            </div>
+        {% endfor %}
+
+        {% if microPostWithPaginationDto.paginatorDto.totalPages > 1 %}
+            {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
+        {% endif %}
+    {% else %}
+        <p>{{ 'trash_bin.is_empty'|trans }}</p>
+    {% endif %}
+{% endblock %}

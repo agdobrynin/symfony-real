@@ -74,7 +74,7 @@ class MicroPostController extends AbstractController
             }
         } else {
             try {
-                $microPostWithPaginationDto = $getMicroPostsService->findLastMicroPosts($page);
+                $microPostWithPaginationDto = $getMicroPostsService->findLastMicroPostsOrderByDate($page);
             } catch (PaginatorDtoException $exception) {
                 throw new UnprocessableEntityHttpException($exception->getMessage());
             }

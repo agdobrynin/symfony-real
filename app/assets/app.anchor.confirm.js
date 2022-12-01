@@ -7,10 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (evt) => {
         const targetClass = evt.target?.classList || undefined;
 
-        if (targetClass.contains("comment-delete") || targetClass.contains("post-delete")) {
+        if (targetClass.contains("anchor-confirm")) {
             evt.preventDefault();
 
-            const {message, href, locale, title} = evt.target.dataset;
+            const href = evt.target.href;
+            const {message, locale, title} = evt.target.dataset;
 
             bootbox.confirm({
                 closeButton: false,

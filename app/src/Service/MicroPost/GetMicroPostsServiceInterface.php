@@ -11,5 +11,7 @@ interface GetMicroPostsServiceInterface
 
     public function findMicroPostsByUser(User $user, int $page): MicroPostWithPaginationDto;
 
-    public function findLastMicroPosts(int $page): MicroPostWithPaginationDto;
+    public function findLastMicroPostsOrderByDate(int $page): MicroPostWithPaginationDto;
+
+    public function findLastSoftDeletedMicroPostsOrderByDeleteAt(int $page): MicroPostWithPaginationDto;
 }

@@ -11,6 +11,7 @@ class PaginatorDto
     protected $page;
     protected $totalPages;
     protected $pageSize;
+    protected $totalItems;
 
     public function __construct(int $page, int $totalItems, int $pageSize)
     {
@@ -32,6 +33,7 @@ class PaginatorDto
         }
 
         $this->page = $page;
+        $this->totalItems = $totalItems;
     }
 
     public function getPage(): int
@@ -52,5 +54,10 @@ class PaginatorDto
     public function getFirstResultIndex(): int
     {
         return ($this->page - 1) * $this->pageSize;
+    }
+
+    public function getTotalItems(): int
+    {
+        return $this->totalItems;
     }
 }

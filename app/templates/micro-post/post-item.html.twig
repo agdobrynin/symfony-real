@@ -34,10 +34,9 @@
                         <a class="btn btn-secondary btn-sm"
                            href="{{ url("micro_post_edit", {uuid: post.getUuid}) }}">
                             {{ 'micro-post.post-item.edit'|trans }}</a>
-                        <a class="btn btn-danger btn-sm post-delete"
+                        <a class="btn btn-danger btn-sm anchor-confirm post-delete"
                            href="{{ url('micro_post_del', {uuid: post.getUuid}) }}"
                            data-title="⚠ {{ 'micro-post.post-item.confirm.title'|trans|escape }}"
-                           data-href="{{ path('micro_post_del', {uuid: post.getUuid}) }}"
                            data-locale="{{ app.request.get('_locale', 'en') }}"
                            data-message="{{ post.content|striptags|escape|slice(0,35) }}...">
                             {{ 'micro-post.post-item.del'|trans }}</a>

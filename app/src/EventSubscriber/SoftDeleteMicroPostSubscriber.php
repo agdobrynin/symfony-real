@@ -4,15 +4,16 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Entity\Comment;
+use App\Entity\MicroPost;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Events;
 
-class SoftDeleteCommentSubscriber implements EventSubscriberInterface
+class SoftDeleteMicroPostSubscriber implements EventSubscriberInterface
 {
     public function getSubscribedEvents(): array
     {
-        return [Events::preFlush => 'preFlush', 501];
+        return [Events::preFlush => 'preFlush', 500];
     }
 
     public function preFlush(PreFlushEventArgs $args): void
@@ -21,15 +22,25 @@ class SoftDeleteCommentSubscriber implements EventSubscriberInterface
         $uow = $em->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityDeletions() as $entityDeletion) {
-            if ($entityDeletion instanceof Comment) {
+            if ($entityDeletion instanceof MicroPost) {
                 $deleteDate = $entityDeletion->getDeleteAt();
                 $currentDate = new \DateTime();
 
                 if (null === $deleteDate || $deleteDate >= $currentDate) {
                     $entityDeletion->setDeleteAt($currentDate);
-                }
+                    $em->persist($entityDeletion);
 
-                $em->persist($entityDeletion);
+                    // update comments in current post
+                    $em->getRepository(Comment::class)
+                        ->createQueryBuilder('c')
+                        ->update()
+                        ->set('c.deleteAt', ':currentDate')
+                        ->setParameter(':currentDate', $currentDate)
+                        ->where('c.post = :post')
+                        ->setParameter(':post', $entityDeletion)
+                        ->getQuery()
+                        ->execute();
+                }
             }
         }
     }

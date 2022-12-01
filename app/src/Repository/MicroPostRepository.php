@@ -6,6 +6,7 @@ namespace App\Repository;
 use App\Dto\PaginatorDto;
 use App\Entity\MicroPost;
 use App\Entity\User;
+use App\Repository\Filter\SoftDeleteOnlyFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
@@ -101,10 +102,20 @@ class MicroPostRepository extends ServiceEntityRepository
             ->select('count(mp.uuid)')->getQuery()->getSingleScalarResult();
     }
 
-    public function getAllWithPaginator(PaginatorDto $paginatorDto): array
+    public function getAllWithPaginatorOrderByDate(PaginatorDto $paginatorDto): array
     {
-
         return $this->findBy([], ['date' => 'desc'], $paginatorDto->getPageSize(), $paginatorDto->getFirstResultIndex());
+    }
+
+    public function getAllWithPaginatorOrderByDeleteAt(PaginatorDto $paginatorDto): array
+    {
+        if (!$this->getEntityManager()->getFilters()->isEnabled(SoftDeleteOnlyFilter::NAME)) {
+            $message = sprintf('Sql filter "%s" not enabled', SoftDeleteOnlyFilter::NAME);
+
+            throw new \LogicException($message);
+        }
+
+        return $this->findBy([], ['deleteAt' => 'desc'], $paginatorDto->getPageSize(), $paginatorDto->getFirstResultIndex());
     }
 
     public function getCountBloggersWithPosts()

@@ -68,7 +68,7 @@ class MicroPostControllerMethodDelTest extends WebTestCase
 
         $client->loginUser($userNotOwner);
         $client->request('GET', $this->getUrlToDel($microPostOfBlogger));
-        self::assertEquals(Response::HTTP_FORBIDDEN, $client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testDelPostNotOwnerByAdmin(): void
@@ -86,8 +86,8 @@ class MicroPostControllerMethodDelTest extends WebTestCase
         $client->loginUser($userAdmin);
         $client->request('GET', $this->getUrlToDel($microPostOfBlogger));
         self::assertResponseRedirects();
-
-        self::assertNull($this->microPostRepository->findOneBy(['uuid' => $microPostOfBlogger->getUuid()]));
+        $this->em->refresh($microPostOfBlogger);
+        self::assertTrue($microPostOfBlogger->isDeleted());
     }
 
     public function testDelPostNonExistPost(): void
@@ -102,7 +102,7 @@ class MicroPostControllerMethodDelTest extends WebTestCase
 
         $client->loginUser($userBlogger);
         $client->request('GET', $this->getUrlToDel($microPostOfBlogger));
-        self::assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
     protected function getUrlToDel(MicroPost $microPost): string
