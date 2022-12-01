@@ -103,3 +103,7 @@ services:
     App\Mailer\RestorePasswordMailer:
       arguments:
         $adminEmail: '%micropost.admin.email%'
+
+    App\Service\MicroPost\MicroPostSoftDeleteService:
+      arguments:
+        $pageSize: '%micropost.page.size%'
