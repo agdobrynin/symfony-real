@@ -46,13 +46,4 @@ class GetMicroPostsService implements GetMicroPostsServiceInterface
 
         return new MicroPostWithPaginationDto($posts, $paginatorDto);
     }
-
-    public function findLastSoftDeletedMicroPostsOrderByDeleteAt(int $page): MicroPostWithPaginationDto
-    {
-        $totalItems = $this->microPostRepository->getAllCount();
-        $paginatorDto = new PaginatorDto($page, $totalItems, $this->pageSize);
-        $posts = $this->microPostRepository->getAllWithPaginatorOrderByDeleteAt($paginatorDto);
-
-        return new MicroPostWithPaginationDto($posts, $paginatorDto);
-    }
 }

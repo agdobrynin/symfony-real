@@ -9,6 +9,8 @@ use Doctrine\ORM\Query\Filter\SQLFilter;
 class SoftDeleteFilter extends SQLFilter
 {
     public const NAME = 'soft_delete';
+    // For an HTTP request, the name of the parameter in query_string that disables this filter
+    public const GET_PARAMETER_SOFT_DELETE_DISABLED = 'with-soft-deleted';
 
     /** @var <string, bool>[] */
     protected $disabled = [];

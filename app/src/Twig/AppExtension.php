@@ -8,7 +8,7 @@ use App\Entity\LikeNotification;
 use App\Entity\UnfollowNotification;
 use App\Entity\UnlikeNotification;
 use App\Entity\User;
-use App\EventSubscriber\FilterCommentSubscriber;
+use App\Repository\Filter\SoftDeleteFilter;
 use App\Security\Exception\LoginNotConfirmAccountStatusException;
 use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -142,7 +142,7 @@ class AppExtension extends AbstractExtension
 
     public function hasSoftDeletedParam(InputBag $inputBag): bool
     {
-        return $inputBag->has(FilterCommentSubscriber::GET_PARAMETER_SOFT_DELETE_DISABLED);
+        return $inputBag->has(SoftDeleteFilter::GET_PARAMETER_SOFT_DELETE_DISABLED);
     }
 
     public function currentUrlSwitchSoftDeleted(bool $enabled = false): string
@@ -154,9 +154,9 @@ class AppExtension extends AbstractExtension
         $query = $request->query->all();
 
         if ($enabled) {
-            $query[FilterCommentSubscriber::GET_PARAMETER_SOFT_DELETE_DISABLED] = 1;
+            $query[SoftDeleteFilter::GET_PARAMETER_SOFT_DELETE_DISABLED] = 1;
         } else {
-            unset($query[FilterCommentSubscriber::GET_PARAMETER_SOFT_DELETE_DISABLED]);
+            unset($query[SoftDeleteFilter::GET_PARAMETER_SOFT_DELETE_DISABLED]);
         }
 
         return $this->router->generate($currentRoute, array_merge($routeParams, $query));
