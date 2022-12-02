@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\MicroPost;
 
 use App\Entity\User;
-use App\EventSubscriber\FilterCommentSubscriber;
+use App\Repository\Filter\SoftDeleteFilter;
 use App\Repository\MicroPostRepository;
 use App\Service\MicroPost\GetMicroPostSoftDeleteServiceInterface;
 use App\Service\MicroPost\SoftDeleteFilterServiceInterface;
@@ -53,7 +53,7 @@ class SoftDeletedPostsController extends AbstractController
 
             return $this->redirectToRoute('micro_post_view', [
                 'uuid' => $microPost->getUuid(),
-                FilterCommentSubscriber::GET_PARAMETER_SOFT_DELETE_DISABLED => true
+                SoftDeleteFilter::GET_PARAMETER_SOFT_DELETE_DISABLED => true
             ]);
         }
 

@@ -5,8 +5,8 @@ namespace App\Controller\MicroPost;
 
 use App\Entity\Comment;
 use App\Entity\User;
-use App\EventSubscriber\FilterCommentSubscriber;
 use App\Helper\FlashType;
+use App\Repository\Filter\SoftDeleteFilter;
 use App\Security\Voter\CommentVoter;
 use App\Service\MicroPost\SoftDeleteFilterServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -78,7 +78,7 @@ class CommentController extends AbstractController
                 'micro_post_view',
                 [
                     'uuid' => $comment->getPost()->getUuid(),
-                    FilterCommentSubscriber::GET_PARAMETER_SOFT_DELETE_DISABLED => 1,
+                    SoftDeleteFilter::GET_PARAMETER_SOFT_DELETE_DISABLED => 1,
                 ]
             );
         }

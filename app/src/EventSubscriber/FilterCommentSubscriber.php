@@ -13,8 +13,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class FilterCommentSubscriber implements EventSubscriberInterface
 {
-    public const GET_PARAMETER_SOFT_DELETE_DISABLED = 'with-soft-deleted';
-
     private $tokenStorage;
     private $em;
 
@@ -38,7 +36,7 @@ class FilterCommentSubscriber implements EventSubscriberInterface
         if ($this->tokenStorage->getToken()) {
             $user = $this->tokenStorage->getToken()->getUser();
             $isAdminRole = \in_array(User::ROLE_ADMIN, $user->getRoles());
-            $disableFilter = !is_null($event->getRequest()->get(self::GET_PARAMETER_SOFT_DELETE_DISABLED));
+            $disableFilter = !is_null($event->getRequest()->get(SoftDeleteFilter::GET_PARAMETER_SOFT_DELETE_DISABLED));
 
             if ($disableFilter && $user instanceof User && $isAdminRole) {
                 $this->em->getFilters()->disable(SoftDeleteFilter::NAME);
