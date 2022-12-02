@@ -5,9 +5,10 @@ namespace App\Controller\MicroPost;
 
 use App\Entity\Comment;
 use App\Entity\User;
+use App\EventSubscriber\FilterCommentSubscriber;
 use App\Helper\FlashType;
-use App\Repository\Filter\SoftDeleteFilter;
 use App\Security\Voter\CommentVoter;
+use App\Service\MicroPost\SoftDeleteFilterServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -58,11 +59,9 @@ class CommentController extends AbstractController
      * @Route("/restore/{uuid}", methods={"get"}, name="micro_post_comment_restore")
      * @IsGranted(User::ROLE_ADMIN)
      */
-    public function restore(string $uuid): RedirectResponse
+    public function restore(string $uuid, SoftDeleteFilterServiceInterface $softDeleteFilterService): RedirectResponse
     {
-        $filters = $this->em->getFilters();
-        // See annotation IsGranted for this method only user with role ROLE_ADMIN
-        $filters->disable(SoftDeleteFilter::NAME);
+        $softDeleteFilterService->softDeleteOnlyOn();
 
         if ($comment = $this->em->getRepository(Comment::class)->find($uuid)) {
             $comment->setDeleteAt(null);
@@ -75,7 +74,13 @@ class CommentController extends AbstractController
                 $this->translator->trans('micro-post.comments.restore.success_message', ['%content_part%' => $contentPart])
             );
 
-            return $this->redirectToRoute('micro_post_view', ['uuid' => $comment->getPost()->getUuid()]);
+            return $this->redirectToRoute(
+                'micro_post_view',
+                [
+                    'uuid' => $comment->getPost()->getUuid(),
+                    FilterCommentSubscriber::GET_PARAMETER_SOFT_DELETE_DISABLED => 1,
+                ]
+            );
         }
 
         throw new NotFoundHttpException();
