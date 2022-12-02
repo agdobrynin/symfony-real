@@ -5,7 +5,7 @@ namespace App\EventSubscriber;
 
 use App\Entity\User;
 use App\Repository\Filter\SoftDeleteFilter;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MicroPost\SoftDeleteFilterServiceInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -14,12 +14,12 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class FilterCommentSubscriber implements EventSubscriberInterface
 {
     private $tokenStorage;
-    private $em;
+    private $softDeleteFilterService;
 
-    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em)
+    public function __construct(TokenStorageInterface $tokenStorage, SoftDeleteFilterServiceInterface $softDeleteFilterService)
     {
         $this->tokenStorage = $tokenStorage;
-        $this->em = $em;
+        $this->softDeleteFilterService = $softDeleteFilterService;
     }
 
     public static function getSubscribedEvents(): array
@@ -31,7 +31,7 @@ class FilterCommentSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        $this->em->getFilters()->enable(SoftDeleteFilter::NAME);
+        $this->softDeleteFilterService->softDeletedOn();
 
         if ($this->tokenStorage->getToken()) {
             $user = $this->tokenStorage->getToken()->getUser();
@@ -39,7 +39,7 @@ class FilterCommentSubscriber implements EventSubscriberInterface
             $disableFilter = !is_null($event->getRequest()->get(SoftDeleteFilter::GET_PARAMETER_SOFT_DELETE_DISABLED));
 
             if ($disableFilter && $user instanceof User && $isAdminRole) {
-                $this->em->getFilters()->disable(SoftDeleteFilter::NAME);
+                $this->softDeleteFilterService->allOff();
             }
         }
     }
