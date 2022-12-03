@@ -7,7 +7,6 @@ use App\Form\RegistrationFormType;
 use App\Helper\FlashType;
 use App\Service\MicroPost\User\UserServiceNewUserInterface;
 use App\Service\MicroPost\WelcomeMessageEmailServiceInterface;
-use App\Service\WelcomeMessageInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +20,6 @@ class RegistrationController extends AbstractController
     public function register(
         Request                             $request,
         UserServiceNewUserInterface         $userService,
-        WelcomeMessageInterface             $welcomeMessage,
         WelcomeMessageEmailServiceInterface $emailService
     ): Response
     {
@@ -33,8 +31,7 @@ class RegistrationController extends AbstractController
             $passwordPlain = $form->get('password')->getData();
             $locale = $form->get('locale')->getData();
             $userService->addAndSetConfirmationToken($user, $passwordPlain, $locale);
-            $message = $welcomeMessage->welcomeMessage($user->getNick())->message;
-            $message .= '. For activate your login check your mailbox and click confirmation link!';
+            $message = 'For activate your login check your mailbox and click confirmation link!';
 
             $this->addFlash(FlashType::SUCCESS, $message);
             $emailService->send($user);
