@@ -56,16 +56,8 @@ class DelMicroPostsCommand extends Command
         $question = new ConfirmationQuestion($message, true);
 
         if ($helper->ask($input, $output, $question)) {
-            $query = $this->em->createQueryBuilder()
-                ->delete(MicroPost::class, 'mp')
-                ->where('mp.deleteAt <= :dateMax')
-                ->setParameter(':dateMax', $dateTimeMax);
-            if ($dateTimeMin) {
-                $query = $query->andWhere('mp.deleteAt >= :dateMin')
-                    ->setParameter(':dateMin', $dateTimeMin);
-            }
-
-            $resultCount = $query->getQuery()->execute();
+            $resultCount = $this->em->getRepository(MicroPost::class)
+                ->deleteMarkedSoftDeleted($dateTimeMax, $dateTimeMin);
 
             $output->writeln(sprintf('<info>Delete %s micro posts</info>', $resultCount));
 
