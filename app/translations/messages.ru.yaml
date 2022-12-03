@@ -63,6 +63,7 @@ micro-post:
     toolbar:
       show_soft_deleted: 'Показывать удаленные комментарии'
       hide_soft_deleted: 'Спрятать удаленные комментарии'
+      restore_all_comments: 'Восстановить все удаленные комментарии'
 Latest messages from subscribed users:
   'Последние публикации моих подписок'
 Last posts:

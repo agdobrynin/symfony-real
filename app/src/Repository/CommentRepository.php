@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Comment;
+use App\Entity\MicroPost;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -41,5 +42,17 @@ class CommentRepository extends ServiceEntityRepository
         }
 
         return $query->getQuery()->execute();
+    }
+
+    public function updateDeleteAtByPost(MicroPost $microPost, ?\DateTimeInterface $dateTime): int
+    {
+        return $this->createQueryBuilder('c')
+            ->update()
+            ->set('c.deleteAt', ':dateTime')
+            ->setParameter(':dateTime', $dateTime)
+            ->where('c.post = :post')
+            ->setParameter(':post', $microPost)
+            ->getQuery()
+            ->execute();
     }
 }

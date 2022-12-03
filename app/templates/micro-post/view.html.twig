@@ -18,5 +18,5 @@
             {{ 'micro-post.comments.comment_for_auth'|trans }}
         </p>
     {% endif %}
-    {{ include('@mp/post-comments.html.twig', {commentsWithPaginatorDto}) }}
+    {{ include('@mp/post-comments.html.twig', {commentsWithPaginatorDto, postUuid: post.uuid}) }}
 {% endblock %}

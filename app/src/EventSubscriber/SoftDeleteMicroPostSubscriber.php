@@ -29,17 +29,8 @@ class SoftDeleteMicroPostSubscriber implements EventSubscriberInterface
                 if (null === $deleteDate || $deleteDate >= $currentDate) {
                     $entityDeletion->setDeleteAt($currentDate);
                     $em->persist($entityDeletion);
-
-                    // update comments in current post
                     $em->getRepository(Comment::class)
-                        ->createQueryBuilder('c')
-                        ->update()
-                        ->set('c.deleteAt', ':currentDate')
-                        ->setParameter(':currentDate', $currentDate)
-                        ->where('c.post = :post')
-                        ->setParameter(':post', $entityDeletion)
-                        ->getQuery()
-                        ->execute();
+                        ->updateDeleteAtByPost($entityDeletion, $currentDate);
                 }
             }
         }

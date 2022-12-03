@@ -5,9 +5,14 @@
                href="{{ current_url_switch_soft_deleted(true) }}">{{ 'micro-post.comments.toolbar.show_soft_deleted'|trans }}</a>
             <a class="btn btn-outline-secondary btn-sm {% if not has_soft_deleted_param(app.request.query) %}active{% endif %}"
                href="{{ current_url_switch_soft_deleted(false) }}">{{ 'micro-post.comments.toolbar.hide_soft_deleted'|trans }}</a>
+            <a class="btn btn-outline-secondary btn-sm"
+               href="{{ path('micro_post_comment_restore_all', {uuid: postUuid, page: app.request.get('page')}) }}">
+                {{ 'micro-post.comments.toolbar.restore_all_comments'|trans }}
+            </a>
         </div>
     </div>
 {% endif %}
+
 {% if commentsWithPaginatorDto.paginatorDto.totalPages > 1 %}
     {{ include ('@mp/paginator.html.twig', {paginatorDto: commentsWithPaginatorDto.paginatorDto}) }}
 {% endif %}

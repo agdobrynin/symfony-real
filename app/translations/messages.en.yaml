@@ -63,6 +63,7 @@ micro-post:
     toolbar:
       show_soft_deleted: 'Show deleted comments'
       hide_soft_deleted: 'Hide deleted comments'
+      restore_all_comments: 'Restore all deleted comments'
 registration_form:
   title: 'Registration'
   form:

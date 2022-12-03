@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\MicroPost;
 
 use App\Entity\Comment;
+use App\Entity\MicroPost;
 use App\Entity\User;
 use App\Helper\FlashType;
 use App\Repository\Filter\SoftDeleteFilter;
@@ -13,6 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -86,4 +88,20 @@ class CommentController extends AbstractController
         throw new NotFoundHttpException();
     }
 
+    /**
+     * @Route("/restore_all/micro-post/{uuid}", name="micro_post_comment_restore_all", methods={"get"})
+     * @IsGranted(User::ROLE_ADMIN)
+     */
+    public function restoreAllComments(
+        MicroPost                        $microPost,
+        SoftDeleteFilterServiceInterface $softDeleteFilterService,
+        Request                          $request
+    ): RedirectResponse
+    {
+        $softDeleteFilterService->allOff();
+        $this->em->getRepository(Comment::class)->updateDeleteAtByPost($microPost, null);
+        $page = $request->get('page', 1);
+
+        return $this->redirectToRoute('micro_post_view', ['uuid' => $microPost->getUuid(), 'page' => $page]);
+    }
 }
