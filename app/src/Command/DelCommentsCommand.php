@@ -41,13 +41,6 @@ class DelCommentsCommand extends Command
             $dateTimeMin = new \DateTime($dateFrom);
         }
 
-        if ($dateTimeMin && $dateTimeMin > $dateTimeMax) {
-            $message = sprintf('Date from %s must be less than date to %s',
-                $dateTimeMin->format(\DateTimeInterface::ATOM), $dateTimeMax->format(\DateTimeInterface::ATOM));
-
-            throw new \LogicException($message);
-        }
-
         $message = sprintf('<question>Delete comments marked as soft deleted from "%s" to "%s"?</question> [yes|no]: ',
             ($dateTimeMin ? $dateTimeMin->format(\DateTimeInterface::ATOM) : '0000-00-00'),
             $dateTimeMax->format(\DateTimeInterface::ATOM));

@@ -23,6 +23,13 @@ class CommentRepository extends ServiceEntityRepository
 
     public function deleteMarkedSoftDeleted(\DateTimeInterface $maxDateTime, ?\DateTimeInterface $minDateTime): int
     {
+        if ($minDateTime && $minDateTime > $maxDateTime) {
+            $message = sprintf('Date start from %s must be less than date end to %s',
+                $minDateTime->format(\DateTimeInterface::ATOM), $maxDateTime->format(\DateTimeInterface::ATOM));
+
+            throw new \LogicException($message);
+        }
+
         $query = $this->createQueryBuilder('c')
             ->delete()
             ->where('c.deleteAt <= :dateMax')
