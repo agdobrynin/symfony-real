@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Entity\Comment;
+use App\Entity\MicroPost;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -11,10 +11,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class DelCommentsCommand extends Command
+class DelMicroPostsCommand extends Command
 {
-    protected static $defaultName = 'app:delete:comments';
-    protected static $defaultDescription = 'Remove soft-deleted comments';
+    protected static $defaultName = 'app:delete:posts';
+    protected static $defaultDescription = 'Remove soft-deleted micro posts';
 
     private $em;
 
@@ -27,8 +27,8 @@ class DelCommentsCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('date-to', InputArgument::REQUIRED, 'End date soft-deleted comments')
-            ->addArgument('date-from', InputArgument::OPTIONAL, 'Start date soft-deleted comments')
+            ->addArgument('date-to', InputArgument::REQUIRED, 'End date soft-deleted micro posts')
+            ->addArgument('date-from', InputArgument::OPTIONAL, 'Start date soft-deleted micro posts')
             ->addOption('no-interaction', '-n', InputOption::VALUE_NONE, 'No interaction command');
     }
 
@@ -48,7 +48,7 @@ class DelCommentsCommand extends Command
             throw new \LogicException($message);
         }
 
-        $message = sprintf('<question>Delete comments marked as soft deleted from "%s" to "%s"?</question> [yes|no]: ',
+        $message = sprintf('<question>Delete micro posts with comments marked as soft deleted from "%s" to "%s"?</question> [yes|no]: ',
             ($dateTimeMin ? $dateTimeMin->format(\DateTimeInterface::ATOM) : '0000-00-00'),
             $dateTimeMax->format(\DateTimeInterface::ATOM));
 
@@ -57,17 +57,17 @@ class DelCommentsCommand extends Command
 
         if ($helper->ask($input, $output, $question)) {
             $query = $this->em->createQueryBuilder()
-                ->delete(Comment::class, 'c')
-                ->where('c.deleteAt <= :dateMax')
+                ->delete(MicroPost::class, 'mp')
+                ->where('mp.deleteAt <= :dateMax')
                 ->setParameter(':dateMax', $dateTimeMax);
             if ($dateTimeMin) {
-                $query = $query->andWhere('c.deleteAt >= :dateMin')
+                $query = $query->andWhere('mp.deleteAt >= :dateMin')
                     ->setParameter(':dateMin', $dateTimeMin);
             }
 
             $resultCount = $query->getQuery()->execute();
 
-            $output->writeln(sprintf('<info>Delete %s comments</info>', $resultCount));
+            $output->writeln(sprintf('<info>Delete %s micro posts</info>', $resultCount));
 
             return Command::SUCCESS;
         }
