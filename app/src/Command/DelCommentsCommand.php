@@ -56,16 +56,8 @@ class DelCommentsCommand extends Command
         $question = new ConfirmationQuestion($message, true);
 
         if ($helper->ask($input, $output, $question)) {
-            $query = $this->em->createQueryBuilder()
-                ->delete(Comment::class, 'c')
-                ->where('c.deleteAt <= :dateMax')
-                ->setParameter(':dateMax', $dateTimeMax);
-            if ($dateTimeMin) {
-                $query = $query->andWhere('c.deleteAt >= :dateMin')
-                    ->setParameter(':dateMin', $dateTimeMin);
-            }
-
-            $resultCount = $query->getQuery()->execute();
+            $resultCount = $this->em->getRepository(Comment::class)
+                ->deleteMarkedSoftDeleted($dateTimeMax, $dateTimeMin);
 
             $output->writeln(sprintf('<info>Delete %s comments</info>', $resultCount));
 

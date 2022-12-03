@@ -125,4 +125,19 @@ class MicroPostRepository extends ServiceEntityRepository
         return $qb->select($qb->expr()->countDistinct('mp.user'))
             ->getQuery()->getSingleScalarResult();
     }
+
+    public function deleteMarkedSoftDeleted(\DateTimeInterface $maxDateTime, ?\DateTimeInterface $minDateTime): int
+    {
+        $query = $this->createQueryBuilder('mp')
+            ->delete()
+            ->where('mp.deleteAt <= :dateMax')
+            ->setParameter(':dateMax', $maxDateTime);
+
+        if ($minDateTime) {
+            $query = $query->andWhere('mp.deleteAt >= :dateMin')
+                ->setParameter(':dateMin', $minDateTime);
+        }
+
+        return $query->getQuery()->execute();
+    }
 }

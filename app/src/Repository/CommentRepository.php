@@ -20,4 +20,19 @@ class CommentRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Comment::class);
     }
+
+    public function deleteMarkedSoftDeleted(\DateTimeInterface $maxDateTime, ?\DateTimeInterface $minDateTime): int
+    {
+        $query = $this->createQueryBuilder('c')
+            ->delete()
+            ->where('c.deleteAt <= :dateMax')
+            ->setParameter(':dateMax', $maxDateTime);
+
+        if ($minDateTime) {
+            $query = $query->andWhere('c.deleteAt >= :dateMin')
+                ->setParameter(':dateMin', $minDateTime);
+        }
+
+        return $query->getQuery()->execute();
+    }
 }
