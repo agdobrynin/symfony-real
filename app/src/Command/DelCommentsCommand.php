@@ -41,12 +41,12 @@ class DelCommentsCommand extends Command
             $dateTimeMin = new \DateTime($dateFrom);
         }
 
-        $message = sprintf('<question>Delete comments marked as soft deleted from "%s" to "%s"?</question> [yes|no]: ',
+        $message = sprintf('<question>Delete comments marked as soft deleted from "%s" to "%s"?</question> [yes|<options=bold,underscore>no</>]: ',
             ($dateTimeMin ? $dateTimeMin->format(\DateTimeInterface::ATOM) : '0000-00-00'),
             $dateTimeMax->format(\DateTimeInterface::ATOM));
 
         $helper = $this->getHelper('question');
-        $question = new ConfirmationQuestion($message, true);
+        $question = new ConfirmationQuestion($message, false);
 
         if ($helper->ask($input, $output, $question)) {
             $resultCount = $this->em->getRepository(Comment::class)
