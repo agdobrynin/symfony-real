@@ -51,6 +51,10 @@ class MicroPostRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('mp')
             ->select('mp')
+            ->addSelect('c')
+            ->leftJoin('mp.comments', 'c')
+            ->addSelect('l')
+            ->leftJoin('mp.likedBy', 'l')
             ->where('mp.user IN (:following)')
             ->setParameter(':following', $users)
             ->orderBy('mp.date', 'DESC')
