@@ -29,8 +29,6 @@ class GetMicroPostSoftDeleteServiceTest extends TestCase
     public function testGet(int $total, int $pageSize, int $page, ?string $expectException): void
     {
         $microPostRepository = self::createMock(MicroPostRepository::class);
-        $microPostRepository->expects(self::once())
-            ->method('getAllCount')->willReturn($total);
 
         $softDeleteFilterService = self::createMock(SoftDeleteFilterServiceInterface::class);
         $softDeleteFilterService->expects(self::once())->method('softDeleteOnlyOn');

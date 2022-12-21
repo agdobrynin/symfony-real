@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Dto\PaginatorDto;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use App\Repository\Filter\SoftDeleteOnlyFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -44,69 +44,33 @@ class MicroPostRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @return MicroPost[]
-     */
-    public function findAllByUsersWithPaginator(Collection $users, PaginatorDto $paginatorDto): array
+    public function findFollowingMicroPostWithPaginator(User $user, int $page, int $pageSize): Paginator
     {
-        return $this->createQueryBuilder('mp')
-            ->where('mp.user IN (:following)')
-            ->setParameter(':following', $users)
-            ->orderBy('mp.date', 'DESC')
-            ->setMaxResults($paginatorDto->getPageSize())
-            ->setFirstResult($paginatorDto->getFirstResultIndex())
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function getCountByUsers(Collection $users): int
-    {
-        return (int)$this->createQueryBuilder('mp')
-            ->select('count(mp.uuid)')
-            ->where('mp.user IN (:following)')
-            ->setParameter(':following', $users)
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    /**
-     * @return MicroPost[]
-     */
-    public function findByUserWithPaginator(User $user, PaginatorDto $paginatorDto): array
-    {
-        return $this->createQueryBuilder('mp')
-            ->select('mp')
-            ->where('mp.user = :user')
+        $query = $this->microPostWithAllData($page, $pageSize)
+            ->innerJoin('author.followers', 'followersPosts')
+            ->where('followersPosts IN (:user)')
             ->setParameter(':user', $user)
-            ->orderBy('mp.date', 'DESC')
-            ->setMaxResults($paginatorDto->getPageSize())
-            ->setFirstResult($paginatorDto->getFirstResultIndex())
-            ->getQuery()
-            ->getResult();
+            ->orderBy('mp.date', 'DESC');
+
+        return new Paginator($query);
     }
 
-    public function getCountByUser(User $user): int
+    public function findMicroPostByUserWithPaginator(User $user, int $page, int $pageSize): Paginator
     {
-        return (int)$this->createQueryBuilder('mp')
-            ->select('count(mp.uuid)')
-            ->where('mp.user = :user')
+        $query = $this->microPostWithAllData($page, $pageSize)
+            ->where('author = :user')
             ->setParameter(':user', $user)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->orderBy('mp.date', 'DESC');
+
+        return new Paginator($query);
     }
 
-    public function getAllCount(): int
+    public function getAllWithPaginator(int $page, int $pageSize): Paginator
     {
-        return (int)$this->createQueryBuilder('mp')
-            ->select('count(mp.uuid)')->getQuery()->getSingleScalarResult();
+        return new Paginator($this->microPostWithAllData($page, $pageSize));
     }
 
-    public function getAllWithPaginatorOrderByDate(PaginatorDto $paginatorDto): array
-    {
-        return $this->findBy([], ['date' => 'desc'], $paginatorDto->getPageSize(), $paginatorDto->getFirstResultIndex());
-    }
-
-    public function getAllWithPaginatorOrderByDeleteAt(PaginatorDto $paginatorDto): array
+    public function getAllWithPaginatorOrderByDeleteAt(int $page, int $pageSize): Paginator
     {
         if (!$this->getEntityManager()->getFilters()->isEnabled(SoftDeleteOnlyFilter::NAME)) {
             $message = sprintf('Sql filter "%s" not enabled', SoftDeleteOnlyFilter::NAME);
@@ -114,7 +78,9 @@ class MicroPostRepository extends ServiceEntityRepository
             throw new \LogicException($message);
         }
 
-        return $this->findBy([], ['deleteAt' => 'desc'], $paginatorDto->getPageSize(), $paginatorDto->getFirstResultIndex());
+        $query = $this->microPostWithAllData($page, $pageSize)->orderBy('mp.deleteAt', 'DESC');
+
+        return new Paginator($query);
     }
 
     public function getCountBloggersWithPosts()
@@ -145,5 +111,19 @@ class MicroPostRepository extends ServiceEntityRepository
         }
 
         return $query->getQuery()->execute();
+    }
+
+    private function microPostWithAllData(int $page, int $pageSize): QueryBuilder
+    {
+        return $this->createQueryBuilder('mp')
+            ->leftJoin('mp.user', 'author')
+            ->addSelect('author')
+            ->leftJoin('mp.comments', 'userComments')
+            ->addSelect('userComments')
+            ->leftJoin('mp.likedBy', 'likeByUser')
+            ->addSelect('likeByUser')
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->orderBy('mp.date', 'DESC');
     }
 }

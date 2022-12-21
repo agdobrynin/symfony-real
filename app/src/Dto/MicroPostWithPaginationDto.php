@@ -8,15 +8,12 @@ use App\Entity\MicroPost;
 
 class MicroPostWithPaginationDto
 {
-    /**
-     * @var MicroPost[]
-     */
     protected $posts;
     private $paginatorDto;
 
-    public function __construct(array $posts, PaginatorDto $paginatorDto)
+    public function __construct(\ArrayIterator $posts, PaginatorDto $paginatorDto)
     {
-        if (count($posts) && (!$posts[0] instanceof MicroPost)) {
+        if ($posts->count() && (!$posts[0] instanceof MicroPost)) {
             $message = sprintf('Params posts includes only "%s" objects. Got "%s"', MicroPost::class, \get_class($posts[0]));
 
             throw new MicroPostWithPaginationDtoException($message);
@@ -31,10 +28,7 @@ class MicroPostWithPaginationDto
         return $this->paginatorDto;
     }
 
-    /**
-     * @return MicroPost[]
-     */
-    public function getPosts(): array
+    public function getPosts(): \ArrayIterator
     {
         return $this->posts;
     }

@@ -21,29 +21,25 @@ class GetMicroPostsService implements GetMicroPostsServiceInterface
 
     public function findFollowingMicroPosts(User $user, int $page): MicroPostWithPaginationDto
     {
-        $followingUsers = $user->getFollowing();
-        $totalItems = $this->microPostRepository->getCountByUsers($followingUsers);
-        $paginationDto = new PaginatorDto($page, $totalItems, $this->pageSize);
-        $posts = $this->microPostRepository->findAllByUsersWithPaginator($followingUsers, $paginationDto);
+        $posts = $this->microPostRepository->findFollowingMicroPostWithPaginator($user, $page, $this->pageSize);
+        $paginationDto = new PaginatorDto($page, $posts->count(), $this->pageSize);
 
-        return new MicroPostWithPaginationDto($posts, $paginationDto);
+        return new MicroPostWithPaginationDto($posts->getIterator(), $paginationDto);
     }
 
     public function findMicroPostsByUser(User $user, int $page): MicroPostWithPaginationDto
     {
-        $totalItems = $this->microPostRepository->getCountByUser($user);
-        $paginatorDto = new PaginatorDto($page, $totalItems, $this->pageSize);
-        $posts = $this->microPostRepository->findByUserWithPaginator($user, $paginatorDto);
+        $posts = $this->microPostRepository->findMicroPostByUserWithPaginator($user, $page, $this->pageSize);
+        $paginatorDto = new PaginatorDto($page, $posts->count(), $this->pageSize);
 
-        return new MicroPostWithPaginationDto($posts, $paginatorDto);
+        return new MicroPostWithPaginationDto($posts->getIterator(), $paginatorDto);
     }
 
     public function findLastMicroPostsOrderByDate(int $page): MicroPostWithPaginationDto
     {
-        $totalItems = $this->microPostRepository->getAllCount();
-        $paginatorDto = new PaginatorDto($page, $totalItems, $this->pageSize);
-        $posts = $this->microPostRepository->getAllWithPaginatorOrderByDate($paginatorDto);
+        $posts = $this->microPostRepository->getAllWithPaginator($page, $this->pageSize);
+        $paginatorDto = new PaginatorDto($page, $posts->count(), $this->pageSize);
 
-        return new MicroPostWithPaginationDto($posts, $paginatorDto);
+        return new MicroPostWithPaginationDto($posts->getIterator(), $paginatorDto);
     }
 }
