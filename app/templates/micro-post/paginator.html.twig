@@ -5,14 +5,14 @@
 
     <ul class="pagination justify-content-center" id="page-block">
         <li class="page-item disabled">
-            <span class="page-link">{{ 'micro-post.pagination.title'|trans }}</span>
+            <span class="page-link">{{ 'micro-post.pagination.title'|trans({'%page%': page, '%pages%': totalPages}) }}</span>
         </li>
 
-        <li class="page-item {% if page == 1 %}disabled{% endif %}"><a
-                    href="{{ current_url_append_params({page: 1}) }}#page-block"
-                    class="page-link">{{ 'micro-post.pagination.first'|trans }}</a></li>
+        {% if totalPages > offsetPages and page - offsetPages > 1 %}
+            <li class="page-item {% if page == 1 %}disabled{% endif %}"><a
+                        href="{{ current_url_append_params({page: 1}) }}#page-block"
+                        class="page-link">{{ 'micro-post.pagination.first'|trans }}</a></li>
 
-        {% if page - offsetPages > 1 %}
             <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">&hellip;</a></li>
         {% endif %}
 
@@ -26,12 +26,13 @@
             {% endif %}
         {% endfor %}
 
-        {% if pageEnd < totalPages %}
+        {% if totalPages > offsetPages and pageEnd < totalPages %}
             <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">&hellip;</a></li>
-        {% endif %}
 
-        <li class="page-item {% if page == totalPages %}disabled{% endif %}"><a
-                    href="{{ current_url_append_params({page: totalPages}) }}#page-block"
-                    class="page-link">{{ 'micro-post.pagination.last'|trans }}</a></li>
+            <li class="page-item {% if page == totalPages %}disabled{% endif %}"><a
+                        href="{{ current_url_append_params({page: totalPages}) }}#page-block"
+                        class="page-link">{{ 'micro-post.pagination.last'|trans({'%page%': page, '%pages%': totalPages}) }}</a>
+            </li>
+        {% endif %}
     </ul>
 </nav>

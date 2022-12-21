@@ -22,7 +22,7 @@ micro-post:
         html_title: 'Posts from @%nick%'
         trash_bin: 'Deleted posts'
   pagination:
-    title: 'Pages'
+    title: 'Page %page% of %pages%'
     first: 'first'
     last: 'last'
   post-item:

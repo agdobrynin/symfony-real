@@ -22,7 +22,7 @@ micro-post:
         html_title: 'Посты от @%nick%'
         trash_bin: 'Удаленные посты'
   pagination:
-    title: 'Страницы'
+    title: 'Страница %page% из %pages%'
     first: 'первая'
     last: 'последняя'
   post-item:
