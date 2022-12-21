@@ -8,8 +8,7 @@ use App\Entity\MicroPost;
 use App\Repository\MicroPostRepository;
 use App\Service\MicroPost\GetMicroPostSoftDeleteService;
 use App\Service\MicroPost\SoftDeleteFilterServiceInterface;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use PHPUnit\Framework\TestCase;
 
 class GetMicroPostSoftDeleteServiceTest extends TestCase
@@ -28,48 +27,39 @@ class GetMicroPostSoftDeleteServiceTest extends TestCase
      */
     public function testGet(int $total, int $pageSize, int $page, ?string $expectException): void
     {
+        $paginator = self::createMock(Paginator::class);
+        $paginator->method('count')->willReturn($total);
+        $paginator->method('getIterator')->willReturn($this->getCollection($total));
+
         $microPostRepository = self::createMock(MicroPostRepository::class);
+        $microPostRepository->expects(self::once())
+            ->method('getAllWithPaginatorOrderByDeleteAt')
+            ->with($page, $pageSize)
+            ->willReturn($paginator);
 
         $softDeleteFilterService = self::createMock(SoftDeleteFilterServiceInterface::class);
         $softDeleteFilterService->expects(self::once())->method('softDeleteOnlyOn');
-
-        $collection = $this->getCollection($total);
-        $slicedCollection = [];
-
-        $expects = self::atLeastOnce();
+        $softDeleteFilterService->expects($expectException ? self::never() : self::once())->method('allOff');
 
         if ($expectException) {
             self::expectException($expectException);
-            $expects = self::never();
-        } else {
-            $firstIndex = ($page - 1) * $pageSize;
-            $slicedCollection = array_values($collection->slice($firstIndex, $pageSize));
         }
 
-        $microPostRepository->expects($expects)
-            ->method('getAllWithPaginatorOrderByDeleteAt')
-            ->willReturn($slicedCollection);
-
-        $softDeleteFilterService->expects($expects)->method('allOff');
-
         $srv = new GetMicroPostSoftDeleteService($microPostRepository, $softDeleteFilterService);
-        $dto = $srv->get($page, $pageSize);
-
-        self::assertSame($slicedCollection, $dto->getPosts());
-        self::assertEquals($page, $dto->getPaginatorDto()->getPage());
-        self::assertEquals($pageSize, $dto->getPaginatorDto()->getPageSize());
-        self::assertEquals(ceil($total / $pageSize), $dto->getPaginatorDto()->getTotalPages());
+        $srv->get($page, $pageSize);
     }
 
-    private function getCollection(int $total): Collection
+
+    private function getCollection(int $total): \ArrayIterator
     {
-        $collection = new ArrayCollection();
+        $collection = new \ArrayIterator();
 
         for ($i = 0; $i < $total; $i++) {
             $mp = (new MicroPost())->setContent('content ' . $i)->setDeleteAt(new \DateTime());
-            $collection->add($mp);
+            $collection->append($mp);
         }
 
         return $collection;
     }
+
 }

@@ -26,8 +26,8 @@ class MicroPostWithPaginationDtoTest extends TestCase
         if ($expectExceptionClass) {
             self::expectException($expectExceptionClass);
         }
-
-        $dto = new MicroPostWithPaginationDto($microPosts, $paginatorDto);
+        $iterator = new \ArrayIterator($microPosts);
+        $dto = new MicroPostWithPaginationDto($iterator, $paginatorDto);
         self::assertTrue($dto->getPaginatorDto() instanceof PaginatorDto);
 
         if (count($dto->getPosts())) {

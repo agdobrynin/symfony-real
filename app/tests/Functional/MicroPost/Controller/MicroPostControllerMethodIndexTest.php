@@ -40,13 +40,10 @@ class MicroPostControllerMethodIndexTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
 
-        $expectPages = $this->getTotalPage();
-
         $crawler = $client->request('GET', '/micro-post/ru/');
         self::assertResponseIsSuccessful();
 
         $paginatorItems = $this->getPaginatorItemByIndex($crawler);
-        self::assertEquals($expectPages, $paginatorItems->count());
 
         //I'm on first page, check it.
         $firstPageItem = $paginatorItems->first();
@@ -70,9 +67,8 @@ class MicroPostControllerMethodIndexTest extends WebTestCase
     {
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $totalPage = $this->getTotalPage();
 
-        foreach ([($totalPage + 1), 0, -1, 'abc'] as $page) {
+        foreach ([50000, 0, -1, 'abc'] as $page) {
             $client->request('GET', '/micro-post/ru/?page=' . $page);
             self::assertResponseIsUnprocessable();
         }
@@ -82,21 +78,13 @@ class MicroPostControllerMethodIndexTest extends WebTestCase
     {
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $totalPage = $this->getTotalPage();
         $user = $this->userRepository->findOneBy([]);
         $client->loginUser($user);
 
-        foreach ([($totalPage + 1), 0, -1, 'abc'] as $page) {
+        foreach ([5000, 0, -1, 'abc'] as $page) {
             $client->request('GET', '/micro-post/ru/?page=' . $page);
             self::assertResponseIsUnprocessable();
         }
-    }
-
-    protected function getTotalPage(): int
-    {
-        $totalRecords = $this->microPostRepository->getAllCount();
-
-        return (int)ceil($totalRecords / $this->pageSize);
     }
 
     protected function getPaginatorItemByIndex(Crawler $crawler, ?int $index = null): Crawler
