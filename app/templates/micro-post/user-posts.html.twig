@@ -55,12 +55,18 @@
     </div>
 
     {% if microPostWithPaginationDto.paginatorDto.totalPages > 1 %}
-        {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
+        {{ include ('@mp/paginator.html.twig', {
+            totalPages: microPostWithPaginationDto.paginatorDto.totalPages,
+            page: microPostWithPaginationDto.paginatorDto.page
+        }) }}
     {% endif %}
     {% for post in microPostWithPaginationDto.posts %}
         {{ include ('@mp/post-item.html.twig', { post }) }}
     {% endfor %}
     {% if microPostWithPaginationDto.paginatorDto.totalPages > 1 %}
-        {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
+        {{ include ('@mp/paginator.html.twig', {
+            totalPages: microPostWithPaginationDto.paginatorDto.totalPages,
+            page: microPostWithPaginationDto.paginatorDto.page,
+        }) }}
     {% endif %}
 {% endblock %}

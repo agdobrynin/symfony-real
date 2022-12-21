@@ -20,13 +20,19 @@
             {% endif %}
         </div>
         {% if microPostWithPaginationDto.paginatorDto.totalPages > 1 %}
-            {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
+            {{ include ('@mp/paginator.html.twig', {
+                totalPages: microPostWithPaginationDto.paginatorDto.totalPages,
+                page: microPostWithPaginationDto.paginatorDto.page
+            }) }}
         {% endif %}
         {% for post in microPostWithPaginationDto.posts %}
             {{ include ('@mp/post-item.html.twig', {post: post}) }}
         {% endfor %}
         {% if microPostWithPaginationDto.paginatorDto.totalPages > 1 %}
-            {{ include ('@mp/paginator.html.twig', {paginatorDto: microPostWithPaginationDto.paginatorDto}) }}
+            {{ include ('@mp/paginator.html.twig',  {
+                totalPages: microPostWithPaginationDto.paginatorDto.totalPages,
+                page: microPostWithPaginationDto.paginatorDto.page
+            }) }}
         {% endif %}
     {% else %}
         {% if is_granted('ROLE_USER') and app.user.following.count %}

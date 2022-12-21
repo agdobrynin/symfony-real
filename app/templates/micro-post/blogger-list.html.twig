@@ -5,7 +5,10 @@
 {% block microPostContent %}
     <div class="container">
         {% if bloggersWithPaginator.paginatorDto.totalPages > 1 %}
-            {{ include ('@mp/paginator.html.twig', {paginatorDto: bloggersWithPaginator.paginatorDto}) }}
+            {{ include ('@mp/paginator.html.twig', {
+                totalPages: bloggersWithPaginator.paginatorDto.totalPages,
+                page: bloggersWithPaginator.paginatorDto.page
+            }) }}
         {% endif %}
         <div class="row justify-content-md-center">
             {% for blogger in bloggersWithPaginator.bloggers %}
@@ -38,7 +41,10 @@
             {% endfor %}
         </div>
         {% if bloggersWithPaginator.paginatorDto.totalPages > 1 %}
-            {{ include ('@mp/paginator.html.twig', {paginatorDto: bloggersWithPaginator.paginatorDto}) }}
+            {{ include ('@mp/paginator.html.twig', {
+                totalPages: bloggersWithPaginator.paginatorDto.totalPages,
+                page: bloggersWithPaginator.paginatorDto.page
+            }) }}
         {% endif %}
     </div>
 {% endblock %}

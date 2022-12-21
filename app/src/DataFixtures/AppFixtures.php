@@ -15,7 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
-    private const MICRO_POST_MAX = 20;
+    private const MICRO_POST_MAX = 1000;
     private const PASSWORD = 'qwerty';
     private $userPasswordHasher;
     /** @var UserFixtureDto[] */

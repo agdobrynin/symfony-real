@@ -14,7 +14,10 @@
 {% endif %}
 
 {% if commentsWithPaginatorDto.paginatorDto.totalPages > 1 %}
-    {{ include ('@mp/paginator.html.twig', {paginatorDto: commentsWithPaginatorDto.paginatorDto}) }}
+    {{ include ('@mp/paginator.html.twig', {
+        totalPages: commentsWithPaginatorDto.paginatorDto.totalPages,
+        page: commentsWithPaginatorDto.paginatorDto.page
+    }) }}
 {% endif %}
 
 <div class="container">
@@ -64,5 +67,8 @@
 </div>
 
 {% if commentsWithPaginatorDto.paginatorDto.totalPages > 1 %}
-    {{ include ('@mp/paginator.html.twig', {paginatorDto: commentsWithPaginatorDto.paginatorDto}) }}
+    {{ include ('@mp/paginator.html.twig', {
+        totalPages: commentsWithPaginatorDto.paginatorDto.totalPages,
+        page: commentsWithPaginatorDto.paginatorDto.page
+    }) }}
 {% endif %}
