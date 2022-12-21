@@ -23,6 +23,8 @@ micro-post:
         trash_bin: 'Удаленные посты'
   pagination:
     title: 'Страницы'
+    first: 'первая'
+    last: 'последняя'
   post-item:
     post-from: 'Пост пользователя'
     post-from-prefix-date: 'от'

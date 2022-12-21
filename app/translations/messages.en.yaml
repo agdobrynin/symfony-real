@@ -23,6 +23,8 @@ micro-post:
         trash_bin: 'Deleted posts'
   pagination:
     title: 'Pages'
+    first: 'first'
+    last: 'last'
   post-item:
     post-from: 'Post from user'
     post-from-prefix-date: 'at'
