@@ -27,6 +27,8 @@ class GetMicroPostCommentsServiceTest extends KernelTestCase
      * @var \App\Repository\MicroPostRepository
      */
     private $microPostRepository;
+    /** @var \App\Repository\CommentRepository */
+    private $commentsRepository;
 
     protected function setUp(): void
     {
@@ -34,6 +36,7 @@ class GetMicroPostCommentsServiceTest extends KernelTestCase
         $this->pageSize = self::getContainer()->getParameter('micropost.comments.page.size');
         $this->em = self::getContainer()->get('doctrine')->getManager();
         $this->microPostRepository = $this->em->getRepository(MicroPost::class);
+        $this->commentsRepository = $this->em->getRepository(Comment::class);
     }
 
     protected function tearDown(): void
@@ -68,7 +71,7 @@ class GetMicroPostCommentsServiceTest extends KernelTestCase
 
     public function testWrongPageSize(): void
     {
-        $srv = new GetMicroPostCommentsService(0);
+        $srv = new GetMicroPostCommentsService(0, $this->commentsRepository);
         $microPost = $this->microPostRepository->findOneBy([]);
         $this->clearComments($microPost);
         self::expectException(PaginatorDtoPageSizeException::class);

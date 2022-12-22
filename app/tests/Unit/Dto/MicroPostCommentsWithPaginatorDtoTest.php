@@ -27,7 +27,7 @@ class MicroPostCommentsWithPaginatorDtoTest extends TestCase
             self::expectException($expectExceptionClass);
         }
 
-        $dto = new MicroPostCommentsWithPaginatorDto($comments, $paginatorDto);
+        $dto = new MicroPostCommentsWithPaginatorDto(new \ArrayIterator($comments), $paginatorDto);
         self::assertTrue($dto->getPaginatorDto() instanceof PaginatorDto);
 
         if (count($dto->getComments())) {

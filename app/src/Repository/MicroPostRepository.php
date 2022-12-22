@@ -65,6 +65,19 @@ class MicroPostRepository extends ServiceEntityRepository
         return new Paginator($query);
     }
 
+    public function getMicroPostForViewPage(string $uuid): ?MicroPost
+    {
+        return $this->createQueryBuilder('mp')
+            ->innerJoin('mp.user', 'authorPost')
+            ->addSelect('authorPost')
+            ->leftJoin('mp.likedBy', 'likedByUsers')
+            ->addSelect('likedByUsers')
+            ->where('mp = :uuid')
+            ->setParameter(':uuid', $uuid)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function getAllWithPaginator(int $page, int $pageSize): Paginator
     {
         return new Paginator($this->microPostWithAllData($page, $pageSize));
@@ -78,7 +91,8 @@ class MicroPostRepository extends ServiceEntityRepository
             throw new \LogicException($message);
         }
 
-        $query = $this->microPostWithAllData($page, $pageSize)->orderBy('mp.deleteAt', 'DESC');
+        $query = $this->microPostWithAllData($page, $pageSize)
+            ->orderBy('mp.deleteAt', 'DESC');
 
         return new Paginator($query);
     }
@@ -116,7 +130,7 @@ class MicroPostRepository extends ServiceEntityRepository
     private function microPostWithAllData(int $page, int $pageSize): QueryBuilder
     {
         return $this->createQueryBuilder('mp')
-            ->leftJoin('mp.user', 'author')
+            ->innerJoin('mp.user', 'author')
             ->addSelect('author')
             ->leftJoin('mp.comments', 'userComments')
             ->addSelect('userComments')

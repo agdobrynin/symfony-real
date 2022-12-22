@@ -6,23 +6,24 @@ namespace App\Service\MicroPost;
 use App\Dto\MicroPostCommentsWithPaginatorDto;
 use App\Dto\PaginatorDto;
 use App\Entity\MicroPost;
+use App\Repository\CommentRepository;
 
 class GetMicroPostCommentsService implements GetMicroPostCommentsServiceInterface
 {
     private $pageSize;
+    private $commentRepository;
 
-    public function __construct(int $pageSize)
+    public function __construct(int $pageSize, CommentRepository $commentRepository)
     {
         $this->pageSize = $pageSize;
+        $this->commentRepository = $commentRepository;
     }
 
     public function getComments(int $page, MicroPost $microPost): MicroPostCommentsWithPaginatorDto
     {
-        $paginatorDto = new PaginatorDto($page, $microPost->getComments()->count(), $this->pageSize);
+        $comments = $this->commentRepository->getCommentsByMicroPost($page, $this->pageSize, $microPost);
+        $paginatorDto = new PaginatorDto($page, $comments->count(), $this->pageSize);
 
-        $comments = $microPost->getComments()
-            ->slice($paginatorDto->getFirstResultIndex(), $paginatorDto->getPageSize());
-
-        return new MicroPostCommentsWithPaginatorDto($comments, $paginatorDto);
+        return new MicroPostCommentsWithPaginatorDto($comments->getIterator(), $paginatorDto);
     }
 }

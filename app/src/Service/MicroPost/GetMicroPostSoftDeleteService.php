@@ -28,8 +28,9 @@ class GetMicroPostSoftDeleteService implements GetMicroPostSoftDeleteServiceInte
         $posts = $this->microPostRepository->getAllWithPaginatorOrderByDeleteAt($page, $pageSize);
         $paginatorDto = new PaginatorDto($page, $posts->count(), $pageSize);
 
+        $postItems = $posts->getIterator();
         $this->softDeleteFilterService->allOff();
 
-        return new MicroPostWithPaginationDto($posts->getIterator(), $paginatorDto);
+        return new MicroPostWithPaginationDto($postItems, $paginatorDto);
     }
 }

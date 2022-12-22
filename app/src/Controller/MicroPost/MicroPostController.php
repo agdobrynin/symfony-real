@@ -180,9 +180,9 @@ class MicroPostController extends AbstractController
      * @Route("/view/{uuid}", name="micro_post_view", methods={"get", "post"})
      * @return Response|RedirectResponse
      */
-    public function view(Request $request, GetMicroPostCommentsServiceInterface $getMicroPostCommentsService, ?MicroPost $microPost = null)
+    public function view(string $uuid, Request $request, GetMicroPostCommentsServiceInterface $getMicroPostCommentsService)
     {
-        if ($microPost) {
+        if ($microPost = $this->microPostRepository->getMicroPostForViewPage($uuid)) {
             $statusCode = Response::HTTP_OK;
             $form = null;
 

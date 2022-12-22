@@ -28,10 +28,8 @@ class SoftDeletedPostsController extends AbstractController
     public function index(Request $request, GetMicroPostSoftDeleteServiceInterface $microPostSoftDeleteService): Response
     {
         $page = (int)$request->get('page', 1);
-        $microPostWithPaginationDto = $microPostSoftDeleteService->get(
-            $page,
-            $this->getParameter('micropost.page.size')
-        );
+        $pageSize = $this->getParameter('micropost.page.size');
+        $microPostWithPaginationDto = $microPostSoftDeleteService->get($page, $pageSize);
 
         return $this->render('@mp/soft-deleted-posts.html.twig', compact('microPostWithPaginationDto'));
     }
