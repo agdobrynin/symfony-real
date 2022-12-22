@@ -90,8 +90,7 @@ class SoftDeletedPostsControllerTest extends WebTestCase
         $crawler = $client->request('GET', self::URL_EN_DELETED_MICROPOST);
         self::assertResponseIsSuccessful();
 
-        $card = $crawler->filter('.card.post-item')->first();
-        self::assertNotEmpty($card->html(''));
+        self::assertEquals(0, $crawler->filter('.card.post-item')->count());
     }
 
     public function testRestoreSuccess(): void

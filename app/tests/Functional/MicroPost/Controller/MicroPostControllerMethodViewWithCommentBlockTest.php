@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MicroPost\Controller;
 
+use App\Entity\Comment;
 use App\Entity\MicroPost;
 use App\Service\MicroPost\GetMicroPostCommentsService;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -16,21 +17,14 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
 {
     protected const URL_POST_VIEW_PATTERN = '/micro-post/en/view/%s';
 
-    /**
-     * @var \Doctrine\Persistence\ObjectManager
-     */
+    /** @var \Doctrine\Persistence\ObjectManager */
     private $em;
-    /**
-     * @var \App\Repository\MicroPostRepository
-     */
+    /** @var \App\Repository\MicroPostRepository */
     private $microPostRepository;
-    /**
-     * @var int
-     */
+    /** @var \App\Repository\CommentRepository */
+    private $commentsRepository;
     private $commentPageSize;
-    /**
-     * @var TranslatorInterface
-     */
+    /** @var TranslatorInterface */
     private $translator;
 
     protected function setUp(): void
@@ -38,6 +32,7 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
         parent::setUp();
         $this->em = self::getContainer()->get('doctrine')->getManager();
         $this->microPostRepository = $this->em->getRepository(MicroPost::class);
+        $this->commentsRepository = $this->em->getRepository(Comment::class);
         $this->commentPageSize = self::getContainer()->getParameter('micropost.comments.page.size');
         $this->translator = self::getContainer()->get(TranslatorInterface::class);
     }
@@ -78,7 +73,7 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
         self::assertResponseIsSuccessful();
 
         // Find comments with cssClass = comment-item
-        $getMicroPostCommentsService = new GetMicroPostCommentsService($this->commentPageSize);
+        $getMicroPostCommentsService = new GetMicroPostCommentsService($this->commentPageSize, $this->commentsRepository);
         $microPostCommentsWithPaginatorDto = $getMicroPostCommentsService->getComments(1, $microPost);
         self::assertCount($crawler->filter('div.comment-item')->count(), $microPostCommentsWithPaginatorDto->getComments());
 
@@ -113,6 +108,9 @@ class MicroPostControllerMethodViewWithCommentBlockTest extends WebTestCase
         self::assertNotEmpty($textareaField->nextAll()->first()->filter('.invalid-feedback')->text());
     }
 
+    /**
+     * @group one
+     */
     public function testCommentBlockAddSuccess(): void
     {
         self::ensureKernelShutdown();

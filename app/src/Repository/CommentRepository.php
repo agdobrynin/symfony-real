@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Comment;
 use App\Entity\MicroPost;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -54,5 +55,19 @@ class CommentRepository extends ServiceEntityRepository
             ->setParameter(':post', $microPost)
             ->getQuery()
             ->execute();
+    }
+
+    public function getCommentsByMicroPost(int $page, int $pageSize, MicroPost $post): Paginator
+    {
+        $query = $this->createQueryBuilder('c')
+            ->innerJoin('c.user', 'author')
+            ->addSelect('author')
+            ->where('c.post = :post')
+            ->setParameter(':post', $post)
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize)
+            ->orderBy('c.createAt', 'DESC');
+
+        return new Paginator($query);
     }
 }
