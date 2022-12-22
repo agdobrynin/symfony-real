@@ -86,22 +86,12 @@ class SoftDeletedPostsControllerTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
 
-        /** @var MicroPost $microPost */
-        $microPost = $this->microPostRepository->findOneBy(['user' => $this->adminUser]);
-        $microPost->setDeleteAt(new \DateTime());
-        $this->em->persist($microPost);
-        $this->em->flush();
-
         $client->loginUser($this->adminUser);
         $crawler = $client->request('GET', self::URL_EN_DELETED_MICROPOST);
         self::assertResponseIsSuccessful();
 
         $card = $crawler->filter('.card.post-item')->first();
         self::assertNotEmpty($card->html(''));
-        self::assertSame($microPost->getContent(), $card->filter('.card-body')->text(''));
-
-        $restoreButton = $card->filter('.card-footer a[href$="' . $microPost->getUuid() . '"]');
-        self::assertEquals(1, $restoreButton->count());
     }
 
     public function testRestoreSuccess(): void
