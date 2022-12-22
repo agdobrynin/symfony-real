@@ -15,7 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
-    private const MICRO_POST_MAX = 100;
+    private const MICRO_POST_MAX = 1000;
     private const PASSWORD = 'qwerty';
     private $userPasswordHasher;
     /** @var UserFixtureDto[] */
@@ -39,6 +39,9 @@ class AppFixtures extends Fixture
             new UserFixtureDto('blogger', 'The best blogger', '🎭'),
             new UserFixtureDto('superman', 'Ironman', '🚀'),
             new UserFixtureDto('santa', 'Santa Claus', '🎅'),
+            new UserFixtureDto('spaceman', 'NASA', '✨'),
+            new UserFixtureDto('animal', 'Animal planet TV', '🙀'),
+            new UserFixtureDto('aquaman', 'Ihtiandr', '🐬'),
         ];
     }
 
@@ -68,6 +71,9 @@ class AppFixtures extends Fixture
             /** @var User $referenceUser */
             $referenceUser = $this->getReference($this->randUserLogin());
             $microPost->setUser($referenceUser);
+            // add likes
+            $microPost->like($this->getReference($this->randUserLogin()));
+            $microPost->like($this->getReference($this->randUserLogin()));
 
             $manager->persist($microPost);
             $this->setReference('microPost_' . $i, $microPost);
