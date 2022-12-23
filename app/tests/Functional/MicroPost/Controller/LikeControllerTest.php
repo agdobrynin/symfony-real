@@ -69,7 +69,6 @@ class LikeControllerTest extends WebTestCase
         $userBlogger = $this->userRepository->findOneBy(['login' => $userDto->login]);
 
         $microPost = $this->microPostRepository->findOneBy(['user' => $userAdmin]);
-        self::assertCount(0, $microPost->getLikedBy());
 
         $client->loginUser($userBlogger);
         $client->xmlHttpRequest('GET', sprintf(self::URL_LIKE_EN_POST_PATTERN, $microPost->getUuid()));
