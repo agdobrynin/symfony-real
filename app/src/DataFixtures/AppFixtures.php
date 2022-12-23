@@ -11,19 +11,30 @@ use App\Service\MicroPost\LocalesInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
-    private const MICRO_POST_MAX = 100;
+    private $microPostMax;
     private const PASSWORD = 'qwerty';
     private $userPasswordHasher;
     /** @var UserFixtureDto[] */
     private $fixtureUsers;
     private $locales;
 
-    public function __construct(UserPasswordHasherInterface $userPasswordHasher, LocalesInterface $locales)
+    public function __construct(
+        UserPasswordHasherInterface $userPasswordHasher,
+        LocalesInterface            $locales,
+        KernelInterface             $kernel
+    )
     {
+        if ('dev' === $kernel->getEnvironment()) {
+            $this->microPostMax = 1500;
+        } else {
+            $this->microPostMax = 100;
+        }
+
         $this->userPasswordHasher = $userPasswordHasher;
         $this->fixtureUsers = self::getUserFixtures();
         $this->locales = $locales;
@@ -39,6 +50,9 @@ class AppFixtures extends Fixture
             new UserFixtureDto('blogger', 'The best blogger', '🎭'),
             new UserFixtureDto('superman', 'Ironman', '🚀'),
             new UserFixtureDto('santa', 'Santa Claus', '🎅'),
+            new UserFixtureDto('spaceman', 'NASA', '✨'),
+            new UserFixtureDto('animal', 'Animal planet TV', '🙀'),
+            new UserFixtureDto('aquaman', 'Ihtiandr', '🐬'),
         ];
     }
 
@@ -61,13 +75,16 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create('ru_RU');
 
-        for ($i = 0; $i < self::MICRO_POST_MAX; $i++) {
+        for ($i = 0; $i < $this->microPostMax; $i++) {
             $microPost = new MicroPost();
             $microPost->setDate($faker->dateTimeBetween('-60 day', 'now'))
                 ->setContent($faker->realTextBetween(120, 250));
             /** @var User $referenceUser */
             $referenceUser = $this->getReference($this->randUserLogin());
             $microPost->setUser($referenceUser);
+            // add likes
+            $microPost->like($this->getReference($this->randUserLogin()));
+            $microPost->like($this->getReference($this->randUserLogin()));
 
             $manager->persist($microPost);
             $this->setReference('microPost_' . $i, $microPost);
@@ -80,7 +97,7 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create('ru_RU');
 
-        for ($i = 0; $i < self::MICRO_POST_MAX; $i++) {
+        for ($i = 0; $i < $this->microPostMax; $i++) {
             $maxComments = rand(0, 15);
 
             for ($j = 0; $j < $maxComments; $j++) {

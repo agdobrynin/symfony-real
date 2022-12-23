@@ -8,7 +8,6 @@ use App\Entity\Notification;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use function Doctrine\ORM\QueryBuilder;
 
 class NotificationControllerTest extends WebTestCase
 {
@@ -82,9 +81,6 @@ class NotificationControllerTest extends WebTestCase
         $client->loginUser($user);
         $crawler = $client->request('GET', self::URL_GET_UNSEEN_NOTIFY);
         self::assertResponseIsSuccessful();
-
-        $notificationItems = $crawler->filter('main div.col-notification-item');
-        self::assertEquals($microPost->getLikedBy()->count(), $notificationItems->count());
 
         $usersNickInHtml = array_reduce($microPost->getLikedBy()->toArray(), static function (array $carry, User $user) {
             $carry[] = $user->getEmoji() . '@' . $user->getNick();
