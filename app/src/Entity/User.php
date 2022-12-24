@@ -387,7 +387,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->commentsCount;
     }
 
-    public function setCommentsCount(int $commentsCount): void
+    public function setCommentsCount(?int $commentsCount): void
     {
         $this->commentsCount = $commentsCount;
     }
