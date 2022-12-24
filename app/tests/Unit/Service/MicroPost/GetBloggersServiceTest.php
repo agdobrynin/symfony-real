@@ -5,6 +5,7 @@ namespace App\Tests\Unit\Service\MicroPost;
 
 use App\Dto\Exception\PaginatorDtoPageException;
 use App\Entity\User;
+use App\Repository\CommentRepository;
 use App\Repository\UserRepository;
 use App\Service\MicroPost\GetBloggersService;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -40,16 +41,19 @@ class GetBloggersServiceTest extends TestCase
             ->with($page, $pageSize)
             ->willReturn($paginator);
 
-
         if ($expectException) {
             self::expectException($expectException);
         }
 
-        $srv = new GetBloggersService($pageSize, $userRepository);
+        $commentsRepository = self::createMock(CommentRepository::class);
+        //$commentsRepository->expects(self::once())->method('getCountCommentsByUsers');
+
+
+        $srv = new GetBloggersService($pageSize, $userRepository, $commentsRepository);
 
         $dto = $srv->getBloggers($page);
 
-        self::assertSame($users, $dto->getBloggers());
+        self::assertSame((array)$users, $dto->getBloggers());
         self::assertEquals($page, $dto->getPaginatorDto()->getPage());
         self::assertEquals($pageSize, $dto->getPaginatorDto()->getPageSize());
         self::assertEquals(ceil($total / $pageSize), $dto->getPaginatorDto()->getTotalPages());
