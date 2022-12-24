@@ -5,25 +5,31 @@ namespace App\Service\MicroPost;
 
 use App\Dto\BloggersWithPaginatorDto;
 use App\Dto\PaginatorDto;
+use App\Repository\CommentRepository;
 use App\Repository\UserRepository;
 
 class GetBloggersService implements GetBloggersServiceInterface
 {
     private $pageSize;
     private $userRepository;
+    private $commentRepository;
 
-    public function __construct(int $pageSize, UserRepository $userRepository)
+    public function __construct(int $pageSize, UserRepository $userRepository, CommentRepository $commentRepository)
     {
         $this->pageSize = $pageSize;
         $this->userRepository = $userRepository;
+        $this->commentRepository = $commentRepository;
     }
 
     public function getBloggers(int $page): BloggersWithPaginatorDto
     {
         $totalItems = $this->userRepository->getCountBloggersWithPosts();
-        $bloggers = $this->userRepository->getBloggersWithPostsByPaginator($page, $this->pageSize);
+        $bloggers = (array)$this->userRepository
+            ->getBloggersWithPostsByPaginator($page, $this->pageSize)
+            ->getIterator();
         $paginatorDto = new PaginatorDto($page, $totalItems, $this->pageSize);
+        $commentsCount = $this->commentRepository->getCountCommentsByUsers($bloggers);
 
-        return new BloggersWithPaginatorDto($bloggers->getIterator(), $paginatorDto);
+        return new BloggersWithPaginatorDto($bloggers, $paginatorDto, $commentsCount);
     }
 }

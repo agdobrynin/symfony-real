@@ -15,7 +15,7 @@
                 <div class="col-auto pb-4">
                     <div class="card blogger-item" style="width: 15rem;">
                         <div class="card-header text-truncate overflow-hidden fs-5">
-                            {% if app.user and blogger.followers.contains(app.user) %}
+                            {% if app.user and app.user.following.contains(blogger) %}
                                 <span
                                         class="float-start"
                                         data-bs-toggle="popover"
@@ -34,7 +34,8 @@
                                 : {{ blogger.followers.count }}</li>
 
                             <li class="list-group-item blogger-followers">{{ 'bloggers_list.title_comments'|trans }}
-                                : {{ blogger.comments.count }}</li>
+                                : {{ bloggersWithPaginator.getCommentsCountByUser(blogger) ?? '0' }}
+                            </li>
 
                         </ul>
                     </div>

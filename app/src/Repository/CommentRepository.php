@@ -70,4 +70,25 @@ class CommentRepository extends ServiceEntityRepository
 
         return new Paginator($query);
     }
+
+    public function getCountCommentsByUsers(array $users): array
+    {
+        $query = $this->createQueryBuilder('c')
+            ->select('COUNT(c.uuid) as commentCount')
+            ->innerJoin('c.user', 'u')
+            ->addSelect('u.uuid')
+            ->where('c.user IN (:users)')
+            ->setParameter(':users', $users)
+            ->groupBy('u.uuid');
+
+
+        $res = $query
+            ->getQuery()
+            ->getResult();
+
+        $uuids = array_column($res, 'uuid');
+        $counts = array_column($res, 'commentCount');
+
+        return array_combine($uuids, $counts);
+    }
 }
