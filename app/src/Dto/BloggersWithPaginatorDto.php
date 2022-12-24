@@ -8,16 +8,10 @@ use App\Entity\User;
 
 class BloggersWithPaginatorDto
 {
-    /**
-     * @var User[]
-     */
     private $bloggers;
-    /**
-     * @var PaginatorDto
-     */
     private $paginatorDto;
 
-    public function __construct(array $bloggers, PaginatorDto $paginatorDto)
+    public function __construct(\ArrayIterator $bloggers, PaginatorDto $paginatorDto)
     {
         if (count($bloggers) && (!$bloggers[0] instanceof User)) {
             $message = sprintf('Params bloggers includes only "%s" objects. Got "%s"', User::class, \get_class($bloggers[0]));
@@ -29,10 +23,7 @@ class BloggersWithPaginatorDto
         $this->paginatorDto = $paginatorDto;
     }
 
-    /**
-     * @return User[]
-     */
-    public function getBloggers(): array
+    public function getBloggers(): \ArrayIterator
     {
         return $this->bloggers;
     }

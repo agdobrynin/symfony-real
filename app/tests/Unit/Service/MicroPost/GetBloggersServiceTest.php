@@ -5,11 +5,9 @@ namespace App\Tests\Unit\Service\MicroPost;
 
 use App\Dto\Exception\PaginatorDtoPageException;
 use App\Entity\User;
-use App\Repository\MicroPostRepository;
 use App\Repository\UserRepository;
 use App\Service\MicroPost\GetBloggersService;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use PHPUnit\Framework\TestCase;
 
 class GetBloggersServiceTest extends TestCase
@@ -29,40 +27,40 @@ class GetBloggersServiceTest extends TestCase
     public function testGetBloggersService(int $total, int $pageSize, int $page, ?string $expectException): void
     {
         $userRepository = self::createMock(UserRepository::class);
-        $microPostRepository = self::createMock(MicroPostRepository::class);
 
-        $microPostRepository->expects(self::once())
-            ->method('getCountBloggersWithPosts')
+        $users = $this->getUserCollection($total);
+
+        $paginator = self::createMock(Paginator::class);
+        $paginator->method('getIterator')->willReturn($users);
+
+        $userRepository->expects(self::once())->method('getCountBloggersWithPosts')
             ->willReturn($total);
 
-        $userCollection = $this->getUserCollection($total);
-        $slicedUserCollection = [];
+        $userRepository->expects(self::once())->method('getBloggersWithPostsByPaginator')
+            ->with($page, $pageSize)
+            ->willReturn($paginator);
+
 
         if ($expectException) {
             self::expectException($expectException);
-        } else {
-            $firstIndex = ($page - 1) * $pageSize;
-            $slicedUserCollection = array_values($userCollection->slice($firstIndex, $pageSize));
-
-            $userRepository->expects(self::once())->method('getBloggersWithPostsByPaginator')
-                ->willReturn($slicedUserCollection);
         }
 
-        $srv = new GetBloggersService($pageSize, $userRepository, $microPostRepository);
+        $srv = new GetBloggersService($pageSize, $userRepository);
 
         $dto = $srv->getBloggers($page);
-        self::assertSame($slicedUserCollection, $dto->getBloggers());
+
+        self::assertSame($users, $dto->getBloggers());
         self::assertEquals($page, $dto->getPaginatorDto()->getPage());
         self::assertEquals($pageSize, $dto->getPaginatorDto()->getPageSize());
         self::assertEquals(ceil($total / $pageSize), $dto->getPaginatorDto()->getTotalPages());
     }
 
-    protected function getUserCollection(int $total): Collection
+    protected function getUserCollection(int $total): \ArrayIterator
     {
-        $collection = new ArrayCollection();
+        $collection = new \ArrayIterator();
 
         for ($i = 0; $i < $total; $i++) {
-            $collection->add(new User());
+            $collection->append(new User());
         }
 
         return $collection;

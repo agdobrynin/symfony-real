@@ -14,14 +14,14 @@ class BloggersWithPaginatorDtoTest extends TestCase
     public function sourceData(): \Generator
     {
         yield 'success' => [$this->getUserCollection(11), new PaginatorDto(1, 11, 10), null];
-        yield 'fail' => [[new class {
-        }], new PaginatorDto(1, 1, 1), BloggersWithPaginatorDtoException::class];
+        yield 'fail' => [new \ArrayIterator([new class {
+        }]), new PaginatorDto(1, 1, 1), BloggersWithPaginatorDtoException::class];
     }
 
     /**
      * @dataProvider sourceData
      */
-    public function testBloggersWithPagination(array $bloggers, PaginatorDto $paginatorDto, ?string $expectException): void
+    public function testBloggersWithPagination(\ArrayIterator $bloggers, PaginatorDto $paginatorDto, ?string $expectException): void
     {
         if ($expectException) {
             self::expectException($expectException);
@@ -34,7 +34,7 @@ class BloggersWithPaginatorDtoTest extends TestCase
         self::assertEquals($paginatorDto->getTotalPages(), $dto->getPaginatorDto()->getTotalPages());
     }
 
-    protected function getUserCollection(int $count): array
+    protected function getUserCollection(int $count): \ArrayIterator
     {
         $a = [];
 
@@ -42,6 +42,6 @@ class BloggersWithPaginatorDtoTest extends TestCase
             $a[] = new User();
         }
 
-        return $a;
+        return new \ArrayIterator($a);
     }
 }
