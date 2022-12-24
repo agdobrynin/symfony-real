@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Dto\PaginatorDto;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
@@ -34,21 +34,32 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
-    /**
-     * @return User[]
-     */
-    public function getBloggersWithPostsByPaginator(PaginatorDto $paginatorDto): array
+    public function getCountBloggersWithPosts(): int
     {
-        return $this->createQueryBuilder('u')
-            ->select('u')
+        return
+            $this->createQueryBuilder('u')
+                ->select('COUNT(DISTINCT u)')
+                ->innerJoin('u.posts', 'mp')
+                ->getQuery()
+                ->getSingleScalarResult();
+    }
+
+    public function getBloggersWithPostsByPaginator(int $page, int $pageSize): Paginator
+    {
+        $query = $this->createQueryBuilder('u')
             ->innerJoin('u.posts', 'mp')
+            ->addSelect('mp')
+            ->leftJoin('u.followers', 'f')
+            ->addSelect('f')
             ->groupBy('u.uuid')
+            ->addGroupBy('mp.uuid')
+            ->addGroupBy('f.uuid')
             ->orderBy('count(mp)', 'desc')
             ->addOrderBy('u.lastLoginTime', 'desc')
-            ->setMaxResults($paginatorDto->getPageSize())
-            ->setFirstResult($paginatorDto->getFirstResultIndex())
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults($pageSize)
+            ->setFirstResult(($page - 1) * $pageSize);
+
+        return new Paginator($query);
     }
 
     private function getUsersWhoHaveMoreThen5PostsQuery(): QueryBuilder
