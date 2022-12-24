@@ -28,8 +28,8 @@ class GetBloggersService implements GetBloggersServiceInterface
             ->getBloggersWithPostsByPaginator($page, $this->pageSize)
             ->getIterator();
         $paginatorDto = new PaginatorDto($page, $totalItems, $this->pageSize);
-        $commentsCount = $this->commentRepository->getCountCommentsByUsers($bloggers);
+        $this->commentRepository->fillTotalCommentsToUsers($bloggers);
 
-        return new BloggersWithPaginatorDto($bloggers, $paginatorDto, $commentsCount);
+        return new BloggersWithPaginatorDto($bloggers, $paginatorDto);
     }
 }

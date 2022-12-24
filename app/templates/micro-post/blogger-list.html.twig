@@ -34,7 +34,7 @@
                                 : {{ blogger.followers.count }}</li>
 
                             <li class="list-group-item blogger-followers">{{ 'bloggers_list.title_comments'|trans }}
-                                : {{ bloggersWithPaginator.getCommentsCountByUser(blogger) ?? '0' }}
+                                : {{ blogger.commentsCount ?? '0' }}
                             </li>
 
                         </ul>

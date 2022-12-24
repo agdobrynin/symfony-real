@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Comment;
 use App\Entity\MicroPost;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -71,7 +72,7 @@ class CommentRepository extends ServiceEntityRepository
         return new Paginator($query);
     }
 
-    public function getCountCommentsByUsers(array $users): array
+    public function fillTotalCommentsToUsers(array $users): void
     {
         $query = $this->createQueryBuilder('c')
             ->select('COUNT(c.uuid) as commentCount')
@@ -89,6 +90,11 @@ class CommentRepository extends ServiceEntityRepository
         $uuids = array_column($res, 'uuid');
         $counts = array_column($res, 'commentCount');
 
-        return array_combine($uuids, $counts);
+        $mapUuids = array_combine($uuids, $counts);
+
+        /** @var User $user */
+        foreach ($users as $user) {
+            $user->setCommentsCount($mapUuids[$user->getUuid()->toRfc4122()] ?? null);
+        }
     }
 }

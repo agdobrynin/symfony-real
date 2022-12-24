@@ -157,6 +157,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $comments;
 
+    private $commentsCount;
+
     public function __construct(?string $uuid = null)
     {
         $this->uuid = $uuid ? Uuid::fromString($uuid) : Uuid::v4();
@@ -378,5 +380,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->changePasswordToken = $changePasswordToken;
 
         return $this;
+    }
+
+    public function getCommentsCount(): ?int
+    {
+        return $this->commentsCount;
+    }
+
+    public function setCommentsCount(int $commentsCount): void
+    {
+        $this->commentsCount = $commentsCount;
     }
 }

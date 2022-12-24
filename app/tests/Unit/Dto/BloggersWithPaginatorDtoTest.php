@@ -27,7 +27,7 @@ class BloggersWithPaginatorDtoTest extends TestCase
             self::expectException($expectException);
         }
 
-        $dto = new BloggersWithPaginatorDto($bloggers, $paginatorDto, []);
+        $dto = new BloggersWithPaginatorDto($bloggers, $paginatorDto);
         self::assertSame($bloggers, $dto->getBloggers());
         self::assertEquals($paginatorDto->getPage(), $dto->getPaginatorDto()->getPage());
         self::assertEquals($paginatorDto->getPageSize(), $dto->getPaginatorDto()->getPageSize());
